@@ -1,0 +1,332 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" width="1280" height="900" fill="none">
+  <defs>
+    <style>
+      .bg { fill: #0B0E0D; }
+      .panel { fill: #111614; stroke: #1E2824; stroke-width: 1; }
+      .panel-elev { fill: #151C19; stroke: #23302B; stroke-width: 1; }
+      .hairline { stroke: #1E2824; stroke-width: 1; }
+      .hairline-accent { stroke: #00E676; stroke-width: 2; }
+      .text-main { fill: #F1F5F3; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+      .text-muted { fill: #95A59E; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+      .text-dim { fill: #64756E; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+      .text-green { fill: #00E676; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+      .text-dark { fill: #05140C; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+      .btn-green { fill: #00E676; }
+      .badge-green { fill: #0F291E; stroke: #1E4D38; stroke-width: 1; }
+      .badge-amber { fill: #261F10; stroke: #4D3D1B; stroke-width: 1; }
+      .badge-neutral { fill: #171F1C; stroke: #26332E; stroke-width: 1; }
+      .flow-arrow { stroke: #00E676; stroke-width: 1.5; stroke-dasharray: 4 4; }
+    </style>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1280" height="900" class="bg"/>
+
+  <!-- Board Header -->
+  <text x="40" y="38" class="text-green" font-size="11" font-weight="700" letter-spacing="1.6">PROPOSTA VISUAL · DESKTOP (1280PX) · TEMA GRAFITE &amp; VERDE CITi</text>
+  <text x="40" y="64" class="text-main" font-size="22" font-weight="700">Percurso Integrado: Página Inicial → Lead → Projeto Vinculado → Área e Pessoas Responsáveis</text>
+  <text x="920" y="58" class="text-muted" font-size="12">Navegação superior compacta · Sem sidebar · Divisórias 1px</text>
+  <line x1="40" y1="80" x2="1240" y2="80" class="hairline"/>
+
+  <!-- ================================================================= -->
+  <!-- QUADRO 1: PÁGINA INICIAL (VISÃO GERAL) — TOP LEFT                 -->
+  <!-- ================================================================= -->
+  <g transform="translate(40, 100)">
+    <rect width="580" height="365" rx="8" class="panel"/>
+    <!-- Top Compact Navbar -->
+    <rect x="1" y="1" width="578" height="42" rx="7" fill="#0D1210"/>
+    <line x1="0" y1="43" x2="580" y2="43" class="hairline"/>
+    <circle cx="20" cy="22" r="4" fill="#00E676"/>
+    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
+    <text x="60" y="26" class="text-muted" font-size="11">central</text>
+
+    <!-- Nav Items -->
+    <text x="130" y="26" class="text-main" font-size="11" font-weight="600">Visão geral</text>
+    <line x1="130" y1="42" x2="190" y2="42" class="hairline-accent"/>
+    <text x="208" y="26" class="text-muted" font-size="11">Leads</text>
+    <text x="255" y="26" class="text-muted" font-size="11">Projetos</text>
+    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
+    <text x="390" y="26" class="text-muted" font-size="11">Organização</text>
+    <rect x="492" y="13" width="72" height="18" rx="4" class="badge-neutral"/>
+    <text x="502" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">1 · INÍCIO</text>
+
+    <!-- Compact Hero + CTA -->
+    <text x="24" y="66" class="text-green" font-size="8" font-weight="700" letter-spacing="1.4">DO PRIMEIRO CONTATO À ENTREGA</text>
+    <text x="24" y="86" class="text-main" font-size="16" font-weight="700">O trabalho conectado. A equipe por perto.</text>
+    <rect x="412" y="62" width="144" height="28" rx="6" class="btn-green"/>
+    <text x="424" y="80" class="text-dark" font-size="10" font-weight="700">Cadastrar oportunidade ↗</text>
+    <line x1="24" y1="100" x2="556" y2="100" class="hairline"/>
+
+    <!-- Inline Metrics Bar (No Boxes, Hairline Grid) -->
+    <text x="24" y="118" class="text-muted" font-size="9">Leads abertos</text>
+    <text x="24" y="138" class="text-main" font-size="18" font-weight="700">3</text>
+    <text x="44" y="137" class="text-green" font-size="9">Consultar →</text>
+
+    <line x1="155" y1="106" x2="155" y2="146" class="hairline"/>
+    <text x="170" y="118" class="text-muted" font-size="9">Projetos em andamento</text>
+    <text x="170" y="138" class="text-green" font-size="18" font-weight="700">1</text>
+    <text x="190" y="137" class="text-green" font-size="9">Consultar →</text>
+
+    <line x1="315" y1="106" x2="315" y2="146" class="hairline"/>
+    <text x="330" y="118" class="text-muted" font-size="9">Leads ganhos</text>
+    <text x="330" y="138" class="text-main" font-size="18" font-weight="700">1</text>
+
+    <line x1="440" y1="106" x2="440" y2="146" class="hairline"/>
+    <text x="455" y="118" class="text-muted" font-size="9">Total de projetos</text>
+    <text x="455" y="138" class="text-main" font-size="18" font-weight="700">1</text>
+    <line x1="24" y1="152" x2="556" y2="152" class="hairline"/>
+
+    <!-- Two Integrated Priority Columns: Leads needing action & Active Projects -->
+    <!-- Left Column: Leads que precisam de ação -->
+    <text x="24" y="172" class="text-main" font-size="11" font-weight="700">Leads que precisam de ação</text>
+    <text x="205" y="172" class="text-dim" font-size="9">Prioridade operacional</text>
+
+    <!-- Row 1: Ganho sem projeto -->
+    <rect x="20" y="180" width="260" height="44" rx="5" class="panel-elev"/>
+    <rect x="28" y="187" width="84" height="14" rx="3" class="badge-green"/>
+    <text x="34" y="197" class="text-green" font-size="8" font-weight="700">GANHO · CONVERTER</text>
+    <text x="28" y="214" class="text-main" font-size="11" font-weight="600">Plataforma Maré</text>
+    <text x="128" y="214" class="text-muted" font-size="9">· Empresa 4</text>
+    <text x="218" y="206" class="text-green" font-size="9" font-weight="600">Converter →</text>
+
+    <!-- Row 2: Proposta -->
+    <line x1="24" y1="230" x2="276" y2="230" class="hairline"/>
+    <rect x="24" y="236" width="52" height="14" rx="3" class="badge-amber"/>
+    <text x="30" y="246" fill="#F5B942" font-family="sans-serif" font-size="8" font-weight="700">PROPOSTA</text>
+    <text x="84" y="247" class="text-main" font-size="11" font-weight="600">App Raiz</text>
+    <text x="140" y="247" class="text-muted" font-size="9">· Empresa 3</text>
+    <text x="235" y="247" class="text-muted" font-size="9">Abrir →</text>
+
+    <!-- Row 3: Em contato / Novo -->
+    <line x1="24" y1="258" x2="276" y2="258" class="hairline"/>
+    <rect x="24" y="264" width="58" height="14" rx="3" class="badge-neutral"/>
+    <text x="29" y="274" class="text-muted" font-size="8" font-weight="700">EM CONTATO</text>
+    <text x="90" y="275" class="text-main" font-size="11" font-weight="600">Loja Horizonte</text>
+    <text x="235" y="275" class="text-muted" font-size="9">Abrir →</text>
+
+    <!-- Vertical Divider between columns -->
+    <line x1="292" y1="160" x2="292" y2="305" class="hairline"/>
+
+    <!-- Right Column: Projetos em andamento e responsáveis -->
+    <text x="308" y="172" class="text-main" font-size="11" font-weight="700">Projetos em andamento</text>
+    <text x="475" y="172" class="text-dim" font-size="9">Com responsáveis</text>
+
+    <!-- Active Project Row 1 -->
+    <rect x="304" y="180" width="252" height="58" rx="5" class="panel-elev"/>
+    <circle cx="316" cy="194" r="3.5" fill="#00E676"/>
+    <text x="325" y="197" class="text-green" font-size="8" font-weight="700">EM ANDAMENTO</text>
+    <text x="495" y="197" class="text-green" font-size="9" font-weight="600">Ver →</text>
+    <text x="314" y="214" class="text-main" font-size="12" font-weight="700">Portal Teste</text>
+    <text x="314" y="229" class="text-muted" font-size="9">Área: <tspan class="text-main">Desenvolvimento</tspan> · Resp.: <tspan class="text-main">Clara Luz</tspan></text>
+
+    <!-- Secondary Project Row -->
+    <line x1="308" y1="248" x2="556" y2="248" class="hairline"/>
+    <text x="308" y="265" class="text-dim" font-size="8" font-weight="700">PLANEJADO</text>
+    <text x="368" y="265" class="text-main" font-size="11" font-weight="600">Plataforma Maré</text>
+    <text x="308" y="280" class="text-muted" font-size="9">Inovação · Resp.: Ana Lima</text>
+
+    <!-- Bottom Funnel Strip -->
+    <line x1="24" y1="312" x2="556" y2="312" class="hairline"/>
+    <text x="24" y="330" class="text-dim" font-size="8" font-weight="700" letter-spacing="1">FUNIL EM PERSPECTIVA</text>
+    <text x="150" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Novo</text>
+    <text x="215" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Em contato</text>
+    <text x="305" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Proposta</text>
+    <text x="380" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Ganho</text>
+    <text x="445" y="330" class="text-muted" font-size="10"><tspan font-weight="700">1</tspan> Perdido</text>
+  </g>
+
+  <!-- Connector 1 -> 2 -->
+  <path d="M 620 280 L 656 280" class="flow-arrow"/>
+  <polygon points="656,276 664,280 656,284" fill="#00E676"/>
+
+  <!-- ================================================================= -->
+  <!-- QUADRO 2: LEAD E CONVERSÃO INTEGRADA — TOP RIGHT                  -->
+  <!-- ================================================================= -->
+  <g transform="translate(664, 100)">
+    <rect width="576" height="365" rx="8" class="panel"/>
+    <!-- Top Compact Navbar -->
+    <rect x="1" y="1" width="574" height="42" rx="7" fill="#0D1210"/>
+    <line x1="0" y1="43" x2="576" y2="43" class="hairline"/>
+    <circle cx="20" cy="22" r="4" fill="#00E676"/>
+    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
+    <text x="60" y="26" class="text-muted" font-size="11">central</text>
+    <text x="130" y="26" class="text-muted" font-size="11">Visão geral</text>
+    <text x="208" y="26" class="text-main" font-size="11" font-weight="600">Leads</text>
+    <line x1="206" y1="42" x2="242" y2="42" class="hairline-accent"/>
+    <text x="255" y="26" class="text-muted" font-size="11">Projetos</text>
+    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
+    <text x="390" y="26" class="text-muted" font-size="11">Organização</text>
+    <rect x="478" y="13" width="82" height="18" rx="4" class="badge-neutral"/>
+    <text x="487" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">2 · LEAD GANHO</text>
+
+    <!-- Breadcrumb + H1 -->
+    <text x="24" y="64" class="text-dim" font-size="9">CENTRAL DO CITi / LEADS / PLATAFORMA MARÉ</text>
+    <text x="24" y="86" class="text-main" font-size="18" font-weight="700">Leads</text>
+    <line x1="24" y1="98" x2="552" y2="98" class="hairline"/>
+
+    <!-- Split Layout without Heavy Outer Boxes -->
+    <!-- Left: Editar Lead -->
+    <text x="24" y="120" class="text-main" font-size="13" font-weight="700">Editar lead</text>
+    <text x="24" y="140" class="text-muted" font-size="9">Nome da oportunidade *</text>
+    <rect x="24" y="146" width="235" height="26" rx="4" fill="#0B0E0D" stroke="#26332E"/>
+    <text x="32" y="163" class="text-main" font-size="10">Plataforma Maré</text>
+
+    <text x="24" y="188" class="text-muted" font-size="9">Organização *</text>
+    <rect x="24" y="194" width="235" height="26" rx="4" fill="#0B0E0D" stroke="#26332E"/>
+    <text x="32" y="211" class="text-main" font-size="10">Empresa exemplo 4</text>
+
+    <text x="24" y="236" class="text-muted" font-size="9">Contato *</text>
+    <rect x="24" y="242" width="112" height="26" rx="4" fill="#0B0E0D" stroke="#26332E"/>
+    <text x="30" y="259" class="text-main" font-size="9">contato4@ex...</text>
+
+    <text x="146" y="236" class="text-muted" font-size="9">Estágio</text>
+    <rect x="146" y="242" width="113" height="26" rx="4" fill="#0F291E" stroke="#00E676"/>
+    <text x="154" y="259" class="text-green" font-size="10" font-weight="700">Ganho ▾</text>
+
+    <rect x="24" y="284" width="96" height="28" rx="5" fill="#1E2824"/>
+    <text x="42" y="302" class="text-main" font-size="10" font-weight="600">Salvar lead</text>
+    <text x="134" y="302" class="text-muted" font-size="10">Voltar aos leads</text>
+
+    <!-- Vertical Hairline Divider -->
+    <line x1="280" y1="108" x2="280" y2="345" class="hairline"/>
+
+    <!-- Right: Converter em Projeto -->
+    <rect x="296" y="108" width="260" height="236" rx="6" class="panel-elev"/>
+    <text x="312" y="128" class="text-green" font-size="8" font-weight="700" letter-spacing="1.2">PASSAGEM DE BASTÃO COMERCIAL → OPERAÇÃO</text>
+    <text x="312" y="146" class="text-main" font-size="13" font-weight="700">Converter em projeto</text>
+
+    <text x="312" y="166" class="text-muted" font-size="9">Nome do projeto *</text>
+    <rect x="312" y="172" width="228" height="24" rx="4" fill="#0B0E0D" stroke="#26332E"/>
+    <text x="320" y="188" class="text-main" font-size="10">Plataforma Maré</text>
+
+    <text x="312" y="212" class="text-muted" font-size="9">Área responsável *</text>
+    <rect x="312" y="218" width="110" height="24" rx="4" fill="#0B0E0D" stroke="#26332E"/>
+    <text x="318" y="234" class="text-main" font-size="9">Desenvolvimento ▾</text>
+
+    <text x="430" y="212" class="text-muted" font-size="9">Responsável *</text>
+    <rect x="430" y="218" width="110" height="24" rx="4" fill="#0B0E0D" stroke="#26332E"/>
+    <text x="436" y="234" class="text-main" font-size="9">Clara Luz ▾</text>
+
+    <text x="312" y="258" class="text-muted" font-size="9">Outros integrantes: ☑ Ana Lima · Inovação</text>
+
+    <rect x="312" y="272" width="228" height="30" rx="5" class="btn-green"/>
+    <text x="386" y="291" class="text-dark" font-size="10" font-weight="700">Criar projeto →</text>
+    <text x="312" y="322" class="text-dim" font-size="8">Se já convertido, exibe: "Abrir projeto vinculado →"</text>
+  </g>
+
+  <!-- Connector 2 -> 3 -->
+  <path d="M 952 465 L 952 496 L 330 496 L 330 512" class="flow-arrow"/>
+  <polygon points="326,508 330,516 334,508" fill="#00E676"/>
+
+  <!-- ================================================================= -->
+  <!-- QUADRO 3: PROJETO VINCULADO — BOTTOM LEFT                         -->
+  <!-- ================================================================= -->
+  <g transform="translate(40, 516)">
+    <rect width="580" height="350" rx="8" class="panel"/>
+    <!-- Top Compact Navbar -->
+    <rect x="1" y="1" width="578" height="42" rx="7" fill="#0D1210"/>
+    <line x1="0" y1="43" x2="580" y2="43" class="hairline"/>
+    <circle cx="20" cy="22" r="4" fill="#00E676"/>
+    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
+    <text x="60" y="26" class="text-muted" font-size="11">central</text>
+    <text x="130" y="26" class="text-muted" font-size="11">Visão geral</text>
+    <text x="208" y="26" class="text-muted" font-size="11">Leads</text>
+    <text x="255" y="26" class="text-main" font-size="11" font-weight="600">Projetos</text>
+    <line x1="255" y1="42" x2="300" y2="42" class="hairline-accent"/>
+    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
+    <text x="390" y="26" class="text-muted" font-size="11">Organização</text>
+    <rect x="466" y="13" width="98" height="18" rx="4" class="badge-neutral"/>
+    <text x="475" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">3 · PROJETO ATIVO</text>
+
+    <!-- Project Header + Inline Status Control -->
+    <text x="24" y="68" class="text-green" font-size="8" font-weight="700" letter-spacing="1.4">PROJETO VINCULADO</text>
+    <text x="24" y="92" class="text-main" font-size="20" font-weight="700">Plataforma Maré</text>
+
+    <text x="390" y="68" class="text-muted" font-size="9">Status do projeto</text>
+    <rect x="390" y="74" width="166" height="28" rx="5" fill="#0F291E" stroke="#00E676"/>
+    <circle cx="404" cy="88" r="4" fill="#00E676"/>
+    <text x="414" y="92" class="text-green" font-size="11" font-weight="700">Em andamento ▾</text>
+
+    <line x1="24" y1="114" x2="556" y2="114" class="hairline"/>
+
+    <!-- Architectural Definition List (<dl>) with 1px Hairlines -->
+    <!-- Row 1: Área responsável -->
+    <text x="24" y="142" class="text-muted" font-size="10">Área responsável</text>
+    <text x="210" y="142" class="text-green" font-size="12" font-weight="700">Desenvolvimento →</text>
+    <text x="420" y="142" class="text-dim" font-size="9">Abre a área e sua equipe</text>
+    <line x1="24" y1="158" x2="556" y2="158" class="hairline"/>
+
+    <!-- Row 2: Responsável -->
+    <text x="24" y="186" class="text-muted" font-size="10">Responsável</text>
+    <circle cx="220" cy="182" r="11" fill="#17382B"/>
+    <text x="213" y="186" class="text-green" font-size="9" font-weight="700">CL</text>
+    <text x="238" y="186" class="text-main" font-size="12" font-weight="600">Clara Luz</text>
+    <text x="305" y="186" class="text-muted" font-size="10">· Desenvolvedora</text>
+    <line x1="24" y1="202" x2="556" y2="202" class="hairline"/>
+
+    <!-- Row 3: Equipe vinculada -->
+    <text x="24" y="230" class="text-muted" font-size="10">Equipe vinculada</text>
+    <text x="210" y="230" class="text-main" font-size="11" font-weight="500">Clara Luz, Ana Lima</text>
+    <line x1="24" y1="246" x2="556" y2="246" class="hairline"/>
+
+    <!-- Row 4: Lead de origem -->
+    <text x="24" y="274" class="text-muted" font-size="10">Lead de origem</text>
+    <text x="210" y="274" class="text-green" font-size="11" font-weight="600">Plataforma Maré →</text>
+    <text x="350" y="274" class="text-muted" font-size="10">(Empresa exemplo 4 · Ganho)</text>
+    <line x1="24" y1="290" x2="556" y2="290" class="hairline"/>
+
+    <text x="24" y="320" class="text-muted" font-size="10">← Todos os projetos</text>
+  </g>
+
+  <!-- Connector 3 -> 4 -->
+  <path d="M 620 690 L 656 690" class="flow-arrow"/>
+  <polygon points="656,686 664,690 656,694" fill="#00E676"/>
+
+  <!-- ================================================================= -->
+  <!-- QUADRO 4: ÁREA E PESSOAS RESPONSÁVEIS — BOTTOM RIGHT              -->
+  <!-- ================================================================= -->
+  <g transform="translate(664, 516)">
+    <rect width="576" height="350" rx="8" class="panel"/>
+    <!-- Top Compact Navbar -->
+    <rect x="1" y="1" width="574" height="42" rx="7" fill="#0D1210"/>
+    <line x1="0" y1="43" x2="576" y2="43" class="hairline"/>
+    <circle cx="20" cy="22" r="4" fill="#00E676"/>
+    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
+    <text x="60" y="26" class="text-muted" font-size="11">central</text>
+    <text x="130" y="26" class="text-muted" font-size="11">Visão geral</text>
+    <text x="208" y="26" class="text-muted" font-size="11">Leads</text>
+    <text x="255" y="26" class="text-muted" font-size="11">Projetos</text>
+    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
+    <text x="390" y="26" class="text-main" font-size="11" font-weight="600">Organização</text>
+    <line x1="390" y1="42" x2="458" y2="42" class="hairline-accent"/>
+    <rect x="468" y="13" width="92" height="18" rx="4" class="badge-neutral"/>
+    <text x="476" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">4 · ÁREA &amp; EQUIPE</text>
+
+    <!-- Area Header -->
+    <text x="24" y="68" class="text-green" font-size="8" font-weight="700" letter-spacing="1.4">ESTRUTURA ORGANIZACIONAL · ÁREA</text>
+    <text x="24" y="92" class="text-main" font-size="20" font-weight="700">Desenvolvimento</text>
+    <text x="440" y="90" class="text-muted" font-size="10">← Todas as áreas</text>
+    <line x1="24" y1="108" x2="552" y2="108" class="hairline"/>
+
+    <!-- Section: Integrantes da área -->
+    <text x="24" y="132" class="text-main" font-size="12" font-weight="700">Integrantes da área</text>
+    <rect x="24" y="142" width="528" height="44" rx="5" class="panel-elev"/>
+    <circle cx="46" cy="164" r="13" fill="#17382B"/>
+    <text x="39" y="168" class="text-green" font-size="10" font-weight="700">CL</text>
+    <text x="68" y="161" class="text-main" font-size="12" font-weight="700">Clara Luz</text>
+    <text x="68" y="176" class="text-muted" font-size="10">Desenvolvedora · Responsável por 1 projeto ativo</text>
+    <text x="440" y="168" class="text-green" font-size="10">Ver em Integrantes →</text>
+
+    <line x1="24" y1="202" x2="552" y2="202" class="hairline"/>
+
+    <!-- Section: Projetos vinculados -->
+    <text x="24" y="226" class="text-main" font-size="12" font-weight="700">Projetos vinculados</text>
+
+    <rect x="24" y="238" width="528" height="68" rx="6" class="panel-elev"/>
+    <rect x="38" y="250" width="88" height="16" rx="3" class="badge-green"/>
+    <text x="45" y="261" class="text-green" font-size="8" font-weight="700">EM ANDAMENTO</text>
+    <text x="138" y="262" class="text-main" font-size="13" font-weight="700">Plataforma Maré</text>
+    <text x="462" y="262" class="text-green" font-size="10" font-weight="600">Ver projeto →</text>
+    <text x="38" y="286" class="text-muted" font-size="10">Desenvolvimento · Clara Luz · Equipe: Clara Luz, Ana Lima</text>
+  </g>
+</svg>
