@@ -1,3 +1,4 @@
+import {leadFunnel} from './leadFunnelService.js';
 import {stages, statuses, phases, demoProjects} from '../domain.js';
 import {createStateRepository} from '../repositories/stateRepository.js';
 
@@ -38,7 +39,7 @@ export function createLeadProjectService(repository = createStateRepository()) {
     return state;
   }
   return {
-    organizationAtoms,
+    leadFunnel, organizationAtoms,
     saveMember: (state, data, id) => persist(saveMember(state, data, id)),
     filterProjects, calculateAverageMetrics, valueBlocks,
     addValueDemo: state => persist(addValueDemo(state)),

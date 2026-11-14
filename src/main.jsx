@@ -1,3 +1,4 @@
+import {LeadFunnel} from './views/LeadFunnel.jsx';
 import React,{useState,useEffect,useLayoutEffect} from 'react';
 import {createRoot} from 'react-dom/client';
 import {stages,statuses,metrics,actionableLeads} from './domain.js';
@@ -18,7 +19,7 @@ const nav=[['/leads','Leads'],['/projetos','Projetos'],['/','Visão geral'],['/o
 const go=path=>{location.hash=path};
 
 function App({logout,sessionError}){
- const {saveMember,organizationAtoms,state,storageError,message,saveTick,saveLead,convert,changeStatus,changePhase,addDemo,addValueDemo,valueBlocks,filterProjects,averageMetrics}=useCentralController();
+ const {leadFunnel,saveMember,organizationAtoms,state,storageError,message,saveTick,saveLead,convert,changeStatus,changePhase,addDemo,addValueDemo,valueBlocks,filterProjects,averageMetrics}=useCentralController();
  const [route,setRoute]=useState(location.hash.slice(1)||'/');
  const [search,setSearch]=useState('');
  useEffect(()=>{const fn=()=>{setRoute(previous=>{const next=location.hash.slice(1)||'/';if(previous.split('?')[0]!==next.split('?')[0])setSearch('');return next})};addEventListener('hashchange',fn);addEventListener('popstate',fn);return()=>{removeEventListener('hashchange',fn);removeEventListener('popstate',fn)}},[]);
@@ -43,7 +44,7 @@ function App({logout,sessionError}){
  if(parts[2]==='novo')content=<LeadForm key="new" saveLead={saveLead}/>;
  else if(lead)content=<><section className="lead-values"><p>Valor da oportunidade: <strong>{valueBlocks('leads').items.find(r=>r.id===lead.id)?.label} · {valueBlocks('leads').items.find(r=>r.id===lead.id)?.value?.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})||'A definir'}</strong> · Estimado na origem: {lead.estimatedValue?.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})||'A definir'}</p></section><p className="lead-context">Contratante: <strong>{lead.company}</strong> · {lead.clientSegment || 'Não classificado'}{lead.projectId&&<> · Projeto: <strong>{state.projects.find(p=>p.id===lead.projectId)?.name}</strong></>}</p><div className="split-panel"><LeadForm key={lead.id} lead={lead} saveLead={saveLead}/>{lead.projectId?<Magnetic href={'#/projetos/'+lead.projectId+(selectionQuery?'?'+selectionQuery:'')}>Abrir projeto vinculado →</Magnetic>:lead.stage==='Ganho'?<Conversion key={'convert'+lead.id} lead={lead} state={state} convert={convert}/>:<p>Marque o lead como Ganho para converter em projeto.</p>}</div></>;
  else if(parts[2])content=<p>Lead não encontrado. <a href="#/leads">Voltar</a></p>;
- else {const filter=params.get('estagio')||'';content=<><div className="toolbar"><label>Buscar leads<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nome, organização ou contato"/></label><label>Estágio<select value={filter} onChange={e=>setFilter('estagio',e.target.value)}><option value="">Todos</option><option value="abertos">Abertos</option>{stages.map(s=><option key={s}>{s}</option>)}</select></label><Magnetic href="#/leads/novo">Novo lead +</Magnetic></div>{comparison}<ProjectFilters state={state} filters={filters} setFilter={setFilter}/>{blocks('leads')}</>}
+ else {const filter=params.get('estagio')||'';content=<><div className="toolbar"><label>Buscar leads<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nome, organização ou contato"/></label><label>Estágio<select value={filter} onChange={e=>setFilter('estagio',e.target.value)}><option value="">Todos</option><option value="abertos">Abertos</option>{stages.map(s=><option key={s}>{s}</option>)}</select></label><Magnetic href="#/leads/novo">Novo lead +</Magnetic></div>{comparison}<ProjectFilters state={state} filters={filters} setFilter={setFilter}/><LeadFunnel model={leadFunnel({...filters,search,stage:filter})} selected={filter} onSelect={v=>setFilter('estagio',v)} query={selectionQuery}/><details open><summary>Comparar valores dos leads</summary>{blocks('leads')}</details></>}
 
  }
  else if(parts[1]==='projetos'){

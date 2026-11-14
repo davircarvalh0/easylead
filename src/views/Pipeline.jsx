@@ -13,7 +13,7 @@ export function SceneEntry(){
  return <SceneBoundary><Suspense fallback={staticJourney}><Scene/></Suspense></SceneBoundary>;
 }
 export function ProjectFilters({state,filters,setFilter,hideArea=false}){
- const segments=[...new Set([...clientSegments,...state.projects.map(p=>p.clientSegment).filter(Boolean)])];
+ const segments=[...new Set([...clientSegments,...state.leads.map(l=>l.clientSegment).filter(Boolean),...state.projects.map(p=>p.clientSegment).filter(Boolean)])];
  return <div className="toolbar glass-filters" aria-label="Filtros da esteira">
  <label>Segmento da contratante<select value={filters.segment} onChange={e=>setFilter('segmento',e.target.value)}><option value="">Todos os segmentos</option>{segments.map(s=><option key={s}>{s}</option>)}</select></label>
  <label>Fase / Tipo<select value={filters.phase} onChange={e=>setFilter('fase',e.target.value)}><option value="">Todas as fases</option><option>Discovery</option><option>Delivery</option></select></label>

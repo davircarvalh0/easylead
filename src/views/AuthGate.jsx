@@ -57,7 +57,7 @@ export function AuthGate({children}) {
   return <>
     <div className={`app-entry ${entering ? "app-entering" : ""}`} inert={entering ? true : undefined}>{children({logout, sessionError: error})}</div>
     {entering && <div className="brand-entry" role="dialog" aria-modal="true" aria-label="Entrando no CITi/all" onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();skip.current?.focus();}}}>
-      <LoginPassage/><Brand/><p>Do primeiro contato à entrega.</p>
+      <LoginPassage/><Brand/>
       <button ref={skip} type="button" className="quiet-button" onClick={finish}>Pular abertura</button>
     </div>}
   </>;
