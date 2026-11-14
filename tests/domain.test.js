@@ -3,6 +3,50 @@ import assert from 'node:assert/strict';
 import {seed,metrics} from '../src/domain.js';
 import {saveLead,convert,changeStatus,createLeadProjectService} from '../src/services/leadProjectService.js';
 import {readState,STORAGE_KEY,createStateRepository} from '../src/repositories/stateRepository.js';
+import {addDemo,calculateAverageMetrics,filterProjects,changePhase,isEligibleForAverage} from '../src/services/leadProjectService.js';
+
+test('médias aplicam interseção dos filtros, duas dimensões e exclusões',()=>{
+ const state=addDemo(seed);
+ const result=calculateAverageMetrics(state);
+ assert.equal(result.average,54000);assert.equal(result.eligibleCount,3);assert.equal(result.total,5);
+ assert.equal(result.withoutValue,1);assert.equal(result.withoutContract,1);
+ const segment=calculateAverageMetrics(state,{},'segment');
+ assert.equal(segment.groups.find(g=>g.label==='Finanças & Pagamentos').average,63000);
+ assert.equal(result.groups.find(g=>g.key==='a3').average,36000);
+ const filters={segment:'Finanças & Pagamentos',phase:'Discovery',area:'a0'};
+ assert.equal(filterProjects(state,filters).length,1);
+ assert.equal(calculateAverageMetrics(state,filters).average,72000);
+ assert.equal(filterProjects(state,{...filters,area:'a2'}).length,0);
+ const empty=calculateAverageMetrics(state,{segment:'Saúde & Biotech'});
+ assert.equal(empty.average,null);assert.equal(empty.eligibleCount,0);assert.equal(empty.total,1);
+ assert.equal(calculateAverageMetrics(state,{phase:'inexistente'}).average,null);
+ for(const value of [null,undefined,0,-1,NaN,Infinity,'54000',true]) assert.equal(isEligibleForAverage({contractStatus:'Contratado',contractValue:value}),false);
+ assert.equal(isEligibleForAverage({contractStatus:'Sem contrato',contractValue:100}),false);
+ assert.deepEqual(addDemo(state),state);
+});
+
+test('fase evolui no mesmo projeto sem duplicar contrato ou vínculo',()=>{
+ const state=addDemo(seed),p=state.projects.find(p=>p.phase==='Discovery');
+ const next=changePhase(state,p.id),updated=next.projects.find(x=>x.id===p.id);
+ assert.equal(updated.phase,'Delivery');assert.equal(updated.originPhase,'Discovery');
+ assert.equal(updated.squadId,p.squadId);assert.equal(updated.leadId,p.leadId);
+ assert.equal(next.projects.length,state.projects.length);assert.equal(calculateAverageMetrics(next).average,54000);
+ assert.equal(p.phase,'Discovery');assert.throws(()=>changePhase(next,p.id));
+ for(const value of [-1,0,Infinity,'inválido',true]) assert.throws(()=>convert(seed,'l3',{name:'X',areaId:'a0',ownerId:'m0',contractValue:value}));
+});
+
+test('repository hidrata projeto anterior sem inventar valor nem perder extensões',()=>{
+ const previous={...structuredClone(seed),custom:'preservar',projects:[{id:'old',name:'Antigo',leadId:'l3',areaId:'a2',ownerId:'m2',memberIds:['m2'],status:'Em andamento',custom:42}]};
+ delete previous.squads;previous.leads.forEach(l=>delete l.clientSegment);
+ const migrated=readState({getItem:()=>JSON.stringify(previous)});
+ assert.equal(migrated.projects[0].id,'old');assert.equal(migrated.projects[0].phase,'Delivery');
+ assert.equal(migrated.projects[0].contractValue,null);assert.equal(migrated.projects[0].custom,42);
+ assert.equal(migrated.leads[3].clientSegment,'Não classificado');assert.equal(migrated.custom,'preservar');
+ assert.equal(migrated.squads[0].id,migrated.projects[0].squadId);
+ assert.equal(calculateAverageMetrics(migrated).average,null);
+ assert.deepEqual(readState({getItem:()=>JSON.stringify(migrated)}),migrated);
+ assert.equal(previous.projects[0].phase,undefined);
+});
 test('conversão exige ganho, área e responsável coerentes; mantém 1:1 e trava estágio',()=>{
  const s=structuredClone(seed);
  assert.throws(()=>convert(s,'l0',{name:'X',areaId:'a0',ownerId:'m0'}));

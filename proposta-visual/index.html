@@ -3,16 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Proposta Visual · Redesign Central do CITi (Desktop &amp; Mobile)</title>
+    <title>Proposta Visual · Esteira, Médias, Liquid Glass &amp; 3D · Central do CITi</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="studio-bar" role="region" aria-label="Controles da prévia visual">
+    <div class="studio-bar" role="region" aria-label="Controles da proposta visual">
       <div class="studio-bar-left">
-        <span class="studio-pill">Proposta Visual · Etapa 1 (Produto)</span>
-        <span>Tema Grafite &amp; Verde CITi · Sem sidebar fixa · Composição por divisórias</span>
+        <span class="studio-pill">Produto · Proposta para Validação (#9)</span>
+        <span class="studio-subtitle">Percurso Lead → Projeto → Squad → Subárea → Integrantes · Liquid Glass · Cena 3D + Fallback Estático</span>
       </div>
       <div class="studio-controls">
+        <button id="btn-3d-mode" class="studio-btn" type="button" aria-pressed="true" title="Alternar entre cena 3D interativa e versão estática">
+          Cena 3D: Ativa
+        </button>
         <button id="btn-desktop" class="studio-btn" type="button" aria-pressed="true">Desktop (1280px)</button>
         <button id="btn-mobile" class="studio-btn" type="button" aria-pressed="false">Celular (360px)</button>
       </div>
@@ -20,41 +23,57 @@
 
     <div id="viewport-stage" class="viewport-stage">
       <div class="app-shell">
-        <header class="topbar">
+        <header class="topbar glass-surface">
           <div class="topbar-inner">
-            <a href="#inicio" class="brand" onclick="event.preventDefault()">
-              <span class="brand-dot" aria-hidden="true"></span>
-              CITi <span>central</span>
+            <a href="#leads" class="brand" id="brand-link" aria-label="Central do CITi — Início da esteira">
+              <img src="assets/logo-citi-simbolo.png" alt="Logo oficial CITi" class="brand-logo" />
+              <span class="brand-divider" aria-hidden="true"></span>
+              <span class="brand-product">central</span>
             </a>
-            <nav class="topnav" aria-label="Navegação principal">
-              <button type="button" data-route="/" data-step="inicio" aria-current="page">Visão geral</button>
-              <button type="button" data-route="/leads" data-step="lead">Leads</button>
-              <button type="button" data-route="/projetos" data-step="projeto">Projetos</button>
-              <button type="button" data-route="/integrantes" data-step="area">Integrantes</button>
-              <button type="button" data-route="/organizacao" data-step="area">Organização</button>
+
+            <nav class="topnav glass-pill-nav" aria-label="Navegação principal (iniciando em Leads e Projetos)">
+              <button type="button" data-step="leads" aria-current="page">
+                <span class="nav-index">01</span> Leads
+              </button>
+              <button type="button" data-step="projetos">
+                <span class="nav-index">02</span> Projetos &amp; Squads
+              </button>
+              <button type="button" data-step="subareas">
+                <span class="nav-index">03</span> Subáreas
+              </button>
+              <button type="button" data-step="integrantes">
+                <span class="nav-index">04</span> Integrantes
+              </button>
+              <button type="button" data-step="medias">
+                <span class="nav-index">∑</span> Esteira &amp; Médias
+              </button>
             </nav>
+
             <div class="topbar-meta">
-              <span class="demo-tag">DEMO LOCAL</span>
+              <span class="demo-tag">PROPOSTA VISUAL</span>
             </div>
           </div>
         </header>
 
         <main id="conteudo">
-          <div class="journey-strip" aria-label="Percurso integrado da proposta">
-            <div class="journey-steps">
-              <button type="button" class="journey-step active" data-step="inicio">1. Página inicial</button>
-              <span class="journey-arrow" aria-hidden="true">→</span>
-              <button type="button" class="journey-step" data-step="lead">2. Lead (conversão)</button>
-              <span class="journey-arrow" aria-hidden="true">→</span>
-              <button type="button" class="journey-step" data-step="projeto">3. Projeto vinculado</button>
-              <span class="journey-arrow" aria-hidden="true">→</span>
-              <button type="button" class="journey-step" data-step="area">4. Área e responsáveis</button>
-            </div>
-            <span style="color:var(--text-muted);font-size:11px">Clique nas etapas ou nas linhas abaixo para percorrer</span>
-          </div>
+          <!-- Interactive 3D / Static Showcase of the CITi Pipeline -->
+          <section id="pipeline-showcase" class="showcase-shell" aria-label="Apresentação da esteira do CITi"></section>
 
-          <div id="stage-content"></div>
+          <!-- Liquid Glass Commercial & Operational Filter Bar + Average Value Summary -->
+          <section id="glass-filter-bar" class="glass-filter-shell" aria-label="Filtros combinados e visão de valor médio"></section>
+
+          <!-- Main Stage View (Leads -> Projetos -> Squad -> Subárea -> Integrantes / Médias) -->
+          <section id="stage-content" class="stage-content" aria-live="polite"></section>
         </main>
+
+        <footer class="app-footer">
+          <div>
+            <strong>Central do CITi · Proposta de Produto (#9)</strong> — Logo extraída de <code>DesafioDeInovaçãoPS.pdf</code> (solicitação de SVG vetorial documentada caso deseje substituir).
+          </div>
+          <div>
+            Distinção explícita entre <span class="legend-chip confirmed">Fonte confirmada</span>, <span class="legend-chip hypothesis">Hipótese da demo</span> e <span class="legend-chip decision">Decisão para validação</span>.
+          </div>
+        </footer>
       </div>
     </div>
 

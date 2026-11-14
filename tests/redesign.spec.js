@@ -12,6 +12,8 @@ test('prioridades preservam indicador e excluem perdas e conversões', () => {
 test('cursor move apenas pintura; clique na borda, saída e movimento reduzido', async({page}) => {
   await page.goto('/');
   const button=page.getByRole('link',{name:'Cadastrar oportunidade'});
+  await expect(page.getByRole('heading',{name:'Cada etapa, uma conexão.'})).toBeVisible();
+  await button.scrollIntoViewIfNeeded();
   await page.evaluate(async()=>{await document.fonts.ready; await Promise.all(document.getAnimations().map(a=>a.finished));});
   const box=await button.boundingBox();
   await page.mouse.move(box.x+box.width-2,box.y+5);
@@ -22,7 +24,9 @@ test('cursor move apenas pintura; clique na borda, saída e movimento reduzido',
   await page.mouse.move(box.x+box.width-2,box.y+5);
   await page.emulateMedia({reducedMotion:'reduce'});
   await expect(button.locator('.btn-inner')).toHaveCSS('transform','none');
-  await page.mouse.click(box.x+box.width-1,box.y+box.height/2);
+  await button.scrollIntoViewIfNeeded();
+  const reducedBox=await button.boundingBox();
+  await page.mouse.click(reducedBox.x+reducedBox.width-1,reducedBox.y+reducedBox.height/2);
   await expect(page.getByRole('heading',{name:'Novo lead'})).toBeVisible();
   await expect(page.getByRole('heading',{level:1})).toBeFocused();
   await page.keyboard.press('Tab');

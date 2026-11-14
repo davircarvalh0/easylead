@@ -1,332 +1,266 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" width="1280" height="900" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 960" width="1280" height="960" role="img" aria-label="Prancha Visual Desktop 1280px — Percurso Lead, Projeto, Squad, Subárea, Integrantes, Liquid Glass e Médias">
   <defs>
-    <style>
-      .bg { fill: #0B0E0D; }
-      .panel { fill: #111614; stroke: #1E2824; stroke-width: 1; }
-      .panel-elev { fill: #151C19; stroke: #23302B; stroke-width: 1; }
-      .hairline { stroke: #1E2824; stroke-width: 1; }
-      .hairline-accent { stroke: #00E676; stroke-width: 2; }
-      .text-main { fill: #F1F5F3; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
-      .text-muted { fill: #95A59E; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
-      .text-dim { fill: #64756E; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
-      .text-green { fill: #00E676; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
-      .text-dark { fill: #05140C; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
-      .btn-green { fill: #00E676; }
-      .badge-green { fill: #0F291E; stroke: #1E4D38; stroke-width: 1; }
-      .badge-amber { fill: #261F10; stroke: #4D3D1B; stroke-width: 1; }
-      .badge-neutral { fill: #171F1C; stroke: #26332E; stroke-width: 1; }
-      .flow-arrow { stroke: #00E676; stroke-width: 1.5; stroke-dasharray: 4 4; }
-    </style>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0B0E0D"/>
+      <stop offset="100%" stop-color="#090C0B"/>
+    </linearGradient>
+    <radialGradient id="emeraldGlow" cx="50%" cy="0%" r="60%">
+      <stop offset="0%" stop-color="#00E676" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#00E676" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glassSurface" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#19241F" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#0E1412" stop-opacity="0.76"/>
+    </linearGradient>
+    <linearGradient id="glassActive" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00E676" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#0F291E" stop-opacity="0.88"/>
+    </linearGradient>
+    <linearGradient id="barFill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00A859"/>
+      <stop offset="100%" stop-color="#00E676"/>
+    </linearGradient>
   </defs>
 
-  <!-- Canvas Background -->
-  <rect width="1280" height="900" class="bg"/>
+  <!-- Canvas -->
+  <rect width="1280" height="960" fill="url(#bgGrad)"/>
+  <rect width="1280" height="420" fill="url(#emeraldGlow)"/>
 
-  <!-- Board Header -->
-  <text x="40" y="38" class="text-green" font-size="11" font-weight="700" letter-spacing="1.6">PROPOSTA VISUAL · DESKTOP (1280PX) · TEMA GRAFITE &amp; VERDE CITi</text>
-  <text x="40" y="64" class="text-main" font-size="22" font-weight="700">Percurso Integrado: Página Inicial → Lead → Projeto Vinculado → Área e Pessoas Responsáveis</text>
-  <text x="920" y="58" class="text-muted" font-size="12">Navegação superior compacta · Sem sidebar · Divisórias 1px</text>
-  <line x1="40" y1="80" x2="1240" y2="80" class="hairline"/>
+  <!-- Topbar (Liquid Glass + Logo Oficial CITi + Navegação iniciando em Leads -> Projetos) -->
+  <rect x="0" y="0" width="1280" height="62" fill="#0E1412" opacity="0.92"/>
+  <line x1="0" y1="62" x2="1280" y2="62" stroke="#1E2824" stroke-width="1"/>
 
-  <!-- ================================================================= -->
-  <!-- QUADRO 1: PÁGINA INICIAL (VISÃO GERAL) — TOP LEFT                 -->
-  <!-- ================================================================= -->
-  <g transform="translate(40, 100)">
-    <rect width="580" height="365" rx="8" class="panel"/>
-    <!-- Top Compact Navbar -->
-    <rect x="1" y="1" width="578" height="42" rx="7" fill="#0D1210"/>
-    <line x1="0" y1="43" x2="580" y2="43" class="hairline"/>
-    <circle cx="20" cy="22" r="4" fill="#00E676"/>
-    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
-    <text x="60" y="26" class="text-muted" font-size="11">central</text>
-
-    <!-- Nav Items -->
-    <text x="130" y="26" class="text-main" font-size="11" font-weight="600">Visão geral</text>
-    <line x1="130" y1="42" x2="190" y2="42" class="hairline-accent"/>
-    <text x="208" y="26" class="text-muted" font-size="11">Leads</text>
-    <text x="255" y="26" class="text-muted" font-size="11">Projetos</text>
-    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
-    <text x="390" y="26" class="text-muted" font-size="11">Organização</text>
-    <rect x="492" y="13" width="72" height="18" rx="4" class="badge-neutral"/>
-    <text x="502" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">1 · INÍCIO</text>
-
-    <!-- Compact Hero + CTA -->
-    <text x="24" y="66" class="text-green" font-size="8" font-weight="700" letter-spacing="1.4">DO PRIMEIRO CONTATO À ENTREGA</text>
-    <text x="24" y="86" class="text-main" font-size="16" font-weight="700">O trabalho conectado. A equipe por perto.</text>
-    <rect x="412" y="62" width="144" height="28" rx="6" class="btn-green"/>
-    <text x="424" y="80" class="text-dark" font-size="10" font-weight="700">Cadastrar oportunidade ↗</text>
-    <line x1="24" y1="100" x2="556" y2="100" class="hairline"/>
-
-    <!-- Inline Metrics Bar (No Boxes, Hairline Grid) -->
-    <text x="24" y="118" class="text-muted" font-size="9">Leads abertos</text>
-    <text x="24" y="138" class="text-main" font-size="18" font-weight="700">3</text>
-    <text x="44" y="137" class="text-green" font-size="9">Consultar →</text>
-
-    <line x1="155" y1="106" x2="155" y2="146" class="hairline"/>
-    <text x="170" y="118" class="text-muted" font-size="9">Projetos em andamento</text>
-    <text x="170" y="138" class="text-green" font-size="18" font-weight="700">1</text>
-    <text x="190" y="137" class="text-green" font-size="9">Consultar →</text>
-
-    <line x1="315" y1="106" x2="315" y2="146" class="hairline"/>
-    <text x="330" y="118" class="text-muted" font-size="9">Leads ganhos</text>
-    <text x="330" y="138" class="text-main" font-size="18" font-weight="700">1</text>
-
-    <line x1="440" y1="106" x2="440" y2="146" class="hairline"/>
-    <text x="455" y="118" class="text-muted" font-size="9">Total de projetos</text>
-    <text x="455" y="138" class="text-main" font-size="18" font-weight="700">1</text>
-    <line x1="24" y1="152" x2="556" y2="152" class="hairline"/>
-
-    <!-- Two Integrated Priority Columns: Leads needing action & Active Projects -->
-    <!-- Left Column: Leads que precisam de ação -->
-    <text x="24" y="172" class="text-main" font-size="11" font-weight="700">Leads que precisam de ação</text>
-    <text x="205" y="172" class="text-dim" font-size="9">Prioridade operacional</text>
-
-    <!-- Row 1: Ganho sem projeto -->
-    <rect x="20" y="180" width="260" height="44" rx="5" class="panel-elev"/>
-    <rect x="28" y="187" width="84" height="14" rx="3" class="badge-green"/>
-    <text x="34" y="197" class="text-green" font-size="8" font-weight="700">GANHO · CONVERTER</text>
-    <text x="28" y="214" class="text-main" font-size="11" font-weight="600">Plataforma Maré</text>
-    <text x="128" y="214" class="text-muted" font-size="9">· Empresa 4</text>
-    <text x="218" y="206" class="text-green" font-size="9" font-weight="600">Converter →</text>
-
-    <!-- Row 2: Proposta -->
-    <line x1="24" y1="230" x2="276" y2="230" class="hairline"/>
-    <rect x="24" y="236" width="52" height="14" rx="3" class="badge-amber"/>
-    <text x="30" y="246" fill="#F5B942" font-family="sans-serif" font-size="8" font-weight="700">PROPOSTA</text>
-    <text x="84" y="247" class="text-main" font-size="11" font-weight="600">App Raiz</text>
-    <text x="140" y="247" class="text-muted" font-size="9">· Empresa 3</text>
-    <text x="235" y="247" class="text-muted" font-size="9">Abrir →</text>
-
-    <!-- Row 3: Em contato / Novo -->
-    <line x1="24" y1="258" x2="276" y2="258" class="hairline"/>
-    <rect x="24" y="264" width="58" height="14" rx="3" class="badge-neutral"/>
-    <text x="29" y="274" class="text-muted" font-size="8" font-weight="700">EM CONTATO</text>
-    <text x="90" y="275" class="text-main" font-size="11" font-weight="600">Loja Horizonte</text>
-    <text x="235" y="275" class="text-muted" font-size="9">Abrir →</text>
-
-    <!-- Vertical Divider between columns -->
-    <line x1="292" y1="160" x2="292" y2="305" class="hairline"/>
-
-    <!-- Right Column: Projetos em andamento e responsáveis -->
-    <text x="308" y="172" class="text-main" font-size="11" font-weight="700">Projetos em andamento</text>
-    <text x="475" y="172" class="text-dim" font-size="9">Com responsáveis</text>
-
-    <!-- Active Project Row 1 -->
-    <rect x="304" y="180" width="252" height="58" rx="5" class="panel-elev"/>
-    <circle cx="316" cy="194" r="3.5" fill="#00E676"/>
-    <text x="325" y="197" class="text-green" font-size="8" font-weight="700">EM ANDAMENTO</text>
-    <text x="495" y="197" class="text-green" font-size="9" font-weight="600">Ver →</text>
-    <text x="314" y="214" class="text-main" font-size="12" font-weight="700">Portal Teste</text>
-    <text x="314" y="229" class="text-muted" font-size="9">Área: <tspan class="text-main">Desenvolvimento</tspan> · Resp.: <tspan class="text-main">Clara Luz</tspan></text>
-
-    <!-- Secondary Project Row -->
-    <line x1="308" y1="248" x2="556" y2="248" class="hairline"/>
-    <text x="308" y="265" class="text-dim" font-size="8" font-weight="700">PLANEJADO</text>
-    <text x="368" y="265" class="text-main" font-size="11" font-weight="600">Plataforma Maré</text>
-    <text x="308" y="280" class="text-muted" font-size="9">Inovação · Resp.: Ana Lima</text>
-
-    <!-- Bottom Funnel Strip -->
-    <line x1="24" y1="312" x2="556" y2="312" class="hairline"/>
-    <text x="24" y="330" class="text-dim" font-size="8" font-weight="700" letter-spacing="1">FUNIL EM PERSPECTIVA</text>
-    <text x="150" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Novo</text>
-    <text x="215" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Em contato</text>
-    <text x="305" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Proposta</text>
-    <text x="380" y="330" class="text-main" font-size="10"><tspan class="text-green" font-weight="700">1</tspan> Ganho</text>
-    <text x="445" y="330" class="text-muted" font-size="10"><tspan font-weight="700">1</tspan> Perdido</text>
+  <!-- Official CITi Logo Mark Representation (from DesafioDeInovaçãoPS.pdf) -->
+  <g transform="translate(48, 15)">
+    <rect x="0" y="0" width="76" height="32" rx="8" fill="#0F291E" stroke="#00E676" stroke-width="1.5"/>
+    <text x="38" y="22" text-anchor="middle" font-family="DM Sans, system-ui, sans-serif" font-size="20" font-weight="700" font-style="italic" fill="#00E676">citi</text>
+    <line x1="88" y1="7" x2="88" y2="25" stroke="#2D3D36" stroke-width="1"/>
+    <text x="98" y="21" font-family="DM Sans, system-ui, sans-serif" font-size="13" font-weight="600" fill="#A3B3AC">central</text>
   </g>
 
-  <!-- Connector 1 -> 2 -->
-  <path d="M 620 280 L 656 280" class="flow-arrow"/>
-  <polygon points="656,276 664,280 656,284" fill="#00E676"/>
-
-  <!-- ================================================================= -->
-  <!-- QUADRO 2: LEAD E CONVERSÃO INTEGRADA — TOP RIGHT                  -->
-  <!-- ================================================================= -->
-  <g transform="translate(664, 100)">
-    <rect width="576" height="365" rx="8" class="panel"/>
-    <!-- Top Compact Navbar -->
-    <rect x="1" y="1" width="574" height="42" rx="7" fill="#0D1210"/>
-    <line x1="0" y1="43" x2="576" y2="43" class="hairline"/>
-    <circle cx="20" cy="22" r="4" fill="#00E676"/>
-    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
-    <text x="60" y="26" class="text-muted" font-size="11">central</text>
-    <text x="130" y="26" class="text-muted" font-size="11">Visão geral</text>
-    <text x="208" y="26" class="text-main" font-size="11" font-weight="600">Leads</text>
-    <line x1="206" y1="42" x2="242" y2="42" class="hairline-accent"/>
-    <text x="255" y="26" class="text-muted" font-size="11">Projetos</text>
-    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
-    <text x="390" y="26" class="text-muted" font-size="11">Organização</text>
-    <rect x="478" y="13" width="82" height="18" rx="4" class="badge-neutral"/>
-    <text x="487" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">2 · LEAD GANHO</text>
-
-    <!-- Breadcrumb + H1 -->
-    <text x="24" y="64" class="text-dim" font-size="9">CENTRAL DO CITi / LEADS / PLATAFORMA MARÉ</text>
-    <text x="24" y="86" class="text-main" font-size="18" font-weight="700">Leads</text>
-    <line x1="24" y1="98" x2="552" y2="98" class="hairline"/>
-
-    <!-- Split Layout without Heavy Outer Boxes -->
-    <!-- Left: Editar Lead -->
-    <text x="24" y="120" class="text-main" font-size="13" font-weight="700">Editar lead</text>
-    <text x="24" y="140" class="text-muted" font-size="9">Nome da oportunidade *</text>
-    <rect x="24" y="146" width="235" height="26" rx="4" fill="#0B0E0D" stroke="#26332E"/>
-    <text x="32" y="163" class="text-main" font-size="10">Plataforma Maré</text>
-
-    <text x="24" y="188" class="text-muted" font-size="9">Organização *</text>
-    <rect x="24" y="194" width="235" height="26" rx="4" fill="#0B0E0D" stroke="#26332E"/>
-    <text x="32" y="211" class="text-main" font-size="10">Empresa exemplo 4</text>
-
-    <text x="24" y="236" class="text-muted" font-size="9">Contato *</text>
-    <rect x="24" y="242" width="112" height="26" rx="4" fill="#0B0E0D" stroke="#26332E"/>
-    <text x="30" y="259" class="text-main" font-size="9">contato4@ex...</text>
-
-    <text x="146" y="236" class="text-muted" font-size="9">Estágio</text>
-    <rect x="146" y="242" width="113" height="26" rx="4" fill="#0F291E" stroke="#00E676"/>
-    <text x="154" y="259" class="text-green" font-size="10" font-weight="700">Ganho ▾</text>
-
-    <rect x="24" y="284" width="96" height="28" rx="5" fill="#1E2824"/>
-    <text x="42" y="302" class="text-main" font-size="10" font-weight="600">Salvar lead</text>
-    <text x="134" y="302" class="text-muted" font-size="10">Voltar aos leads</text>
-
-    <!-- Vertical Hairline Divider -->
-    <line x1="280" y1="108" x2="280" y2="345" class="hairline"/>
-
-    <!-- Right: Converter em Projeto -->
-    <rect x="296" y="108" width="260" height="236" rx="6" class="panel-elev"/>
-    <text x="312" y="128" class="text-green" font-size="8" font-weight="700" letter-spacing="1.2">PASSAGEM DE BASTÃO COMERCIAL → OPERAÇÃO</text>
-    <text x="312" y="146" class="text-main" font-size="13" font-weight="700">Converter em projeto</text>
-
-    <text x="312" y="166" class="text-muted" font-size="9">Nome do projeto *</text>
-    <rect x="312" y="172" width="228" height="24" rx="4" fill="#0B0E0D" stroke="#26332E"/>
-    <text x="320" y="188" class="text-main" font-size="10">Plataforma Maré</text>
-
-    <text x="312" y="212" class="text-muted" font-size="9">Área responsável *</text>
-    <rect x="312" y="218" width="110" height="24" rx="4" fill="#0B0E0D" stroke="#26332E"/>
-    <text x="318" y="234" class="text-main" font-size="9">Desenvolvimento ▾</text>
-
-    <text x="430" y="212" class="text-muted" font-size="9">Responsável *</text>
-    <rect x="430" y="218" width="110" height="24" rx="4" fill="#0B0E0D" stroke="#26332E"/>
-    <text x="436" y="234" class="text-main" font-size="9">Clara Luz ▾</text>
-
-    <text x="312" y="258" class="text-muted" font-size="9">Outros integrantes: ☑ Ana Lima · Inovação</text>
-
-    <rect x="312" y="272" width="228" height="30" rx="5" class="btn-green"/>
-    <text x="386" y="291" class="text-dark" font-size="10" font-weight="700">Criar projeto →</text>
-    <text x="312" y="322" class="text-dim" font-size="8">Se já convertido, exibe: "Abrir projeto vinculado →"</text>
+  <!-- Liquid Glass Top Navigation Pills (Starts with 01 Leads, 02 Projetos & Squads) -->
+  <g transform="translate(285, 11)">
+    <rect x="0" y="0" width="690" height="40" rx="11" fill="#121916" stroke="#2A3832" stroke-width="1"/>
+    <rect x="6" y="5" width="112" height="30" rx="7" fill="url(#glassActive)" stroke="#00E676" stroke-width="1"/>
+    <text x="62" y="24" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#F1F5F3">01 Leads</text>
+    <text x="195" y="24" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="600" fill="#F1F5F3">02 Projetos &amp; Squads</text>
+    <text x="345" y="24" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="500" fill="#A3B3AC">03 Subáreas CITi</text>
+    <text x="480" y="24" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="500" fill="#A3B3AC">04 Integrantes</text>
+    <text x="615" y="24" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="12" font-weight="500" fill="#00E676">∑ Esteira &amp; Médias</text>
   </g>
 
-  <!-- Connector 2 -> 3 -->
-  <path d="M 952 465 L 952 496 L 330 496 L 330 512" class="flow-arrow"/>
-  <polygon points="326,508 330,516 334,508" fill="#00E676"/>
+  <rect x="1110" y="18" width="122" height="26" rx="5" fill="#0F291E" stroke="#1E4D38"/>
+  <text x="1171" y="35" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676" letter-spacing="0.8">PROPOSTA #9</text>
 
-  <!-- ================================================================= -->
-  <!-- QUADRO 3: PROJETO VINCULADO — BOTTOM LEFT                         -->
-  <!-- ================================================================= -->
-  <g transform="translate(40, 516)">
-    <rect width="580" height="350" rx="8" class="panel"/>
-    <!-- Top Compact Navbar -->
-    <rect x="1" y="1" width="578" height="42" rx="7" fill="#0D1210"/>
-    <line x1="0" y1="43" x2="580" y2="43" class="hairline"/>
-    <circle cx="20" cy="22" r="4" fill="#00E676"/>
-    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
-    <text x="60" y="26" class="text-muted" font-size="11">central</text>
-    <text x="130" y="26" class="text-muted" font-size="11">Visão geral</text>
-    <text x="208" y="26" class="text-muted" font-size="11">Leads</text>
-    <text x="255" y="26" class="text-main" font-size="11" font-weight="600">Projetos</text>
-    <line x1="255" y1="42" x2="300" y2="42" class="hairline-accent"/>
-    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
-    <text x="390" y="26" class="text-muted" font-size="11">Organização</text>
-    <rect x="466" y="13" width="98" height="18" rx="4" class="badge-neutral"/>
-    <text x="475" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">3 · PROJETO ATIVO</text>
+  <!-- Section 1: 3D Interactive / Static Pipeline Stage -->
+  <g transform="translate(48, 82)">
+    <rect x="0" y="0" width="1184" height="198" rx="16" fill="url(#glassSurface)" stroke="#2D3D36" stroke-width="1"/>
+    <text x="24" y="28" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676" letter-spacing="1.4">● CENA 3D INTERATIVA DE ENTRADA (COM ALTERNATIVA ESTÁTICA / REDUCED MOTION)</text>
+    <text x="24" y="52" font-family="DM Sans, sans-serif" font-size="20" font-weight="700" fill="#F1F5F3">Percurso Conectado: Lead → Projeto (Discovery / Delivery) → Squad → Subárea → Integrantes</text>
 
-    <!-- Project Header + Inline Status Control -->
-    <text x="24" y="68" class="text-green" font-size="8" font-weight="700" letter-spacing="1.4">PROJETO VINCULADO</text>
-    <text x="24" y="92" class="text-main" font-size="20" font-weight="700">Plataforma Maré</text>
+    <rect x="930" y="18" width="230" height="28" rx="14" fill="#151E1A" stroke="#2D3D36"/>
+    <text x="1045" y="36" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#A3B3AC">Modo 3D Ativo ⇄ Fallback Estático</text>
 
-    <text x="390" y="68" class="text-muted" font-size="9">Status do projeto</text>
-    <rect x="390" y="74" width="166" height="28" rx="5" fill="#0F291E" stroke="#00E676"/>
-    <circle cx="404" cy="88" r="4" fill="#00E676"/>
-    <text x="414" y="92" class="text-green" font-size="11" font-weight="700">Em andamento ▾</text>
+    <!-- 5 Connected 3D Stage Cards -->
+    <g transform="translate(24, 68)">
+      <!-- Node 1 -->
+      <rect x="0" y="0" width="214" height="78" rx="10" fill="url(#glassActive)" stroke="#00E676" stroke-width="1.2"/>
+      <text x="14" y="20" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676">ETAPA 01 · ENTRADA</text>
+      <text x="14" y="40" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#F1F5F3">Lead Comercial</text>
+      <text x="14" y="58" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Contratante + Segmento</text>
 
-    <line x1="24" y1="114" x2="556" y2="114" class="hairline"/>
+      <line x1="214" y1="39" x2="232" y2="39" stroke="#00E676" stroke-width="1.5"/>
 
-    <!-- Architectural Definition List (<dl>) with 1px Hairlines -->
-    <!-- Row 1: Área responsável -->
-    <text x="24" y="142" class="text-muted" font-size="10">Área responsável</text>
-    <text x="210" y="142" class="text-green" font-size="12" font-weight="700">Desenvolvimento →</text>
-    <text x="420" y="142" class="text-dim" font-size="9">Abre a área e sua equipe</text>
-    <line x1="24" y1="158" x2="556" y2="158" class="hairline"/>
+      <!-- Node 2 -->
+      <rect x="232" y="0" width="214" height="78" rx="10" fill="#141C19" stroke="#2D3D36" stroke-width="1"/>
+      <text x="246" y="20" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#C49BFF">ETAPA 02 · EXECUÇÃO</text>
+      <text x="246" y="40" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#F1F5F3">Projeto &amp; Contrato</text>
+      <text x="246" y="58" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Discovery / Delivery + Valor R$</text>
 
-    <!-- Row 2: Responsável -->
-    <text x="24" y="186" class="text-muted" font-size="10">Responsável</text>
-    <circle cx="220" cy="182" r="11" fill="#17382B"/>
-    <text x="213" y="186" class="text-green" font-size="9" font-weight="700">CL</text>
-    <text x="238" y="186" class="text-main" font-size="12" font-weight="600">Clara Luz</text>
-    <text x="305" y="186" class="text-muted" font-size="10">· Desenvolvedora</text>
-    <line x1="24" y1="202" x2="556" y2="202" class="hairline"/>
+      <line x1="446" y1="39" x2="464" y2="39" stroke="#00E676" stroke-width="1.5"/>
 
-    <!-- Row 3: Equipe vinculada -->
-    <text x="24" y="230" class="text-muted" font-size="10">Equipe vinculada</text>
-    <text x="210" y="230" class="text-main" font-size="11" font-weight="500">Clara Luz, Ana Lima</text>
-    <line x1="24" y1="246" x2="556" y2="246" class="hairline"/>
+      <!-- Node 3 -->
+      <rect x="464" y="0" width="214" height="78" rx="10" fill="#141C19" stroke="#2D3D36" stroke-width="1"/>
+      <text x="478" y="20" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#5CE1E6">ETAPA 03 · TIME</text>
+      <text x="478" y="40" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#F1F5F3">Squad Alocado</text>
+      <text x="478" y="58" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Explorado dentro do Projeto</text>
 
-    <!-- Row 4: Lead de origem -->
-    <text x="24" y="274" class="text-muted" font-size="10">Lead de origem</text>
-    <text x="210" y="274" class="text-green" font-size="11" font-weight="600">Plataforma Maré →</text>
-    <text x="350" y="274" class="text-muted" font-size="10">(Empresa exemplo 4 · Ganho)</text>
-    <line x1="24" y1="290" x2="556" y2="290" class="hairline"/>
+      <line x1="678" y1="39" x2="696" y2="39" stroke="#00E676" stroke-width="1.5"/>
 
-    <text x="24" y="320" class="text-muted" font-size="10">← Todos os projetos</text>
+      <!-- Node 4 -->
+      <rect x="696" y="0" width="214" height="78" rx="10" fill="#141C19" stroke="#2D3D36" stroke-width="1"/>
+      <text x="710" y="20" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676">ETAPA 04 · ESTRUTURA</text>
+      <text x="710" y="40" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#F1F5F3">Subárea do CITi</text>
+      <text x="710" y="58" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Organiza os Squads internos</text>
+
+      <line x1="910" y1="39" x2="928" y2="39" stroke="#00E676" stroke-width="1.5"/>
+
+      <!-- Node 5 -->
+      <rect x="928" y="0" width="208" height="78" rx="10" fill="#141C19" stroke="#2D3D36" stroke-width="1"/>
+      <text x="942" y="20" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676">ETAPA 05 · PESSOAS</text>
+      <text x="942" y="40" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#F1F5F3">Integrantes</text>
+      <text x="942" y="58" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Responsável + Equipe do Squad</text>
+    </g>
+
+    <!-- Epistemic Source Note -->
+    <rect x="24" y="156" width="1136" height="30" rx="6" fill="#0B0F0D" stroke="#1E2824"/>
+    <text x="36" y="175" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">
+      <tspan fill="#00E676" font-weight="700">[FONTE CONFIRMADA: DesafioDeInovaçãoPS.pdf]</tspan> CITi como maior EJ de tecnologia do Brasil e atuação do time de Inovação com IA ·
+      <tspan fill="#F5B942" font-weight="700">[VALIDAÇÃO #9]</tspan> Discovery/Delivery e regra de médias.
+    </text>
   </g>
 
-  <!-- Connector 3 -> 4 -->
-  <path d="M 620 690 L 656 690" class="flow-arrow"/>
-  <polygon points="656,686 664,690 656,694" fill="#00E676"/>
+  <!-- Section 2: Liquid Glass Filter & Average Bar -->
+  <g transform="translate(48, 296)">
+    <rect x="0" y="0" width="1184" height="128" rx="14" fill="url(#glassSurface)" stroke="#2D3D36" stroke-width="1"/>
+    <!-- 4 Filters -->
+    <g transform="translate(20, 14)">
+      <text x="0" y="12" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#A3B3AC">Segmento da Contratante (Comercial)</text>
+      <rect x="0" y="18" width="270" height="34" rx="7" fill="#0C110F" stroke="#2D3D36"/>
+      <text x="12" y="39" font-family="DM Sans, sans-serif" font-size="12" fill="#F1F5F3">Todos os segmentos (3) ▾</text>
 
-  <!-- ================================================================= -->
-  <!-- QUADRO 4: ÁREA E PESSOAS RESPONSÁVEIS — BOTTOM RIGHT              -->
-  <!-- ================================================================= -->
-  <g transform="translate(664, 516)">
-    <rect width="576" height="350" rx="8" class="panel"/>
-    <!-- Top Compact Navbar -->
-    <rect x="1" y="1" width="574" height="42" rx="7" fill="#0D1210"/>
-    <line x1="0" y1="43" x2="576" y2="43" class="hairline"/>
-    <circle cx="20" cy="22" r="4" fill="#00E676"/>
-    <text x="30" y="26" class="text-main" font-size="14" font-weight="700">CITi</text>
-    <text x="60" y="26" class="text-muted" font-size="11">central</text>
-    <text x="130" y="26" class="text-muted" font-size="11">Visão geral</text>
-    <text x="208" y="26" class="text-muted" font-size="11">Leads</text>
-    <text x="255" y="26" class="text-muted" font-size="11">Projetos</text>
-    <text x="315" y="26" class="text-muted" font-size="11">Integrantes</text>
-    <text x="390" y="26" class="text-main" font-size="11" font-weight="600">Organização</text>
-    <line x1="390" y1="42" x2="458" y2="42" class="hairline-accent"/>
-    <rect x="468" y="13" width="92" height="18" rx="4" class="badge-neutral"/>
-    <text x="476" y="25" class="text-dim" font-size="8" font-weight="700" letter-spacing="0.8">4 · ÁREA &amp; EQUIPE</text>
+      <text x="290" y="12" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#A3B3AC">Fase / Tipo do Projeto</text>
+      <rect x="290" y="18" width="270" height="34" rx="7" fill="#0C110F" stroke="#2D3D36"/>
+      <text x="302" y="39" font-family="DM Sans, sans-serif" font-size="12" fill="#F1F5F3">Discovery + Delivery ▾</text>
 
-    <!-- Area Header -->
-    <text x="24" y="68" class="text-green" font-size="8" font-weight="700" letter-spacing="1.4">ESTRUTURA ORGANIZACIONAL · ÁREA</text>
-    <text x="24" y="92" class="text-main" font-size="20" font-weight="700">Desenvolvimento</text>
-    <text x="440" y="90" class="text-muted" font-size="10">← Todas as áreas</text>
-    <line x1="24" y1="108" x2="552" y2="108" class="hairline"/>
+      <text x="580" y="12" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#A3B3AC">Subárea Interna do CITi (Squads)</text>
+      <rect x="580" y="18" width="270" height="34" rx="7" fill="#0C110F" stroke="#2D3D36"/>
+      <text x="592" y="39" font-family="DM Sans, sans-serif" font-size="12" fill="#F1F5F3">Todas as subáreas (3) ▾</text>
 
-    <!-- Section: Integrantes da área -->
-    <text x="24" y="132" class="text-main" font-size="12" font-weight="700">Integrantes da área</text>
-    <rect x="24" y="142" width="528" height="44" rx="5" class="panel-elev"/>
-    <circle cx="46" cy="164" r="13" fill="#17382B"/>
-    <text x="39" y="168" class="text-green" font-size="10" font-weight="700">CL</text>
-    <text x="68" y="161" class="text-main" font-size="12" font-weight="700">Clara Luz</text>
-    <text x="68" y="176" class="text-muted" font-size="10">Desenvolvedora · Responsável por 1 projeto ativo</text>
-    <text x="440" y="168" class="text-green" font-size="10">Ver em Integrantes →</text>
+      <text x="870" y="12" font-family="DM Sans, sans-serif" font-size="11" font-weight="600" fill="#00E676">Agrupamento do Valor Médio</text>
+      <rect x="870" y="18" width="274" height="34" rx="7" fill="#0F291E" stroke="#00E676"/>
+      <text x="882" y="39" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#F1F5F3">Dupla Visão: Subárea + Segmento ▾</text>
+    </g>
 
-    <line x1="24" y1="202" x2="552" y2="202" class="hairline"/>
+    <line x1="20" y1="76" x2="1164" y2="76" stroke="#1E2824" stroke-width="1"/>
 
-    <!-- Section: Projetos vinculados -->
-    <text x="24" y="226" class="text-main" font-size="12" font-weight="700">Projetos vinculados</text>
+    <!-- Average Value Live Readout -->
+    <g transform="translate(20, 86)">
+      <text x="0" y="12" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676" letter-spacing="1.2">VALOR MÉDIO CONTRATADO NO RECORTE ATIVO</text>
+      <text x="0" y="32" font-family="DM Sans, sans-serif" font-size="24" font-weight="700" fill="#00E676">R$ 54.000,00</text>
+      <text x="172" y="30" font-family="DM Sans, sans-serif" font-size="12" fill="#A3B3AC">base: <tspan fill="#F1F5F3" font-weight="700">3 de 5 projetos elegíveis</tspan> (contrato ativo + valor &gt; R$ 0)</text>
 
-    <rect x="24" y="238" width="528" height="68" rx="6" class="panel-elev"/>
-    <rect x="38" y="250" width="88" height="16" rx="3" class="badge-green"/>
-    <text x="45" y="261" class="text-green" font-size="8" font-weight="700">EM ANDAMENTO</text>
-    <text x="138" y="262" class="text-main" font-size="13" font-weight="700">Plataforma Maré</text>
-    <text x="462" y="262" class="text-green" font-size="10" font-weight="600">Ver projeto →</text>
-    <text x="38" y="286" class="text-muted" font-size="10">Desenvolvimento · Clara Luz · Equipe: Clara Luz, Ana Lima</text>
+      <rect x="560" y="2" width="584" height="32" rx="6" fill="#101614" stroke="#26332E"/>
+      <text x="574" y="22" font-family="DM Sans, sans-serif" font-size="11.5" fill="#A3B3AC">
+        <tspan fill="#F5B942" font-weight="700">Regra de exclusão:</tspan> 1 projeto sem valor informado + 1 projeto sem contrato fora do denominador
+      </text>
+    </g>
+  </g>
+
+  <!-- Section 3: Main Workspace Split (Left: Projetos, Squads & Média; Right: Detalhe de Squad, Subárea & Integrantes) -->
+  <g transform="translate(48, 444)">
+    <!-- Left Column: Projetos list + Dual Average Comparison -->
+    <rect x="0" y="0" width="580" height="476" rx="14" fill="url(#glassSurface)" stroke="#2D3D36"/>
+    <text x="22" y="30" font-family="DM Sans, sans-serif" font-size="15" font-weight="700" fill="#F1F5F3">Projetos na Esteira (Discovery / Delivery &amp; Squads)</text>
+    <line x1="22" y1="42" x2="558" y2="42" stroke="#1E2824"/>
+
+    <!-- Row 1 (Selected) -->
+    <g transform="translate(18, 52)">
+      <rect x="0" y="0" width="544" height="72" rx="8" fill="url(#glassActive)" stroke="#00E676"/>
+      <rect x="12" y="10" width="66" height="18" rx="4" fill="#123035" stroke="#5CE1E6"/>
+      <text x="45" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9.5" font-weight="700" fill="#5CE1E6">DELIVERY</text>
+      <rect x="84" y="10" width="88" height="18" rx="4" fill="#0F291E" stroke="#00E676"/>
+      <text x="128" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9.5" font-weight="700" fill="#00E676">R$ 54.000,00</text>
+      <text x="182" y="23" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#F1F5F3">Plataforma Maré · Banco Atlântico</text>
+      <text x="12" y="45" font-family="DM Sans, sans-serif" font-size="11.5" fill="#A3B3AC">Segmento: Finanças · <tspan fill="#00E676" font-weight="700">Squad Maré</tspan> · Subárea: <tspan fill="#F1F5F3" font-weight="600">Desenvolvimento</tspan></text>
+      <text x="12" y="62" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Responsável: Clara Luz (+2 integrantes no squad)</text>
+      <text x="530" y="40" text-anchor="end" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#00E676">Squad →</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(18, 132)">
+      <rect x="0" y="0" width="544" height="66" rx="8" fill="#121816" stroke="#1E2824"/>
+      <rect x="12" y="10" width="74" height="18" rx="4" fill="#231934" stroke="#C49BFF"/>
+      <text x="49" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9.5" font-weight="700" fill="#C49BFF">DISCOVERY</text>
+      <rect x="92" y="10" width="88" height="18" rx="4" fill="#0F291E" stroke="#00E676"/>
+      <text x="136" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9.5" font-weight="700" fill="#00E676">R$ 72.000,00</text>
+      <text x="190" y="23" font-family="DM Sans, sans-serif" font-size="14" font-weight="700" fill="#F1F5F3">Motor IA de Crédito · Fintech NE</text>
+      <text x="12" y="46" font-family="DM Sans, sans-serif" font-size="11.5" fill="#A3B3AC">Segmento: Finanças · <tspan fill="#00E676" font-weight="700">Squad Horus IA</tspan> · Subárea: <tspan fill="#F1F5F3">Inovação</tspan> · Resp.: Ana Lima</text>
+    </g>
+
+    <!-- Row 3 (Excluded from average example) -->
+    <g transform="translate(18, 206)">
+      <rect x="0" y="0" width="544" height="62" rx="8" fill="#121816" stroke="#1E2824"/>
+      <rect x="12" y="10" width="74" height="18" rx="4" fill="#231934" stroke="#C49BFF"/>
+      <text x="49" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9.5" font-weight="700" fill="#C49BFF">DISCOVERY</text>
+      <rect x="92" y="10" width="152" height="18" rx="4" fill="#261F10" stroke="#F5B942"/>
+      <text x="168" y="22" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9.5" font-weight="700" fill="#F5B942">SEM VALOR (FORA DA MÉDIA)</text>
+      <text x="254" y="23" font-family="DM Sans, sans-serif" font-size="13.5" font-weight="700" fill="#F1F5F3">Portal Clínico · BioVida</text>
+      <text x="12" y="45" font-family="DM Sans, sans-serif" font-size="11.5" fill="#A3B3AC">Segmento: Saúde · Squad Vega UX · Subárea: Design · Resp.: Diego Alves</text>
+    </g>
+
+    <!-- Dual Average Mini Panel -->
+    <g transform="translate(22, 286)">
+      <text x="0" y="14" font-family="DM Sans, sans-serif" font-size="11" font-weight="700" fill="#00E676" letter-spacing="1">VISÃO DUPLA DE VALOR MÉDIO (SUBÁREA CITi VS. SEGMENTO CONTRATANTE)</text>
+      <rect x="0" y="24" width="260" height="148" rx="10" fill="#0E1412" stroke="#26332E"/>
+      <text x="14" y="44" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#F1F5F3">Por Subárea do CITi</text>
+      <text x="14" y="68" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Inovação (1 proj.): <tspan fill="#00E676" font-weight="700">R$ 72.000</tspan></text>
+      <rect x="14" y="74" width="210" height="5" rx="2.5" fill="url(#barFill)"/>
+      <text x="14" y="98" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Desenvolvimento (1 proj.): <tspan fill="#00E676" font-weight="700">R$ 54.000</tspan></text>
+      <rect x="14" y="104" width="160" height="5" rx="2.5" fill="url(#barFill)"/>
+      <text x="14" y="128" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Design (1 eleg. de 2): <tspan fill="#00E676" font-weight="700">R$ 36.000</tspan></text>
+      <rect x="14" y="134" width="110" height="5" rx="2.5" fill="url(#barFill)"/>
+
+      <rect x="276" y="24" width="260" height="148" rx="10" fill="#0E1412" stroke="#26332E"/>
+      <text x="290" y="44" font-family="DM Sans, sans-serif" font-size="12" font-weight="700" fill="#F1F5F3">Por Segmento da Contratante</text>
+      <text x="290" y="68" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Finanças (2 eleg. de 3): <tspan fill="#00E676" font-weight="700">R$ 63.000</tspan></text>
+      <rect x="290" y="74" width="190" height="5" rx="2.5" fill="url(#barFill)"/>
+      <text x="290" y="98" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Varejo (1 proj.): <tspan fill="#00E676" font-weight="700">R$ 36.000</tspan></text>
+      <rect x="290" y="104" width="110" height="5" rx="2.5" fill="url(#barFill)"/>
+      <text x="290" y="128" font-family="DM Sans, sans-serif" font-size="11" fill="#F5B942">Saúde (0 eleg. de 1): — Sem valor</text>
+    </g>
+
+    <!-- Right Column: Squad, Subárea & Integrantes Inspector -->
+    <g transform="translate(604, 0)">
+      <rect x="0" y="0" width="580" height="476" rx="14" fill="url(#glassSurface)" stroke="#00E676" stroke-width="1"/>
+      <text x="24" y="28" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676" letter-spacing="1.2">INSPEÇÃO INTEGRADA: PROJETO → SQUAD → SUBÁREA → INTEGRANTES</text>
+      <text x="24" y="54" font-family="DM Sans, sans-serif" font-size="22" font-weight="700" fill="#F1F5F3">Plataforma Maré · Squad Maré</text>
+
+      <!-- Spec Rows -->
+      <line x1="24" y1="68" x2="556" y2="68" stroke="#1E2824"/>
+      <text x="24" y="90" font-family="DM Sans, sans-serif" font-size="12" fill="#A3B3AC">Lead &amp; Contratante</text>
+      <text x="210" y="90" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#F1F5F3">Banco Atlântico S.A. · Segmento: Finanças &amp; Pagamentos</text>
+
+      <line x1="24" y1="104" x2="556" y2="104" stroke="#1E2824"/>
+      <text x="24" y="126" font-family="DM Sans, sans-serif" font-size="12" fill="#A3B3AC">Fase &amp; Valor Contratado</text>
+      <text x="210" y="126" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#00E676">Delivery (evoluído de Discovery) · R$ 54.000,00 (Contratado)</text>
+
+      <line x1="24" y1="140" x2="556" y2="140" stroke="#1E2824"/>
+      <text x="24" y="162" font-family="DM Sans, sans-serif" font-size="12" fill="#A3B3AC">Subárea Interna CITi</text>
+      <text x="210" y="162" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#00E676">Desenvolvimento (Organiza o Squad Maré) →</text>
+      <line x1="24" y1="176" x2="556" y2="176" stroke="#1E2824"/>
+
+      <!-- Squad Box -->
+      <rect x="24" y="192" width="532" height="214" rx="10" fill="#0C110F" stroke="#1E4D38"/>
+      <text x="40" y="216" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676" letter-spacing="1">SQUAD ALOCADO &amp; PESSOAS RESPONSÁVEIS</text>
+      <text x="40" y="238" font-family="DM Sans, sans-serif" font-size="16" font-weight="700" fill="#F1F5F3">Squad Maré · Subárea de Desenvolvimento</text>
+
+      <!-- Member 1 -->
+      <rect x="40" y="252" width="500" height="42" rx="7" fill="#131B18" stroke="#26332E"/>
+      <circle cx="62" cy="273" r="13" fill="#0F291E" stroke="#00E676"/>
+      <text x="62" y="277" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676">CL</text>
+      <text x="84" y="270" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#F1F5F3">Clara Luz</text>
+      <text x="84" y="285" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Tech Lead &amp; Desenvolvedora · Subárea: Desenvolvimento</text>
+      <rect x="414" y="263" width="112" height="20" rx="4" fill="#0F291E" stroke="#00E676"/>
+      <text x="470" y="277" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="9.5" font-weight="700" fill="#00E676">RESPONSÁVEL</text>
+
+      <!-- Member 2 -->
+      <rect x="40" y="302" width="500" height="42" rx="7" fill="#131B18" stroke="#26332E"/>
+      <circle cx="62" cy="323" r="13" fill="#0F291E" stroke="#00E676"/>
+      <text x="62" y="327" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676">BM</text>
+      <text x="84" y="320" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#F1F5F3">Bruno Melo</text>
+      <text x="84" y="335" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Engenheiro Full-Stack · Subárea: Desenvolvimento</text>
+
+      <!-- Member 3 -->
+      <rect x="40" y="352" width="500" height="42" rx="7" fill="#131B18" stroke="#26332E"/>
+      <circle cx="62" cy="373" r="13" fill="#0F291E" stroke="#00E676"/>
+      <text x="62" y="377" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="10" font-weight="700" fill="#00E676">AL</text>
+      <text x="84" y="370" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#F1F5F3">Ana Lima</text>
+      <text x="84" y="385" font-family="DM Sans, sans-serif" font-size="11" fill="#A3B3AC">Estrategista de IA &amp; Produto · Subárea: Inovação</text>
+
+      <!-- Magnetic CTA Button -->
+      <rect x="24" y="420" width="532" height="40" rx="8" fill="#00E676"/>
+      <text x="290" y="445" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="13" font-weight="700" fill="#04140B">Abrir Subárea de Desenvolvimento e Ver Todos os Integrantes →</text>
+    </g>
   </g>
 </svg>

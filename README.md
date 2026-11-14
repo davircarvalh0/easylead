@@ -2,6 +2,8 @@
 
 Demonstração React do fluxo lead → projeto, com dados fictícios e armazenamento local.
 
+O percurso agora inclui squad, fases Discovery → Delivery, filtros combinados e médias por subárea ou segmento. Veja [a entrega da esteira](ENTREGA_ESTEIRA_MEDIAS.md) para abrir a prévia, conferir fontes, capturas e resultados de teste.
+
 ## Executar
 
 Requer Node.js 22.12+ (verificado com Node 24.14.1).

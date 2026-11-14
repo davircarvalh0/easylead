@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
 import {seed} from '../src/domain.js';
+import {hydrateState} from '../src/repositories/stateRepository.js';
 test('fluxo completo, relações, indicadores, persistência e responsividade',async({page})=>{
  await page.goto('/');
  await expect(page.getByRole('link',{name:'Leads abertos 3 Consultar'})).toBeVisible();
@@ -175,7 +176,7 @@ test('projeto já salvo mantém identificadores, vínculos e status após editar
  await expect(page.getByLabel('Status do projeto')).toHaveValue('Em andamento');
  await page.reload();
  const persisted=await page.evaluate(()=>JSON.parse(localStorage.getItem('central-citi-v1')));
- expect(persisted.projects).toEqual(saved.projects);
+ expect(persisted.projects).toEqual(hydrateState(saved).projects);
  expect(persisted.leads[3]).toEqual({...saved.leads[3],name:'Lead atualizado'});
 });
 

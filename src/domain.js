@@ -4,7 +4,8 @@ export const seed = {
  version: 1,
  areas: ['Inovação', 'Comercial', 'Desenvolvimento', 'Design', 'Pessoas'].map((name,i)=>({id:`a${i}`,name})),
  members: ['Ana Lima','Bruno Melo','Clara Luz','Diego Alves','Eva Costa'].map((name,i)=>({id:`m${i}`,name,areaId:`a${i}`,role:['Estrategista','Consultor','Desenvolvedora','Designer','Gestora'][i]})),
- leads: stages.map((stage,i)=>({id:`l${i}`,name:['Portal Aurora','Loja Horizonte','App Raiz','Plataforma Maré','Site Sol'][i],company:`Empresa exemplo ${i+1}`,contact:`contato${i+1}@example.com`,stage})),
+ leads: stages.map((stage,i)=>({id:`l${i}`,name:['Portal Aurora','Loja Horizonte','App Raiz','Plataforma Maré','Site Sol'][i],company:`Empresa exemplo ${i+1}`,contact:`contato${i+1}@example.com`,stage,clientSegment:'Não classificado'})),
+ squads: [],
  projects: []
 };
 export const metrics=s=>({open:s.leads.filter(l=>stages.slice(0,3).includes(l.stage)).length,active:s.projects.filter(p=>p.status==='Em andamento').length});
@@ -14,3 +15,13 @@ export function actionableLeads(state) {
  return state.leads.filter(l => l.stage in priority && !(l.stage === 'Ganho' && l.projectId))
   .sort((a, b) => priority[a.stage] - priority[b.stage]);
 }
+
+export const phases = ['Discovery', 'Delivery'];
+export const clientSegments = ['Finanças & Pagamentos', 'Varejo & E-commerce', 'Saúde & Biotech'];
+export const demoProjects = [
+ ['Plataforma Maré', 'Finanças & Pagamentos', 'Delivery', 'a2', 'm2', 54000, 'Contratado'],
+ ['Motor IA de Crédito', 'Finanças & Pagamentos', 'Discovery', 'a0', 'm0', 72000, 'Contratado'],
+ ['Checkout Omni', 'Varejo & E-commerce', 'Discovery', 'a3', 'm3', 36000, 'Contratado'],
+ ['Portal Clínico', 'Saúde & Biotech', 'Discovery', 'a3', 'm3', null, 'Contratado'],
+ ['Agente Interno', 'Finanças & Pagamentos', 'Delivery', 'a0', 'm0', 28000, 'Sem contrato'],
+];
