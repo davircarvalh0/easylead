@@ -1,4 +1,4 @@
-﻿# Registro da primeira rodada · Central do CITi
+# Registro da primeira rodada · Central do CITi
 
 ## Etapa 1 — Produto · Antigravity
 
@@ -41,8 +41,23 @@ Ocorrências durante o desenvolvimento: o primeiro build detectou BOM no JSON ge
 
 ## Etapa 3 — Revisor · GitHub Copilot
 
-Pendente ao encerrar a implementação: AI review do diff contra BACKLOG.md e critérios do recorte, com prioridade para duplicação, consistência, controles e teclado. A revisão deve registrar o que verificou e os achados; não há parecer antecipado neste documento.
+**Agente:** Revisor · GitHub Copilot. **Entrega:** parecer de AI review do commit `5041e86`, recebido nesta conversa: “Parece bom para mesclar.” Sem achados reportados.
+
+**Verificação declarada pelo Revisor:** revisão de `git diff origin/main...HEAD` contra `BACKLOG.md` e `RECORTE_PRODUTO.md`; `npm test` com 2 testes aprovados, `npm run test:e2e` com 2 cenários aprovados, `npm run build` e `git diff --check`, todos com código 0. Esta é a declaração do parecer recebido, não uma nova execução pelo Implementador nesta atualização documental. A referência `origin/main` reproduz o comando informado pelo Revisor e não comprova estado de integração.
+
+### Evidências por ponto e limites de atribuição
+
+O parecer não descreveu inspeções individuais de duplicação, controles, teclado ou mobile. Executar a suíte existente fornece evidência automatizada do que ela cobre; não permite atribuir ao Revisor uma auditoria manual desses pontos.
+
+| Ponto | Verificação do Implementador · Codex já executada na etapa 2 | O que o Revisor declarou | Lacuna explícita |
+| --- | --- | --- | --- |
+| Conversão duplicada | `tests/domain.test.js` chama `convert` novamente para o mesmo lead e exige a mesma referência de estado. `tests/flow.spec.js` reabre o lead convertido, verifica estágio desabilitado, usa “Abrir projeto vinculado”, compara a URL e exige exatamente um projeto no armazenamento. | Execução das duas suítes aprovada; sem descrição de tentativa individual de reconversão. | O cenário de interface reabre o vínculo; não simula duplo clique rápido no botão de criação, concorrência entre abas ou adulteração do armazenamento. |
+| Controles sem ação | `tests/flow.spec.js` aciona cadastro, validação, edição de estágio, conversão, seleção de área/responsável/equipe, status, links de origem/área/projeto, indicador de projetos em andamento, buscas e filtros de leads/integrantes. O laço das cinco seções acessa URLs diretamente. | Revisão do diff e execução da suíte, sem inventário de controles inspecionados. | Não há auditoria exaustiva de cada controle visível. O teste não demonstra clique nos cinco itens do menu, em todos os indicadores ou em todas as combinações de filtros de projetos. |
+| Teclado | No trecho final de `tests/flow.spec.js`, verifica foco no título e no primeiro campo, preenche um novo lead com teclado, percorre campos com Tab e salva com Enter. As etapas anteriores do fluxo usam ações de Playwright sobre os controles. | Suíte aprovada; nenhuma descrição de percurso específico por teclado. | Não foi demonstrado o fluxo completo de conversão, seleção da equipe e navegação entre seções exclusivamente por teclado; não há auditoria de leitor de tela ou inspeção visual do foco em todos os controles. Ativar reduced-motion nesse trecho não verifica por si só a aparência das transições. |
+| Mobile | `tests/flow.spec.js` abre diretamente as cinco seções em Chromium, em 360 × 900 e 1280 × 900, verifica título visível e `document.documentElement.scrollWidth <= innerWidth`. O cadastro por teclado do trecho final ocorre após o laço, portanto em 1280 px. | Suíte aprovada; nenhuma descrição de inspeção mobile individual. | Não houve verificação em aparelho físico, toque, outros navegadores ou inspeção visual humana. O laço geométrico não cobre os formulários/detalhes nem demonstra o fluxo completo em 360 px. |
+
+**Falhas e reprodução:** o parecer não reportou falhas. As execuções finais da etapa 2 passaram nos cenários descritos; nesta atualização foram relidos os testes para delimitar a cobertura, sem nova execução funcional. As lacunas acima são verificações ausentes, não defeitos reproduzidos. As ocorrências corrigidas durante o desenvolvimento permanecem registradas na etapa 2; não há nova falha confirmada nem passos de reprodução a acrescentar nesta etapa.
 
 ## Aprovação e integração
 
-Aguardam a AI review e a aprovação do usuário. Nenhuma mesclagem foi realizada pelo Implementador.
+AI review aprovada para o commit `5041e86`, sem achados reportados. A aprovação do usuário para mesclar continua pendente; o parecer do Revisor não a substitui. Nenhuma mesclagem foi realizada pelo Implementador. Esta atualização altera apenas a documentação e não recebeu novo parecer de AI review.
