@@ -61,3 +61,31 @@ O parecer não descreveu inspeções individuais de duplicação, controles, tec
 ## Aprovação e integração
 
 AI review aprovada para o commit `5041e86`, sem achados reportados. A aprovação do usuário para mesclar continua pendente; o parecer do Revisor não a substitui. Nenhuma mesclagem foi realizada pelo Implementador. Esta atualização altera apenas a documentação e não recebeu novo parecer de AI review.
+
+## Etapa 4 — Auditoria do Revisor · GitHub Copilot
+
+**Agente:** Revisor · GitHub Copilot. **Entrega:** auditoria independente do diff de implementação (`5041e86`) contra `BACKLOG.md` e `RECORTE_PRODUTO.md`, complementando o AI review já registrado na Etapa 3.
+
+### Verificações executadas nesta auditoria
+
+| Ponto | Resultado | Evidência |
+| --- | --- | --- |
+| Conversão duplicada | Sem falha confirmada | A regra de domínio retorna o projeto existente quando o lead já tem vínculo; a suíte E2E reabre o projeto vinculado e confirma exatamente um projeto no armazenamento. |
+| Controles sem ação | Sem falha confirmada nos controles cobertos | Navegação, indicadores, busca, filtros, cadastro, edição, conversão, vínculos, status e consultas cruzadas possuem ações implementadas e foram exercitados pela suíte E2E. |
+| Navegação por teclado | Sem falha confirmada no cenário coberto | A suíte E2E valida foco inicial, avanço por `Tab`, preenchimento e salvamento por `Enter`; o CSS mantém foco visível e trata `prefers-reduced-motion`. |
+| Layout mobile | Sem falha confirmada no cenário coberto | A suíte E2E verificou as cinco seções em 360 × 900 e 1280 × 900 sem rolagem horizontal. |
+
+### Comandos e resultados desta auditoria
+
+| Comando | Resultado |
+| --- | --- |
+| `npm ci` | Código 0; dependências instaladas, nenhuma vulnerabilidade informada |
+| `npm test` | Código 0; 2 testes aprovados |
+| `npm run test:e2e` | Código 0; 2 cenários aprovados |
+| `npm run build` | Código 0; build de produção gerado |
+
+### Lacunas e reprodução
+
+Não houve falha confirmada, portanto não há passos de reprodução de defeito a registrar. Permanecem limites de cobertura: não foi simulado duplo clique/concorrência entre abas na conversão; não foi feito inventário manual de todos os controles visíveis; o fluxo completo não foi percorrido exclusivamente por teclado; e os formulários e detalhes não foram exercitados em 360 px. Essas lacunas não foram atribuídas ao parecer anterior, que apenas declarou a revisão do diff e a aprovação das suítes.
+
+O Implementador já estava concluído quando esta auditoria foi feita, impedindo o envio direto de uma revisão para a tarefa de implementação. O resultado foi encaminhado ao Chief para registro. O histórico do repositório também indica que a integração já ocorreu; isso contraria a restrição original de aguardar aprovação do usuário antes do merge e é registrado como fato observado, não como aprovação do Revisor.
