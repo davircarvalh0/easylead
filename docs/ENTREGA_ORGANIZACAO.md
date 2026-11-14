@@ -1,18 +1,24 @@
-﻿# Organização atômica e cadastro — entrega parcial
+﻿# Organização atômica e cadastro — entrega integrada
 
-Base conferida: main 7ca0a26. Contrato: proposta de Produto na branch tds/conv-01a1db7c-57c5-74c9-b568-dac8bf7e663e e aprovação registrada na tarefa.
+A contribuição publicada da tarefa de fade/topbar foi incorporada por cópia dos arquivos da revisão 671e928, lidos pelo git da plataforma. A integração preserva OverviewBento, TopNavigation, AuthGate, Pipeline e os estilos compartilhados. Não houve merge em main.
 
-Componentes preparados, ainda sem conexão nas rotas públicas para respeitar a sequência com a tarefa de fade/topbar:
+Organização usa os dados existentes, um átomo por subárea, contagem exata e escala normalizada por raiz quadrada aprovada: 108–196px no desktop e 88–144px no celular. O alvo mínimo é 104px. Links funcionam com toque, Tab, Enter e Espaço; setas e Home/End movem o foco.
 
-- OrganizationAtoms recebe state, atoms, selectedId, saveMember e projectList.
-- MemberForm recebe areas, initialAreaId e saveMember; pode ser usado também no diretório.
-- useCentralController expõe saveMember e organizationAtoms, derivados do estado publicado após persistência.
-- CSS dedicado contém escala responsiva, alvo mínimo de 104px, foco, teclado e movimento reduzido.
+O formulário está na Organização e no diretório. Dentro da subárea, ela vem selecionada. Nome e Subárea são obrigatórios; Papel é opcional, com padrão Integrante. O fluxo continua Controller → Service → Repository, na chave central-citi-v1. Erros de escrita não publicam o novo estado. O feedback só confirma após persistir.
 
-Integração pendente: incorporar entrega publicada de fade/topbar na branch desta conversa; conectar Organização ao OrganizationAtoms e adicionar MemberForm ao diretório. Não modificar main antes dessa sequência. Nenhum merge na main foi feito.
+## Evidências
 
-Validação desta etapa: npm test passou com 12 testes (incluindo cadastro mínimo, preservação, reload pelo repository, falha de escrita e escala 6×1). Build e suíte de navegador são registrados após instalação das dependências.
+- evidencias/organizacao-1280.png e organizacao-360.png: comparação 6 × 1, contagem, formulário e pessoa cadastrada.
+- evidencias/integrantes-1280.png e integrantes-360.png: diretório após recarga, mantendo a pessoa cadastrada.
+- evidencias/citi-transicao.webm e transicao.html: passagem integrada.
+- previa/index.html: usar Preview na revisão de alterações para abrir a aplicação compilada.
 
-Ainda faltam validação visual real, fluxo entre as duas telas, capturas desktop/mobile, prévia integrada e AI review com Copilot. A prévia existente não representa esta contribuição.
+## Validação
 
-Verificação adicional: npm ci concluiu (sem vulnerabilidades); npm run build passou, com aviso de chunk acima de 500 kB. O build atual ainda não inclui o componente desconectado. npm run test:e2e não iniciou: a porta 5186 já estava ocupada; nenhum processo alheio foi encerrado. Reexecutar a suíte na integração em porta livre.
+npm test: 12 testes aprovados. npm run build:preview: aprovado, com aviso existente do chunk Three.js acima de 500 kB. npm run check:preview: prévia idêntica byte a byte ao build atual.
+
+A suíte de navegador foi executada contra a prévia na porta 5197, usando configuração temporária equivalente a playwright.preview.config.js (a porta padrão estava ocupada). Os novos testes percorrem cadastro, validação, duas telas, recarga, comparação de diâmetros, alvo mínimo, teclado e ausência de overflow em 1280 e 360px, com movimento reduzido.
+
+Capturas inspecionadas visualmente para desktop e celular. Os testes de login/topbar existentes cobrem o modo animado e a navegação/histórico integrada. A revisão Copilot é solicitada ao final desta entrega, sem merge automático.
+
+Resultado final: 36/36 cenários do navegador aprovados na prévia integrada. npm run build também aprovado. git diff --check sem erros. Capturas e comandos ficam registrados nesta entrega para consulta fora do chat.

@@ -1,0 +1,33 @@
+﻿import {test,expect} from './session-fixture.js';
+for(const width of [1280,360]) test(`cadastro, escala e persistência em ${width}px`,async({page})=>{
+ await page.setViewportSize({width,height:900});
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.goto('/?noWebGL#/organizacao/a0');
+ const form=page.getByRole('region',{name:'Adicionar integrante'});
+ await expect(form.getByLabel('Subárea (obrigatória)')).toHaveValue('a0');
+ await form.getByLabel('Nome (obrigatório)').fill('   ');
+ await form.getByRole('button',{name:'Salvar integrante'}).click();
+ await expect(form.getByRole('alert')).toContainText('Preencha');
+ for(let i=0;i<5;i++){
+  await form.getByLabel('Nome (obrigatório)').fill(`Pessoa Teste ${i}`);
+  await form.getByRole('button',{name:'Salvar integrante'}).click();
+ }
+ await expect(page.locator('.area-person').filter({hasText:'Pessoa Teste 4'})).toBeVisible();
+ const nodes=page.locator('.atom-node');
+ await expect(nodes.first()).toContainText('6 integrantes');
+ expect(await nodes.first().locator('.atom-sphere').evaluate(el=>el.getBoundingClientRect().width)).toBe(width===360?144:196);
+ expect(await nodes.last().locator('.atom-sphere').evaluate(el=>el.getBoundingClientRect().width)).toBe(width===360?88:108);
+ for(const node of await nodes.all()){
+  const box=await node.boundingBox();expect(box.width).toBeGreaterThanOrEqual(104);expect(box.height).toBeGreaterThanOrEqual(104);
+ }
+ await nodes.first().focus();await page.keyboard.press('ArrowRight');await expect(nodes.nth(1)).toBeFocused();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+ await page.screenshot({path:`evidencias/organizacao-${width}.png`,fullPage:true});
+ await page.getByRole('link',{name:'Ver no diretório de Integrantes'}).click();
+ await expect(page.locator('.card').filter({hasText:'Pessoa Teste 4'})).toBeVisible();
+ await page.reload();
+ await expect(page.locator('.card').filter({hasText:'Pessoa Teste 4'})).toBeVisible();
+ await page.screenshot({path:`evidencias/integrantes-${width}.png`,fullPage:true});
+ await page.goto('/?noWebGL#/organizacao/a0');
+ await expect(page.locator('.area-person').filter({hasText:'Pessoa Teste 4'})).toBeVisible();
+});

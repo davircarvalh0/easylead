@@ -20,7 +20,7 @@ export function ProjectFilters({state,filters,setFilter,hideArea=false}){
  {!hideArea&&<label>Subárea CITi<select value={filters.area} onChange={e=>setFilter('area',e.target.value)}><option value="">Todas as subáreas</option>{state.areas.map(a=><option value={a.id} key={a.id}>{a.name}</option>)}</select></label>}
  </div>;
 }
-export function ValuePanel({params,setFilter,averageMetrics,clear}){
+export function ValuePanel({params,setFilter,averageMetrics,clear,inspectGroups=false}){
  const grouping=params.get('grupo')==='segment'?'segment':'area';
  const filters={segment:params.get('segmento') || '',phase:params.get('fase') || '',area:params.get('area') || '',status:params.get('status') || ''};
  const result=averageMetrics(filters,grouping);
@@ -28,7 +28,7 @@ export function ValuePanel({params,setFilter,averageMetrics,clear}){
  <div className="value-heading"><div><span className="eyebrow">CONTRATOS ATIVOS · VALORES POSITIVOS</span><h2 id="value-title">Valor médio contratado</h2></div><label>Agrupamento ativo<select value={grouping} onChange={e=>setFilter('grupo',e.target.value)}><option value="area">Subárea CITi</option><option value="segment">Segmento da contratante</option></select></label></div>
  <div aria-live="polite"><strong className="average-value">{money(result.average)}</strong><p>Base: {result.eligibleCount} de {result.total} projetos no recorte</p>
  <p className="section-note">{result.withoutValue} sem valor e {result.withoutContract} sem contrato ignorados no cálculo.</p>
- {result.eligibleCount===0?<p className="empty">Sem projetos elegíveis para média neste recorte.</p>:<div className="average-groups">{result.groups.map(g=><div key={g.key}><span>{g.label}</span><strong>{money(g.average)}</strong><small>{g.eligibleCount} de {g.total} projetos{g.average===null?' · Sem elegíveis':''}</small></div>)}</div>}</div>
+ {result.eligibleCount===0?<p className="empty">Sem projetos elegíveis para média neste recorte.</p>:<div className="average-groups">{result.groups.map(g=><div key={g.key}>{inspectGroups?<button className="quiet-button" onClick={()=>setFilter(grouping==='area'?'area':'segmento',g.key)}>{g.label} →</button>:<span>{g.label}</span>}<strong>{money(g.average)}</strong><small>{g.eligibleCount} de {g.total} projetos{g.average===null?' · Sem elegíveis':''}</small></div>)}</div>}</div>
  <button className="quiet-button" onClick={clear}>Limpar filtros</button>
  </section>;
 }
