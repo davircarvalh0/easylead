@@ -61,3 +61,51 @@ O parecer não descreveu inspeções individuais de duplicação, controles, tec
 ## Aprovação e integração
 
 AI review aprovada para o commit `5041e86`, sem achados reportados. A aprovação do usuário para mesclar continua pendente; o parecer do Revisor não a substitui. Nenhuma mesclagem foi realizada pelo Implementador. Esta atualização altera apenas a documentação e não recebeu novo parecer de AI review.
+
+## Etapa 4 — Auditoria do Revisor · GitHub Copilot
+
+**Agente:** Revisor · GitHub Copilot. **Entrega:** auditoria independente do diff de implementação (`5041e86`) contra `BACKLOG.md` e `RECORTE_PRODUTO.md`, complementando o AI review já registrado na Etapa 3.
+
+### Verificações executadas nesta auditoria
+
+| Ponto | Resultado | Evidência |
+| --- | --- | --- |
+| Conversão duplicada | Sem falha confirmada | A regra de domínio retorna o projeto existente quando o lead já tem vínculo; a suíte E2E reabre o projeto vinculado e confirma exatamente um projeto no armazenamento. |
+| Controles sem ação | Sem falha confirmada nos controles cobertos | Navegação, indicadores, busca, filtros, cadastro, edição, conversão, vínculos, status e consultas cruzadas possuem ações implementadas e foram exercitados pela suíte E2E. |
+| Navegação por teclado | Sem falha confirmada no cenário coberto | A suíte E2E valida foco inicial, avanço por `Tab`, preenchimento e salvamento por `Enter`; o CSS mantém foco visível e trata `prefers-reduced-motion`. |
+| Layout mobile | Sem falha confirmada no cenário coberto | A suíte E2E verificou as cinco seções em 360 × 900 e 1280 × 900 sem rolagem horizontal. |
+
+### Comandos e resultados desta auditoria
+
+| Comando | Resultado |
+| --- | --- |
+| `npm ci` | Código 0; dependências instaladas, nenhuma vulnerabilidade informada |
+| `npm test` | Código 0; 2 testes aprovados |
+| `npm run test:e2e` | Código 0; 2 cenários aprovados |
+| `npm run build` | Código 0; build de produção gerado |
+
+### Lacunas e reprodução
+
+Não houve falha confirmada, portanto não há passos de reprodução de defeito a registrar. Permanecem limites de cobertura: não foi simulado duplo clique/concorrência entre abas na conversão; não foi feito inventário manual de todos os controles visíveis; o fluxo completo não foi percorrido exclusivamente por teclado; e os formulários e detalhes não foram exercitados em 360 px. Essas lacunas não foram atribuídas ao parecer anterior, que apenas declarou a revisão do diff e a aprovação das suítes.
+
+O Implementador já estava concluído quando esta auditoria foi feita, impedindo o envio direto de uma revisão para a tarefa de implementação. O resultado foi encaminhado ao Chief para registro. O histórico do repositório também indica que a integração já ocorreu; isso contraria a restrição original de aguardar aprovação do usuário antes do merge e é registrado como fato observado, não como aprovação do Revisor.
+
+---
+
+# Registro da segunda rodada · Redesign Desktop e Mobile da Central
+
+## Pré-requisito — Importação de Skills React da Equipe (Tarefa #4 · Implementador · Codex)
+
+- **Disponível e ativa na biblioteca da equipe:** `vercel-react-best-practices` (`skillId: neGYGk5pqLrLmpfc5CwBO`, pulada na importação por já existir; a biblioteca também conta com `vercel-react-native-skills` `X8eqgrKQpxM7W9Fv0VuFI`).
+- **Recuperadas integralmente e preservadas na branch da tarefa #4 (`skills-import/RELATORIO.md`, 127 arquivos com manifesto SHA-256), pendentes de publicação no servidor MCP (`predates directory import`):** `react-patterns`, `gsap-react`, `react-doctor`, `react-native-best-practices`, `clerk-react-patterns`, `react-email`, `react-router-framework-mode`, `react-mcp` e `react-hook-form`.
+- **Encaminhamento sob demanda para esta rodada:** `react-patterns` + `vercel-react-best-practices` ao Implementador (#6); `gsap-react` somente se a implementação usar GSAP; `react-doctor` ao Revisor (#7).
+
+## Etapa 1 — Produto · Antigravity (Proposta Visual Desktop e Mobile)
+
+- **Agente responsável:** Produto · Antigravity (Gemini 4 Argon).
+- **Base inspecionada:** versão React existente (`5041e86` / `1e88f2e`). Os arquivos da aplicação (`src/domain.js`, `src/main.jsx`, `src/style.css`) foram mantidos inalterados nesta etapa em respeito à restrição de aprovar a proposta visual antes de implementar.
+- **O que entregou:**
+  1. Especificação completa da proposta em [PROPOSTA_REDESIGN.md](PROPOSTA_REDESIGN.md): tema escuro grafite (`#0B0E0D` / `#111614`) e verde do CITi (`#00E676`), navegação superior compacta sem sidebar fixa, troca da grade de cartões por listas contínuas com divisórias discretas de `1px` (`#1E2824`), regra proposta para priorização de *Leads que precisam de ação* na página inicial (`Ganho` sem projeto → `Proposta` → `Em contato` → `Novo`), destaque para *Projetos em andamento* com seus responsáveis e contrato de microinterações (botão com acompanhamento leve do cursor mantendo área clicável estável, resposta ao toque no mobile, foco visível e `prefers-reduced-motion`).
+  2. Protótipo interativo da proposta em [proposta-visual/index.html](proposta-visual/index.html) (com [proposta-visual/style.css](proposta-visual/style.css) e [proposta-visual/app.js](proposta-visual/app.js)) para avaliação visual imediata do percurso *Página inicial → Lead → Projeto vinculado → Área e responsáveis* nos modos Desktop (1280px) e Celular (360px).
+  3. Pranchas visuais estáticas em SVG para [Desktop 1280px](proposta-visual/desktop-percurso.svg) e [Mobile 360px](proposta-visual/mobile-percurso.svg).
+- **Como foi verificado:** conferência de todos os seletores e fluxos exigidos por `tests/domain.test.js` e `tests/flow.spec.js`, execução local de `npm test` (2/2 aprovados) e `git diff --check` com código 0, e **aprovação explícita do usuário via cartão** (`q-NYL7mJYDTdjE2xT939J_z`) confirmando: (1) a proposta visual desktop e mobile (tema escuro grafite `#0B0E0D` + verde CITi `#00E676`, barra superior compacta sem sidebar fixa e percurso integrado por divisórias discretas) e (2) a regra de priorização de leads por urgência de ação na página inicial (`Ganho` sem projeto → `Proposta` → `Em contato` → `Novo`, mantendo o indicador `Leads abertos = Novo + Em contato + Proposta`). Proposta liberada para implementação na tarefa #6.

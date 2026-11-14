@@ -42,3 +42,10 @@ export function readState(storage) {
  if(value.version!==1 || !['areas','members','leads','projects'].every(k=>Array.isArray(value[k]))) throw Error('Dados locais incompatíveis.');
  return value;
 }
+
+// Urgency affects only the home queue, never the open-lead metric.
+export function actionableLeads(state) {
+ const priority = {Ganho: 0, Proposta: 1, 'Em contato': 2, Novo: 3};
+ return state.leads.filter(l => l.stage in priority && !(l.stage === 'Ganho' && l.projectId))
+  .sort((a, b) => priority[a.stage] - priority[b.stage]);
+}
