@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Proposta Visual · Redesign Central do CITi (Desktop &amp; Mobile)</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="studio-bar" role="region" aria-label="Controles da prévia visual">
+      <div class="studio-bar-left">
+        <span class="studio-pill">Proposta Visual · Etapa 1 (Produto)</span>
+        <span>Tema Grafite &amp; Verde CITi · Sem sidebar fixa · Composição por divisórias</span>
+      </div>
+      <div class="studio-controls">
+        <button id="btn-desktop" class="studio-btn" type="button" aria-pressed="true">Desktop (1280px)</button>
+        <button id="btn-mobile" class="studio-btn" type="button" aria-pressed="false">Celular (360px)</button>
+      </div>
+    </div>
+
+    <div id="viewport-stage" class="viewport-stage">
+      <div class="app-shell">
+        <header class="topbar">
+          <div class="topbar-inner">
+            <a href="#inicio" class="brand" onclick="event.preventDefault()">
+              <span class="brand-dot" aria-hidden="true"></span>
+              CITi <span>central</span>
+            </a>
+            <nav class="topnav" aria-label="Navegação principal">
+              <button type="button" data-route="/" data-step="inicio" aria-current="page">Visão geral</button>
+              <button type="button" data-route="/leads" data-step="lead">Leads</button>
+              <button type="button" data-route="/projetos" data-step="projeto">Projetos</button>
+              <button type="button" data-route="/integrantes" data-step="area">Integrantes</button>
+              <button type="button" data-route="/organizacao" data-step="area">Organização</button>
+            </nav>
+            <div class="topbar-meta">
+              <span class="demo-tag">DEMO LOCAL</span>
+            </div>
+          </div>
+        </header>
+
+        <main id="conteudo">
+          <div class="journey-strip" aria-label="Percurso integrado da proposta">
+            <div class="journey-steps">
+              <button type="button" class="journey-step active" data-step="inicio">1. Página inicial</button>
+              <span class="journey-arrow" aria-hidden="true">→</span>
+              <button type="button" class="journey-step" data-step="lead">2. Lead (conversão)</button>
+              <span class="journey-arrow" aria-hidden="true">→</span>
+              <button type="button" class="journey-step" data-step="projeto">3. Projeto vinculado</button>
+              <span class="journey-arrow" aria-hidden="true">→</span>
+              <button type="button" class="journey-step" data-step="area">4. Área e responsáveis</button>
+            </div>
+            <span style="color:var(--text-muted);font-size:11px">Clique nas etapas ou nas linhas abaixo para percorrer</span>
+          </div>
+
+          <div id="stage-content"></div>
+        </main>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
