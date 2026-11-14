@@ -38,7 +38,8 @@ export function createLeadProjectService(repository = createStateRepository()) {
     return state;
   }
   return {
-    filterProjects, calculateAverageMetrics,
+    filterProjects, calculateAverageMetrics, valueBlocks,
+    addValueDemo: state => persist(addValueDemo(state)),
     changePhase: (state,id) => persist(changePhase(state,id)),
     addDemo: state => persist(addDemo(state)),
     load: () => repository.read(),
@@ -89,5 +90,47 @@ export function addDemo(state) {
   next=saveLead(next,{name,company:`Contratante fictícia ${i+1}`,contact:`demo${i}@example.com`,clientSegment,stage:'Ganho'},id);
   next=convert(next,id,{name,phase,areaId,ownerId,contractValue,contractStatus,squadName:['Squad Maré','Squad Horus IA','Squad Vega UX','Squad Saúde','Squad Agentes'][i]}).state;
  });
+ return next;
+}
+
+// Financial semantics and filtering live here, independent of rendering/storage.
+export function valueBlocks(state, kind, filters={}, grouping='direct') {
+ const eligibleProjects=new Set(filterProjects(state,filters).map(p=>p.id));
+ const source=kind==='leads'?state.leads:filterProjects(state,filters);
+ const items=source.filter(item=>{
+  if(kind!=='leads') return true;
+  if(filters.segment && item.clientSegment!==filters.segment) return false;
+  if((filters.phase||filters.area||filters.status) && !eligibleProjects.has(item.projectId)) return false;
+  if(filters.stage && !(filters.stage==='abertos'?stages.slice(0,3).includes(item.stage):item.stage===filters.stage)) return false;
+  return true;
+ }).filter(item=>!filters.search || `${item.name} ${item.company} ${item.contact||''}`.toLocaleLowerCase().includes(filters.search.toLocaleLowerCase())).map(item=>{
+  const project=kind==='leads'?state.projects.find(p=>p.id===item.projectId):item;
+  const contracted=project && isEligibleForAverage(project);
+  const estimated=typeof item.estimatedValue==='number' && Number.isFinite(item.estimatedValue) && item.estimatedValue>0;
+  const value=contracted?project.contractValue:kind==='leads'&&estimated?item.estimatedValue:null;
+  const label=value===null?(kind==='leads'?'Sem valor estimado (A definir)':project.contractStatus==='Sem contrato'?'Sem contrato (fora da média)':'Sem valor (fora da média)'):contracted?'Valor Contratado':'Valor Estimado';
+  return {id:item.id,item,project,value,label,squad:state.squads?.find(s=>s.id===project?.squadId),area:state.areas.find(a=>a.id===project?.areaId)};
+ });
+ const max=Math.max(1,...items.map(i=>i.value||0));
+ const groups=new Map();
+ for(const row of items.filter(i=>i.value!==null)) {
+  row.ratio=row.value/max;
+  const key=grouping==='stage'?row.item.stage:grouping==='phase'?row.project?.phase||'Sem fase':grouping==='squad'?`${row.squad?.name||'Sem squad'} · ${row.area?.name||'Sem subárea'}`:'Comparação direta';
+  if(!groups.has(key)) groups.set(key,{label:key,items:[],total:0});
+  const group=groups.get(key);group.items.push(row);group.total+=row.value;
+ }
+ return {items,groups:[...groups.values()],unvalued:items.filter(i=>i.value===null),max};
+}
+export function addValueDemo(state) {
+ let next=state;
+ for(const [id,name,value,segment,areaId,ownerId] of [['l0','Portal Aurora',200000,'Finanças & Pagamentos','a0','m0'],['l1','Loja Horizonte',10000,'Varejo & E-commerce','a2','m2']]) {
+  const existing=next.leads.find(l=>l.id===id);
+  // Never replace a user's opportunity or an existing contract.
+  const demoId=existing?.name===name && existing.company===`Empresa exemplo ${id==='l0'?1:2}`?id:`value-demo-${id}`;
+  const lead=next.leads.find(l=>l.id===demoId);
+  if(lead?.projectId) continue;
+  next=saveLead(next,{...(lead||{}),name,company:lead?.company||`Empresa exemplo ${id==='l0'?1:2}`,contact:lead?.contact||'demo@example.com',stage:'Ganho',clientSegment:segment,estimatedValue:id==='l0'?185000:10000},demoId);
+  next=convert(next,demoId,{name,areaId,ownerId,contractValue:value,phase:id==='l0'?'Delivery':'Discovery',squadName:id==='l0'?'Squad Aurora IA':'Squad Horizonte'}).state;
+ }
  return next;
 }

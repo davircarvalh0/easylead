@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './session-fixture.js';
 import {seed} from '../src/domain.js';
 import {hydrateState} from '../src/repositories/stateRepository.js';
 test('fluxo completo, relações, indicadores, persistência e responsividade',async({page})=>{
@@ -15,7 +15,8 @@ test('fluxo completo, relações, indicadores, persistência e responsividade',a
  await expect(page.getByRole('link',{name:'Leads abertos 4 Consultar'})).toBeVisible();
  await page.getByRole('link',{name:'Leads',exact:true}).click();
  await page.getByLabel('Buscar leads').fill('Portal Teste');
- await page.getByRole('link',{name:/Novo Portal Teste/}).click();
+ await page.getByRole('button',{name:/Novo Portal Teste/}).click();
+ await page.getByRole('link',{name:'Abrir lead →',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Editar lead'})).toBeVisible();
  await page.getByRole('combobox',{name:'Estágio',exact:true}).selectOption('Ganho');
  await page.getByRole('button',{name:'Salvar lead'}).click();
@@ -73,7 +74,7 @@ test('busca, filtros combinados e armazenamento bloqueado',async({page})=>{
  await page.goto('/#/leads');
  await page.getByLabel('Buscar leads').fill('Aurora');
  await page.getByRole('combobox',{name:'Estágio',exact:true}).selectOption('Perdido');
- await expect(page.getByText('Nenhum lead encontrado.')).toBeVisible();
+ await expect(page.getByText('Nenhum item neste recorte. Ajuste os filtros para continuar.')).toBeVisible();
  await page.goto('/#/integrantes');
  await page.getByLabel('Buscar integrantes').fill('Clara');
  await expect(page.getByRole('heading',{name:'Clara Luz'})).toBeVisible();
@@ -181,7 +182,7 @@ test('projeto já salvo mantém identificadores, vínculos e status após editar
 });
 
 test('acesso ao armazenamento negado mantém demonstração sem gravar',async({page})=>{
- await page.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw Error('SecurityError')}})});
+ await page.addInitScript(()=>{const read=Storage.prototype.getItem;Storage.prototype.getItem=function(key){if(key==='central-citi-v1')throw Error('SecurityError');return read.call(this,key)}});
  await page.goto('/#/leads/l3');
  await expect(page.getByRole('alert')).toContainText('não serão sobrescritos');
  await page.getByLabel('Área responsável').selectOption('a2');

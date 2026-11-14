@@ -1,4 +1,4 @@
-﻿import {test, expect} from '@playwright/test';
+﻿import {activeSession, test, expect} from './session-fixture.js';
 import {seed, actionableLeads, metrics} from '../src/domain.js';
 import {convert} from '../src/services/leadProjectService.js';
 
@@ -35,6 +35,7 @@ test('cursor move apenas pintura; clique na borda, saída e movimento reduzido',
 
 for(const mobile of [false,true]) test(`percurso e capturas ${mobile?'mobile':'desktop'}`,async({browser})=>{
   const context=await browser.newContext({viewport:{width:mobile?360:1280,height:900},isMobile:mobile,hasTouch:mobile});
+  await activeSession(context);
   const page=await context.newPage();
   const converted=convert(seed,'l3',{name:'Plataforma Maré',areaId:'a2',ownerId:'m2',memberIds:['m0']}).state;
   converted.projects[0].status='Em andamento';

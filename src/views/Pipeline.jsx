@@ -38,6 +38,6 @@ export function ProjectList({items,state}){
 export function ProjectContext({project:p,state,changePhase}){
  const squad=state.squads?.find(s=>s.id===p.squadId);
  return <section className="squad-context"><span className="badge">{p.phase || 'Delivery'}</span><p>Origem: {p.originPhase || p.phase || 'Delivery'}{p.phase==='Discovery'&&<> · <button className="quiet-button" onClick={()=>changePhase(p.id)}>Avançar para Delivery</button></>}</p><dl><dt>Contratante</dt><dd>{p.company} · {p.clientSegment}</dd><dt>Contrato</dt><dd>{p.contractStatus} · {money(p.contractValue)}{!p.contractValue?' · Sem valor (fora da média)':''}</dd></dl>
- <h2>Squad alocado & pessoas responsáveis</h2><h3>{squad?.name || 'Squad do projeto'}</h3><p>{squad?.specialty}</p><p>Subárea: {state.areas.find(a=>a.id===p.areaId)?.name}</p>
+ <h2>Squad alocado & pessoas responsáveis</h2>{squad&&<a href={'#/squads/'+squad.id+(location.hash.includes('?')?'?'+location.hash.split('?')[1]:'')}>Explorar squad →</a>}<h3>{squad?.name || 'Squad do projeto'}</h3><p>{squad?.specialty}</p><p>Subárea: {state.areas.find(a=>a.id===p.areaId)?.name}</p>
  <ul>{p.memberIds.map(id=>{const m=state.members.find(m=>m.id===id);return <li key={id}><a href={'#/integrantes?area='+m?.areaId}>{m?.name || 'Integrante indisponível'} · {m?.role} · {state.areas.find(a=>a.id===m?.areaId)?.name}{id===p.ownerId?' · Responsável':''}</a></li>})}</ul><p className="section-note">Squads e papéis são dados fictícios da demonstração.</p></section>;
 }

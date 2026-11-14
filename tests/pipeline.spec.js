@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './session-fixture.js';
 
 for(const width of [1280,360]) test(`filtros, médias e fase no percurso ${width}`,async({page})=>{
  await page.setViewportSize({width,height:900});

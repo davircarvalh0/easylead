@@ -118,3 +118,26 @@ test('falha de escrita não publica conversão nem modifica estado de entrada',(
  assert.throws(()=>convert(seed,'inexistente',data),/Lead não encontrado/);
  assert.throws(()=>convert(seed,'l3',{...data,memberIds:['inexistente']}),/Integrante inválido/);
 });
+
+import {valueBlocks,addValueDemo} from '../src/services/leadProjectService.js';
+test('blocos distinguem valores e excluem não contratos, mantendo escala global e recortes',()=>{
+ const state=addValueDemo(seed);
+ assert.deepEqual(addValueDemo(state),state);
+ const model=valueBlocks(state,'leads');
+ const aurora=model.items.find(r=>r.item.name==='Portal Aurora');
+ const horizonte=model.items.find(r=>r.item.name==='Loja Horizonte');
+ assert.equal(aurora.value/horizonte.value,20);
+ assert.equal(aurora.label,'Valor Contratado');assert.equal(aurora.item.estimatedValue,185000);
+ assert.equal(aurora.ratio/horizonte.ratio,20);
+ assert.equal(valueBlocks(seed,'leads').items[0].label,'Valor Estimado');
+ const filtered=valueBlocks(state,'leads',{segment:'Finanças & Pagamentos',phase:'Delivery',area:'a0',stage:'Ganho'});
+ assert.deepEqual(filtered.items.map(r=>r.id),['l0']);
+ assert.equal(valueBlocks(state,'leads',{phase:'Discovery',area:'a0'}).items.length,0);
+ const combined=addDemo(state),projects=valueBlocks(combined,'projects',{},'squad');
+ assert.equal(projects.unvalued.length,2);
+ assert.equal(projects.items.find(r=>r.item.name==='Agente Interno').value,null);
+ const noContract={...state,projects:state.projects.map(p=>({...p,contractStatus:'Sem contrato'}))};
+ assert.equal(valueBlocks(noContract,'leads').items[0].value,185000);
+ assert.equal(valueBlocks(noContract,'projects').unvalued.length,2);
+ assert.equal(seed.projects.length,0);
+});

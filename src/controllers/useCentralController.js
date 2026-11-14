@@ -42,5 +42,6 @@ export function useCentralController() {
   }
   function changePhase(id) { try { publish(service.changePhase(current.current,id)); } catch(error) { setMessage(error.message); } }
   function addDemo() { try { publish(service.addDemo(current.current)); } catch(error) { setMessage(error.message); } }
-  return {changePhase,addDemo,filterProjects: filters=>service.filterProjects(state,filters),averageMetrics:(filters,grouping)=>service.calculateAverageMetrics(state,filters,grouping),state, storageError: initial.storageError, message, saveTick, saveLead, convert, changeStatus};
+  function addValueDemo() { try { publish(service.addValueDemo(current.current)); } catch(error) { setMessage(error.message); } }
+  return {addValueDemo,valueBlocks:(kind,filters,grouping)=>service.valueBlocks(state,kind,filters,grouping),changePhase,addDemo,filterProjects: filters=>service.filterProjects(state,filters),averageMetrics:(filters,grouping)=>service.calculateAverageMetrics(state,filters,grouping),state, storageError: initial.storageError, message, saveTick, saveLead, convert, changeStatus};
 }

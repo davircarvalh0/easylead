@@ -67,7 +67,7 @@ export default function EsteiraScene3D({activeStep, metricsSummary, onSelectStep
         </li>)}
       </ol>
     </div>
-    <div className="journey-note" aria-live="polite" aria-atomic="true"><span className="journey-source">{current.source}</span><h3>{current.name}</h3><p>{current.note}</p></div>
+    <div className="journey-note" aria-live="polite" aria-atomic="true"><span className="journey-source">{current.source}</span><h3>{current.name}</h3><p>{current.note}</p><a href={"#"+({lead:"/leads",projeto:"/projetos",squad:"/projetos",subarea:"/organizacao",integrantes:"/integrantes"}[current.id])}>Explorar etapa →</a></div>
     {typeof metricsSummary === 'string' && <p className="journey-summary">{metricsSummary}</p>}
     {reduced && <p className="journey-summary">Versão estática conforme sua preferência de movimento reduzido.</p>}
     {!supported && <p className="journey-summary">Versão estática: a apresentação 3D está indisponível neste navegador.</p>}

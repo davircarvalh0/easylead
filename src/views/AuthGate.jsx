@@ -1,0 +1,37 @@
+import React, {useEffect, useRef, useState} from 'react';
+import logo from '../../proposta-visual/assets/logo-citi-simbolo.png';
+import {useSessionController} from '../controllers/useSessionController.js';
+
+function Brand() {
+  return <div className="auth-brand"><img src={logo} alt="CITi"/><strong>CITi<span>/all</span></strong></div>;
+}
+export function AuthGate({children}) {
+  const {session, entering, error, login, logout, finish} = useSessionController();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const emailInput = useRef(null);
+  const skip = useRef(null);
+  useEffect(() => {
+    if (entering) skip.current?.focus();
+    else if (session) document.querySelector('main h1')?.focus();
+    else emailInput.current?.focus();
+  }, [session, entering]);
+  if (!session) return <main className="auth-page"><section className="auth-card" aria-labelledby="login-title">
+    <Brand/><h1 id="login-title">Entre no CITi/all</h1><p>Oportunidades, projetos e pessoas conectados.</p>
+    <p className="section-note">Demonstração local. Use qualquer e-mail válido e um código de pelo menos 4 caracteres. Não use sua senha institucional.</p>
+    <form noValidate onSubmit={event => {event.preventDefault(); login(email, password);}}>
+      <label>E-mail<input ref={emailInput} type="email" autoComplete="username" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
+      <label>Código de acesso da demonstração<input type="password" autoComplete="off" required value={password} onChange={e=>setPassword(e.target.value)}/></label>
+      {error && <p role="alert" className="error">{error}</p>}
+      <button className="button" type="submit"><span className="btn-inner">Entrar no CITi/all →</span></button>
+      <button className="quiet-button" type="button" onClick={()=>{setEmail('lideranca@citi.org.br');setPassword('citi-2026');emailInput.current?.focus();}}>Preencher acesso de demonstração</button>
+    </form><p className="section-note">Dados fictícios, salvos apenas neste navegador.</p>
+  </section></main>;
+  return <>
+    <div inert={entering ? true : undefined}>{children({logout, sessionError: error})}</div>
+    {entering && <div className="brand-entry" role="dialog" aria-modal="true" aria-label="Entrando no CITi/all" onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();skip.current?.focus();}}}>
+      <div className="entry-beams" aria-hidden="true"/><Brand/><p>Do primeiro contato à entrega.</p>
+      <button ref={skip} type="button" className="quiet-button" onClick={finish}>Pular abertura</button>
+    </div>}
+  </>;
+}

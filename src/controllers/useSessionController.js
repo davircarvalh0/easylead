@@ -1,0 +1,32 @@
+import {useEffect, useState} from 'react';
+import {createSessionService} from '../services/sessionService.js';
+
+export function useSessionController() {
+  const [service] = useState(createSessionService);
+  const [session, setSession] = useState(() => service.load());
+  const [entering, setEntering] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    if (!entering) return;
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    const finish = () => setEntering(false);
+    const change = () => { if (media.matches) finish(); };
+    const timer = setTimeout(finish, 1050);
+    media.addEventListener('change', change);
+    return () => { clearTimeout(timer); media.removeEventListener('change', change); };
+  }, [entering]);
+  function login(email, password) {
+    try {
+      const next = service.login(email, password);
+      location.hash = '/';
+      setError('');
+      setEntering(!matchMedia('(prefers-reduced-motion: reduce)').matches);
+      setSession(next);
+    } catch (failure) { setError(failure.message); }
+  }
+  function logout() {
+    try { service.logout(); setSession(null); setEntering(false); setError(''); }
+    catch (failure) { setError(failure.message); }
+  }
+  return {session, entering, error, login, logout, finish: () => setEntering(false)};
+}
