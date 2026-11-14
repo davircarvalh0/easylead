@@ -1,5 +1,6 @@
 ﻿import {test, expect} from '@playwright/test';
-import {seed, convert, actionableLeads, metrics} from '../src/domain.js';
+import {seed, actionableLeads, metrics} from '../src/domain.js';
+import {convert} from '../src/services/leadProjectService.js';
 
 test('prioridades preservam indicador e excluem perdas e conversões', () => {
   expect(actionableLeads(seed).map(l=>l.stage)).toEqual(['Ganho','Proposta','Em contato','Novo']);
