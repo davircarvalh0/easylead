@@ -97,7 +97,7 @@ test('reload durante a abertura e mudança de movimento reduzido',async({page})=
 
 test('vídeo curto da entrada',async({browser})=>{
   const context=await browser.newContext({viewport:{width:1280,height:900},recordVideo:{dir:'test-results/entry-video',size:{width:1280,height:900}}});
-  const page=await context.newPage();await page.goto('/');await fill(page);
+  const page=await context.newPage();await page.goto('/');await expect(page.locator('.auth-page')).toHaveClass(/auth-ready/);await fill(page);
   await page.getByRole('button',{name:'Entrar no CITi/all'}).click();
   await expect(heading(page)).toBeFocused();
   const video=page.video();await context.close();await video.saveAs('evidencias/citi-transicao.webm');

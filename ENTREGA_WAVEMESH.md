@@ -41,3 +41,26 @@ Nenhuma mesclagem autorizada ou realizada. Revisão Copilot deve examinar o diff
 
 Na primeira execução da suíte sobre a prévia, 27 testes passaram e o teste de falha do módulo 3D não interceptou o nome com hash do build (esperado: fallback light; observado: webgl). Corrigido o padrão da interceptação para cobrir tanto JSX quanto o chunk compilado. Isso foi uma correção da instrumentação de teste. O teste de foco também foi corrigido para distinguir troca de rota de clique na aba já ativa.
 - npm run test:preview -- --workers=2: rodada final com 28 testes aprovados, saída 0, incluindo falha do chunk compilado. Medição final pós-login: aproximadamente 1.585 ms, abaixo de 1.800 ms.
+
+## Correção da revisão — abertura inicial
+
+O bloqueio apontado pelo Copilot era procedente: o estado entering só cobria a passagem pós-login, e as duas animações da auth-card começavam juntas. A correção fica em AuthGate.jsx e style.css:
+
+```jsx
+const [opening, setOpening] = useState(() => !session && !matchMedia('(prefers-reduced-motion: reduce)').matches);
+// No ramo sem sessão, antes da auth-card:
+{opening && <div className="initial-opening" aria-hidden="true"><Brand/></div>}
+```
+
+```css
+.auth-opening .auth-card{opacity:0}
+.auth-ready .auth-card{animation:form-reveal .24s ease both}
+```
+
+Agora a marca aparece centralizada por 720 ms, sobe e desaparece; só então o card revela o formulário. O formulário permanece montado e acessível: foco ou pointerdown encerram a abertura imediatamente. A camada decorativa usa pointer-events:none e aria-hidden. Não há inert nem display:none no formulário. O foco automático no e-mail só ocorre após a abertura; reduced-motion pula a abertura, inclusive quando ativado durante ela. O timer pausa com document.hidden e listeners/timer são limpos. Sessão restaurada não recebe abertura inicial. A transição pós-login de 1.600 ms foi preservada.
+
+Verificação desta correção (Implementador): npm test, 9 aprovados; npm run test:e2e -- --workers=1, 32 aprovados; npm run build, npm run build:preview e npm run check:preview, saída 0. Quatro novos testes em tests/initial-opening.spec.js verificam sequência desktop/mobile, acesso por teclado, preferência dinâmica e pausa. Capturas em evidencias/abertura-inicial-{360,1280}.png e abertura-login-{360,1280}.png. O vídeo evidencias/citi-transicao.webm agora aguarda a abertura inicial terminar antes de preencher o login.
+
+Observação separada da revisão: os espaços identificados no bundle LoginScene são texto GLSL proveniente do Three.js. A recompilação os preserva; não afirmo que o aviso de whitespace do diff completo contra a base foi corrigido. Esta rodada não altera shaders de terceiros nem desativa a checagem do Git. O aviso de tamanho do chunk WebGL também continua, já registrado acima.
+
+Rodada final na prévia compilada: npm run test:preview -- --workers=2, 32 aprovados, saída 0 (38,4 s). git diff --check -- src tests ENTREGA_WAVEMESH.md: saída 0. Nenhuma mesclagem realizada.

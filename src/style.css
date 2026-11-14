@@ -251,9 +251,11 @@ dd{padding-top:6px}
 .topbar,.auth-card,.stats a,.value-panel,.card,.detail,.toolbar,.glass-filters{background:rgba(11,17,14,.9);backdrop-filter:blur(16px)}
 .auth-brand img{object-fit:contain;aspect-ratio:641/330;height:auto}
 .auth-brand strong{font-family:monospace}
-.auth-card .auth-brand{animation:brand-rise .72s ease both}
-.auth-card form{animation:form-reveal .72s ease both}
-@keyframes brand-rise{from{transform:translateY(60px) scale(1.1)}to{transform:translateY(0) scale(1)}}
+.initial-opening{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:2}
+.initial-opening .auth-brand{animation:initial-brand .72s ease both}
+.auth-opening .auth-card{opacity:0}
+.auth-ready .auth-card{animation:form-reveal .24s ease both}
+@keyframes initial-brand{0%,55%{opacity:1;transform:translateY(0) scale(1.1)}100%{opacity:0;transform:translateY(-100px) scale(1)}}
 @keyframes form-reveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .brand-entry{background:rgba(6,10,8,.8);animation:none;overflow:hidden}
 .brand-entry>.auth-brand,.brand-entry>p,.brand-entry>button{position:relative;z-index:2}
