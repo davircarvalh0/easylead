@@ -63,4 +63,3 @@ for(const mobile of [false,true]) test(`percurso e capturas ${mobile?'mobile':'d
   await expect(page.getByLabel('Status do projeto')).toHaveValue('Em andamento');
   await context.close();
 });
-
