@@ -30,9 +30,9 @@ test('login inválido, revelação única, foco, rotas, reload e novo login', as
   await expect(heading(page)).toBeFocused();
   const events=await page.evaluate(()=>window.entryEvents);
   const start=events.find(e=>e.visible), end=events.find(e=>!e.visible&&e.time>start.time);
-  expect(end.time-start.time).toBeLessThanOrEqual(1200);
-  expect(end.time-start.time).toBeGreaterThan(850);
-  writeFileSync('evidencias/citi-duracao.json',JSON.stringify({durationMs:end.time-start.time,limitMs:1200,method:'MutationObserver: montagem e remoção da abertura no navegador'},null,2));
+  expect(end.time-start.time).toBeLessThanOrEqual(1800);
+  expect(end.time-start.time).toBeGreaterThan(1450);
+  writeFileSync('evidencias/citi-duracao.json',JSON.stringify({durationMs:end.time-start.time,limitMs:1800,method:'MutationObserver: montagem e remoção da abertura no navegador'},null,2));
   await expect(page).toHaveURL(/#\/$/);
   await page.getByRole('link',{name:'Projetos',exact:true}).click();
   await page.reload();

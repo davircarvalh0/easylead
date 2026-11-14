@@ -1,14 +1,18 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {LoginPassage,preloadLoginScene} from './LoginPassage.jsx';
 import logo from '../../proposta-visual/assets/logo-citi-simbolo.png';
 import {useSessionController} from '../controllers/useSessionController.js';
 
 function Brand() {
-  return <div className="auth-brand"><img src={logo} alt="CITi"/><strong>CITi<span>/all</span></strong></div>;
+  return <div className="auth-brand"><img src={logo} alt="CITi"/><strong><span>/all</span></strong></div>;
 }
 export function AuthGate({children}) {
   const {session, entering, error, login, logout, finish} = useSessionController();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  useEffect(()=>{
+    if (!session && !matchMedia('(prefers-reduced-motion: reduce)').matches && !new URLSearchParams(location.search).has('noWebGL')) preloadLoginScene();
+  },[session]);
   const emailInput = useRef(null);
   const skip = useRef(null);
   useEffect(() => {
@@ -30,7 +34,7 @@ export function AuthGate({children}) {
   return <>
     <div inert={entering ? true : undefined}>{children({logout, sessionError: error})}</div>
     {entering && <div className="brand-entry" role="dialog" aria-modal="true" aria-label="Entrando no CITi/all" onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();skip.current?.focus();}}}>
-      <div className="entry-beams" aria-hidden="true"/><Brand/><p>Do primeiro contato à entrega.</p>
+      <LoginPassage/><Brand/><p>Do primeiro contato à entrega.</p>
       <button ref={skip} type="button" className="quiet-button" onClick={finish}>Pular abertura</button>
     </div>}
   </>;

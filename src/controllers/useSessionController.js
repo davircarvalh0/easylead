@@ -11,9 +11,16 @@ export function useSessionController() {
     const media = matchMedia('(prefers-reduced-motion: reduce)');
     const finish = () => setEntering(false);
     const change = () => { if (media.matches) finish(); };
-    const timer = setTimeout(finish, 1050);
+    let remaining = 1600, started = performance.now(), timer;
+    const visibility = () => {
+      clearTimeout(timer);
+      if (document.hidden) remaining -= performance.now() - started;
+      else { started = performance.now(); timer = setTimeout(finish, Math.max(0, remaining)); }
+    };
+    if (!document.hidden) timer = setTimeout(finish, remaining);
+    document.addEventListener('visibilitychange', visibility);
     media.addEventListener('change', change);
-    return () => { clearTimeout(timer); media.removeEventListener('change', change); };
+    return () => { clearTimeout(timer); document.removeEventListener('visibilitychange', visibility); media.removeEventListener('change', change); };
   }, [entering]);
   function login(email, password) {
     try {

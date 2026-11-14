@@ -6,6 +6,7 @@ import {LeadForm} from './views/LeadForm.jsx';
 import {Conversion} from './views/Conversion.jsx';
 import './style.css';
 import {ValueBlocks} from './views/ValueBlocks.jsx';
+import {WaveMesh} from './views/WaveMesh.jsx';
 import {AuthGate} from './views/AuthGate.jsx';
 import {Magnetic} from './Magnetic';
 import {ValuePanel,ProjectFilters,ProjectList,ProjectContext,SceneEntry} from './views/Pipeline.jsx';
@@ -54,4 +55,4 @@ function App({logout,sessionError}){
  else content=<p>Página não encontrada. <a href="#/">Ir à visão geral</a></p>;
  return <div className="layout"><a className="skip" href="#conteudo" onClick={e=>{e.preventDefault();document.querySelector('h1').focus()}}>Pular para conteúdo</a><header className="topbar"><div className="topbar-inner"><a href="#/" className="brand" aria-label="CITi/all — Visão geral"><img src={logo} alt="CITi"/><span>/all</span></a><nav aria-label="Navegação principal">{nav.map(([url,label])=><a key={url} href={'#'+url} aria-current={(url==='/'?path==='/':path.startsWith(url))?'page':undefined}>{label}</a>)}</nav><div className="session-actions"><span className="demo">DEMO LOCAL</span><button className="quiet-button" onClick={logout}>Sair</button></div></div></header><main id="conteudo"><p className="eyebrow breadcrumb">CITi/all / {title}</p><h1 tabIndex="-1">{title}</h1>{sessionError&&<p role="alert" className="error">{sessionError}</p>}{storageError&&<p role="alert" className="error">{storageError}</p>}<p role="status" className="feedback"><span key={saveTick+message}>{message}</span></p><div className="route-content" key={path}>{content}</div><footer>CITi/all · Dados fictícios, salvos apenas neste navegador.</footer></main></div>
 }
-createRoot(document.getElementById('root')).render(<AuthGate>{props=><App {...props}/>}</AuthGate>);
+createRoot(document.getElementById('root')).render(<><WaveMesh/><AuthGate>{props=><App {...props}/>}</AuthGate></>);

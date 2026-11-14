@@ -1,0 +1,5 @@
+{
+  "mode": "webgl",
+  "errors": [],
+  "environment": "Chromium headless, GPU conforme disponibilidade do navegador"
+}

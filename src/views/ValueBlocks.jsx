@@ -1,4 +1,4 @@
-import React,{useRef,useEffect} from 'react';
+import React,{useRef,useEffect,useLayoutEffect} from 'react';
 const money=v=>v==null?'—':v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
 export function ValueDetails({row,state,kind,query=''}) {
@@ -25,6 +25,25 @@ export function ValueDetails({row,state,kind,query=''}) {
 
 export function ValueBlocks({model,state,kind,grouping,onGroup,selected,onSelect,query}) {
  const dialog=useRef(null);
+ const surface=useRef(null), positions=useRef(new Map());
+ useLayoutEffect(()=>{
+  const nodes=surface.current.querySelectorAll('[data-item]');
+  const next=new Map(),animations=[];
+  for(const node of nodes){
+   const rect=node.getBoundingClientRect();next.set(node.dataset.item,rect);
+   const before=positions.current.get(node.dataset.item);
+   if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const dx=before?before.left-rect.left:0,dy=before?before.top-rect.top:12;
+    if(dx||dy)animations.push(node.animate([{transform:`translate(${dx}px,${dy}px)`,opacity:before?1:0},{transform:'translate(0,0)',opacity:1}],{duration:280,easing:'ease-out'}));
+   }
+  }
+  positions.current=next;
+  const media=matchMedia('(prefers-reduced-motion: reduce)');
+  const stop=()=>{if(media.matches)animations.forEach(a=>a.cancel());};
+  const visibility=()=>animations.forEach(a=>document.hidden?a.pause():a.play());
+  media.addEventListener('change',stop);document.addEventListener('visibilitychange',visibility);
+  return()=>{animations.forEach(a=>a.cancel());media.removeEventListener('change',stop);document.removeEventListener('visibilitychange',visibility);};
+ },[model]);
  const row=model.items.find(i=>i.id===selected);
  useEffect(()=>{
   const node=dialog.current;
@@ -41,7 +60,7 @@ export function ValueBlocks({model,state,kind,grouping,onGroup,selected,onSelect
    {!unvalued&&<small>{Number((r.ratio*100).toFixed(2))}% do maior valor do recorte · Ver detalhe ↗</small>}
   </button>;
  }
- return <section className="value-blocks" aria-label="Blocos de valor">
+ return <section ref={surface} className="value-blocks" aria-label="Blocos de valor">
  <div className="value-heading"><h2>O valor em perspectiva</h2><label>Agrupar blocos<select value={grouping} onChange={e=>onGroup(e.target.value)}><option value="direct">Comparação direta</option>{kind==='leads'?<option value="stage">Etapa do funil</option>:<><option value="squad">Squad e subárea</option><option value="phase">Discovery / Delivery</option></>}</select></label></div>
  <p className="scale-explanation">A área verde dentro da faixa de cada bloco representa o valor: mesma faixa, escala linear comum a todos os grupos. Aurora R$ 200 mil · Horizonte R$ 10 mil = 20:1. Os cartões têm tamanho ampliado para leitura e toque (mínimo de 68 px no celular); sua área externa não é a escala exata. Ciano indica estimativa.</p>
  <p role="status" className="filter-feedback">Recorte atualizado: {model.items.length} {kind==='leads'?'leads':'projetos'} · {model.unvalued.length} fora da escala.</p>
