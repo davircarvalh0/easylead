@@ -1,0 +1,59 @@
+import React,{useState,useEffect} from 'react';
+import {createRoot} from 'react-dom/client';
+import {seed,stages,statuses,saveLead,convert,changeStatus,metrics,readState,STORAGE_KEY} from './domain';
+import './style.css';
+const nav=[['/','Visão geral'],['/leads','Leads'],['/projetos','Projetos'],['/integrantes','Integrantes'],['/organizacao','Organização']];
+const go=path=>{location.hash=path};
+function App(){
+ const [storageError,setStorageError]=useState('');
+ const [state,setState]=useState(()=>{try{return readState(localStorage)}catch{return structuredClone(seed)}});
+ const [route,setRoute]=useState(location.hash.slice(1)||'/');
+ const [message,setMessage]=useState('');
+ const [search,setSearch]=useState('');
+ useEffect(()=>{try{readState(localStorage)}catch{setStorageError('Não foi possível ler os dados locais. A demonstração está temporariamente em memória; os dados salvos não serão sobrescritos.')}},[]);
+ useEffect(()=>{const fn=()=>{setRoute(previous=>{const next=location.hash.slice(1)||'/';if(previous.split('?')[0]!==next.split('?')[0])setSearch('');return next});requestAnimationFrame(()=>document.querySelector('h1')?.focus())};addEventListener('hashchange',fn);return()=>removeEventListener('hashchange',fn)},[]);
+ const [path,query='']=route.split('?');const params=new URLSearchParams(query);const parts=path.split('/');
+ function commit(next){if(storageError)throw Error('Persistência indisponível. Recarregue após corrigir o armazenamento.');try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next))}catch{throw Error('Não foi possível salvar. Verifique o espaço e as permissões do navegador.')}setState(next);setMessage('Alterações salvas neste navegador.');}
+ function act(fn){try{fn()}catch(e){setMessage(e.message)}}
+ const area=id=>state.areas.find(a=>a.id===id)?.name;
+ const member=id=>state.members.find(m=>m.id===id)?.name;
+ const count=metrics(state);
+ const matches=text=>text.toLocaleLowerCase().includes(search.toLocaleLowerCase());
+ function ProjectList({items}){return items.length?<div className="cards">{items.map(p=><a className="card" key={p.id} href={`#/projetos/${p.id}`}><span className="badge">{p.status}</span><h3>{p.name}</h3><p>{area(p.areaId)} · {member(p.ownerId)}</p><span>Ver projeto →</span></a>)}</div>:<p className="empty">Nenhum projeto encontrado.</p>}
+ function LeadForm({lead}){
+ const [data,setData]=useState(lead||{name:'',company:'',contact:'',stage:'Novo'});const [error,setError]=useState('');
+ return <form noValidate onSubmit={e=>{e.preventDefault();try{const id=lead?.id||crypto.randomUUID();commit(saveLead(state,data,id));go('/leads/'+id)}catch(e){setError(e.message)}}}>
+ <h2>{lead?'Editar lead':'Novo lead'}</h2>{error&&<p role="alert" className="error">{error}</p>}
+ {[["name","Nome da oportunidade"],["company","Organização"],["contact","Contato"]].map(([key,label])=><label key={key}>{label} *<input required value={data[key]} onChange={e=>setData({...data,[key]:e.target.value})}/></label>)}
+ <label>Estágio<select disabled={!!lead?.projectId} value={data.stage} onChange={e=>setData({...data,stage:e.target.value})}>{stages.map(s=><option key={s}>{s}</option>)}</select></label>
+ {lead?.projectId&&<p>Após a conversão, o estágio permanece em Ganho.</p>}<button>Salvar lead</button> <a href="#/leads">Voltar aos leads</a></form>
+ }
+ function Conversion({lead}){
+ const [data,setData]=useState({name:lead.name,areaId:'',ownerId:'',memberIds:[]});const [error,setError]=useState('');
+ return <form noValidate onSubmit={e=>{e.preventDefault();try{const result=convert(state,lead.id,data);commit(result.state);go('/projetos/'+result.project.id)}catch(e){setError(e.message)}}}><h2>Converter em projeto</h2>{error&&<p role="alert" className="error">{error}</p>}
+ <label>Nome do projeto *<input required value={data.name} onChange={e=>setData({...data,name:e.target.value})}/></label>
+ <label>Área responsável *<select required value={data.areaId} onChange={e=>setData({...data,areaId:e.target.value,ownerId:''})}><option value="">Selecione uma área</option>{state.areas.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
+ <label>Responsável *<select required value={data.ownerId} onChange={e=>setData({...data,ownerId:e.target.value})}><option value="">Selecione um integrante</option>{state.members.filter(m=>m.areaId===data.areaId).map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
+ <fieldset><legend>Outros integrantes (opcional)</legend>{state.members.filter(m=>m.id!==data.ownerId).map(m=><label className="check" key={m.id}><input type="checkbox" checked={data.memberIds.includes(m.id)} onChange={e=>setData({...data,memberIds:e.target.checked?[...data.memberIds,m.id]:data.memberIds.filter(id=>id!==m.id)})}/>{m.name} · {area(m.areaId)}</label>)}</fieldset><button>Criar projeto</button></form>
+ }
+ let content;let title=nav.find(([p])=>p===('/'+parts[1]))?.[1]||'Visão geral';
+ if(path==='/')content=<><div className="intro"><span className="eyebrow">DO PRIMEIRO CONTATO À ENTREGA</span><h2>O trabalho conectado.<br/>A equipe por perto.</h2><p>Acompanhe as oportunidades e transforme boas conversas em projetos.</p><a className="button" href="#/leads/novo">Cadastrar oportunidade ↗</a></div><div className="stats">{[['Leads abertos',count.open,'/leads?estagio=abertos'],['Projetos em andamento',count.active,'/projetos?status=Em andamento'],['Leads ganhos',state.leads.filter(l=>l.stage==='Ganho').length,'/leads?estagio=Ganho'],['Total de projetos',state.projects.length,'/projetos']].map(([label,n,url])=><a key={label} href={'#'+url}><span>{label}</span><strong>{n}</strong><small>Consultar →</small></a>)}</div><h2>O funil em perspectiva</h2><div className="funnel">{stages.map(s=><a key={s} href={'#/leads?estagio='+encodeURIComponent(s)}><strong>{state.leads.filter(l=>l.stage===s).length}</strong>{s}</a>)}</div><h2>Projetos da central</h2><ProjectList items={state.projects}/></>;
+ else if(parts[1]==='leads'){
+ const lead=state.leads.find(l=>l.id===parts[2]);
+ if(parts[2]==='novo')content=<LeadForm key="new"/>;
+ else if(lead)content=<><LeadForm key={lead.id} lead={lead}/>{lead.projectId?<a className="button" href={'#/projetos/'+lead.projectId}>Abrir projeto vinculado →</a>:lead.stage==='Ganho'?<Conversion key={'convert'+lead.id} lead={lead}/>:<p>Marque o lead como Ganho para converter em projeto.</p>}</>;
+ else if(parts[2])content=<p>Lead não encontrado. <a href="#/leads">Voltar</a></p>;
+ else {const filter=params.get('estagio')||'';const leads=state.leads.filter(l=>matches(`${l.name} ${l.company} ${l.contact}`)&&(!filter||(filter==='abertos'?stages.slice(0,3).includes(l.stage):l.stage===filter)));content=<><div className="toolbar"><label>Buscar leads<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nome, organização ou contato"/></label><label>Estágio<select value={filter} onChange={e=>go('/leads?estagio='+encodeURIComponent(e.target.value))}><option value="">Todos</option><option value="abertos">Abertos</option>{stages.map(s=><option key={s}>{s}</option>)}</select></label><a className="button" href="#/leads/novo">Novo lead +</a></div>{leads.length?<div className="cards">{leads.map(l=><a className="card" key={l.id} href={'#/leads/'+l.id}><span className="badge">{l.stage}</span><h3>{l.name}</h3><p>{l.company}</p><p>{l.contact}</p><span>{l.projectId?'Projeto vinculado':'Abrir oportunidade'} →</span></a>)}</div>:<p className="empty">Nenhum lead encontrado.</p>}</>}
+ }
+ else if(parts[1]==='projetos'){
+ const project=state.projects.find(p=>p.id===parts[2]);
+ if(project)content=<article className="detail"><span className="eyebrow">PROJETO</span><h2>{project.name}</h2><label>Status do projeto<select value={project.status} onChange={e=>act(()=>commit(changeStatus(state,project.id,e.target.value)))}>{statuses.map(s=><option key={s}>{s}</option>)}</select></label><dl><dt>Área responsável</dt><dd><a href={'#/organizacao/'+project.areaId}>{area(project.areaId)} →</a></dd><dt>Responsável</dt><dd>{member(project.ownerId)}</dd><dt>Equipe vinculada</dt><dd>{project.memberIds.map(member).join(', ')}</dd><dt>Lead de origem</dt><dd><a href={'#/leads/'+project.leadId}>{state.leads.find(l=>l.id===project.leadId)?.name} →</a></dd></dl><a href="#/projetos">Todos os projetos</a></article>;
+ else if(parts[2])content=<p>Projeto não encontrado.</p>;
+ else content=<><div className="toolbar"><label>Status<select value={params.get('status')||''} onChange={e=>{params.set('status',e.target.value);go('/projetos?'+params)}}><option value="">Todos</option>{statuses.map(s=><option key={s}>{s}</option>)}</select></label><label>Área<select value={params.get('area')||''} onChange={e=>{params.set('area',e.target.value);go('/projetos?'+params)}}><option value="">Todas</option>{state.areas.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label></div><ProjectList items={state.projects.filter(p=>(!params.get('status')||p.status===params.get('status'))&&(!params.get('area')||p.areaId===params.get('area')))}/></>;
+ }
+ else if(parts[1]==='integrantes')content=<><div className="toolbar"><label>Buscar integrantes<input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Nome ou papel"/></label><label>Área<select value={params.get('area')||''} onChange={e=>go('/integrantes?area='+e.target.value)}><option value="">Todas</option>{state.areas.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label></div><div className="cards">{state.members.filter(m=>matches(m.name+' '+m.role)&&(!params.get('area')||m.areaId===params.get('area'))).map(m=><article className="card" key={m.id}><div className="avatar">{m.name.split(' ').map(n=>n[0]).join('')}</div><h3>{m.name}</h3><p>{m.role}</p><a href={'#/organizacao/'+m.areaId}>{area(m.areaId)} →</a></article>)}</div>{!state.members.some(m=>matches(m.name+' '+m.role)&&(!params.get('area')||m.areaId===params.get('area')))&&<p className="empty">Nenhum integrante encontrado.</p>}</>;
+ else if(parts[1]==='organizacao'){const selected=state.areas.find(a=>a.id===parts[2]);content=selected?<><h2>{selected.name}</h2><h3>Integrantes da área</h3>{state.members.filter(m=>m.areaId===selected.id).map(m=><p key={m.id}>{m.name} · {m.role}</p>)}<h3>Projetos vinculados</h3><ProjectList items={state.projects.filter(p=>p.areaId===selected.id)}/><a href="#/organizacao">Todas as áreas</a></>:<div className="cards">{state.areas.map(a=><a className="card" key={a.id} href={'#/organizacao/'+a.id}><span className="eyebrow">ÁREA</span><h2>{a.name}</h2><p>{state.members.filter(m=>m.areaId===a.id).length} integrante(s) · {state.projects.filter(p=>p.areaId===a.id).length} projeto(s)</p><span>Conhecer a área →</span></a>)}</div>}
+ else content=<p>Página não encontrada. <a href="#/">Ir à visão geral</a></p>;
+ return <div className="layout"><a className="skip" href="#conteudo" onClick={e=>{e.preventDefault();document.querySelector('h1').focus()}}>Pular para conteúdo</a><aside><a href="#/" className="brand">CITi<span>central</span></a><p className="nav-label">ESPAÇO DE TRABALHO</p><nav>{nav.map(([url,label],i)=><a key={url} href={'#'+url} aria-current={(url==='/'?path==='/':path.startsWith(url))?'page':undefined}><span aria-hidden="true">{['◈','↗','▦','◉','⌘'][i]}</span>{label}</a>)}</nav><div className="aside-note"><span className="dot"/> Ambiente de demonstração<p>Conexões reais.<br/>Dados fictícios.</p></div></aside><main id="conteudo"><header><p>CENTRAL DO CITi <span>/ {title}</span></p><span className="demo">DEMO LOCAL</span></header><h1 tabIndex="-1">{title}</h1>{storageError&&<p role="alert" className="error">{storageError}</p>}<p role="status" className="feedback">{message}</p>{content}<footer>Central do CITi · Primeira rodada · Dados fictícios, salvos apenas neste navegador.</footer></main></div>
+}
+createRoot(document.getElementById('root')).render(<App/>);
