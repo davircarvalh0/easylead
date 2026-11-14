@@ -79,7 +79,18 @@ Os testes adicionados usam o esquema anterior, incluindo um projeto persistido c
 
 Durante a primeira verificação ampliada, a passagem de texto por um pipe de edição corrompeu acentos em mensagens novas. Os testes detectaram o problema, a codificação foi corrigida e a suíte completa foi repetida. Não foi necessário alterar as expectativas para contornar falhas.
 
-Resultados finais serão registrados após concluir as execuções.
+Resultados finais (todos com saída zero):
+
+| Comando | Resultado |
+| --- | --- |
+| `npm test` | 5 testes aprovados. |
+| `npm run test:e2e` | 12 testes aprovados, incluindo percursos desktop/mobile. |
+| `npm run build` | Build de produção concluído. |
+| `npm run build:preview` | Prévia regenerada. |
+| `npm run check:preview` | Os três arquivos da prévia coincidem byte a byte com uma compilação independente. |
+| `npm run test:preview` | 12 testes aprovados sobre a prévia compilada. |
+
+As oito capturas finais coincidem byte a byte com as capturas da base; nenhuma alteração visual precisou ser versionada. CSS e Magnetic permanecem sem mudanças. O diff também foi conferido com `git diff --check`.
 
 ## Revisão e aprovação
 
