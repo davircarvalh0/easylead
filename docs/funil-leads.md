@@ -1,4 +1,4 @@
-﻿# Funil de Leads
+# Funil de Leads
 
 O funil é a visualização principal em Leads. Usa Novo, Em contato, Proposta e Ganho; Perdido aparece como saída lateral. A largura representa a sequência visual de etapas, não uma taxa de conversão nem uma escala de contagem.
 
@@ -16,7 +16,7 @@ Regras em `src/services/leadFunnelService.js`, expostas pelo Service e pelo Cont
 
 A primeira execução de navegador falhou ao localizar o campo de estágio por label exato, pois o label contém opções. Corrigido o teste para localizar o combobox pelo nome acessível. A execução seguinte passou nos dois tamanhos.
 
-Transição importada da entrega publicada 09332b3, incluindo teste e vídeos. Integração orbital e prévia final aguardam publicação da dependência; não foi gerada uma prévia parcial nem feito merge na main.
+Transição importada da entrega publicada 09332b3, incluindo teste e vídeos. A integração orbital e a prévia final foram concluídas na rodada seguinte; veja revisao-integrada.md para os resultados finais. Não foi feito merge na main.
 
 ## Regressão com transição incorporada
 
