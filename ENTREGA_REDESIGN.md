@@ -47,3 +47,29 @@ Skills utilizadas sob demanda: vercel-react-best-practices da biblioteca (`neGYG
 Revisão solicitada ao Revisor GitHub Copilot, incluindo react-doctor da fonte preservada na tarefa de importação, percurso, cliques precisos, mobile, teclado e movimento reduzido. Este registro não antecipa seu parecer. A verificação automatizada de toque é emulada no Chromium; não equivale a teste físico em iOS/Android. A fonte DM Sans mantém o carregamento externo já existente e possui fallback de sistema.
 
 Entrega na branch desta conversa, conforme fluxo da plataforma. **Expansão e mesclagem em main aguardam aprovação visual do usuário.**
+
+## Conferência após a correção sobre a stack
+
+Implementador · Codex conferiu o código efetivo: `index.html` carrega `src/main.jsx`, que importa React e monta `<App/>` via `createRoot`; `Magnetic.jsx` é um componente React. A prévia carrega os bundles gerados dessa entrada pelo Vite. Não foi encontrada divergência: a compilação independente comparou os três arquivos de `previa/` byte a byte e todos coincidiram. O protótipo de Produto continua sendo referência visual, não a aplicação entregue.
+
+Acrescentei comandos explícitos de compilação, execução e verificação da prévia e uma configuração Playwright que serve o build real. `README.md` explica como executar a aplicação. Node.js executa as ferramentas Vite e os testes; não foi solicitado nem criado um backend. Versões efetivamente instaladas nesta conferência: Node.js 24.14.1, React/React DOM 19.3.1 e Vite 7.3.8 (as faixas declaradas no pacote são ^19.2.0 e ^7.2.0).
+
+Verificação nesta rodada:
+
+- `npm run check:preview`: saída 0, compilação independente aprovada e três arquivos idênticos, incluindo JS e CSS.
+- `npm test`: saída 0, dois testes de domínio aprovados.
+- `npm run test:preview`: saída 0, seis testes aprovados sobre a aplicação compilada; inclui percurso, persistência, filtros, teclado, clique durante efeito, movimento reduzido e contextos desktop/mobile. Teste mobile permanece emulação Chromium.
+- `git diff --check`: saída 0.
+
+As seis skills atribuídas foram recarregadas da biblioteca, sem alterar configurações dos agentes:
+
+| Skill | Aplicabilidade nesta conferência |
+| --- | --- |
+| vercel-react-best-practices (`neGYGk5pqLrLmpfc5CwBO`) | Conferidos estado derivado, imports diretos, inicialização preguiçosa e limpeza do listener de navegação. Sem memoização especulativa. |
+| react-patterns (`fJXdIyR6Hsl4W87Klldyw`) | Agora carregada da biblioteca. Conferidos componentes React, composição, hooks no topo, labels e gerenciamento de foco. Não é necessário recuperar a cópia antiga para esta rodada. |
+| gsap-react (`ajI1dgRafMXzItg8JGg-1`) | Lida; padrões de useGSAP/contexto só se aplicam a código GSAP. Mantido o efeito CSS/React já aprovado, sem migração de animação nesta conferência de stack. |
+| react-hook-form (`RVhP38LUka_kLVVV8faMP`) | Lida; regras de useForm/useWatch específicas da biblioteca não se aplicam aos formulários controlados existentes. Não introduzida migração de formulários nesta correção de pipeline. |
+| react-native-best-practices (`Z3see01MpyGN1zyY65t7P`) | Lida; aplicação web React DOM, sem Hermes, Metro ou módulos nativos. Mantido o princípio de não otimizar sem medição. |
+| clerk-react-patterns (`q7uNBMMfXYV080tQagC1s`) | Lida; não há autenticação Clerk neste recorte. Não adicionados login, provider ou novas credenciais. |
+
+Nenhuma mudança de visual, regra de negócio, autenticação ou plataforma nativa. A indicação de espera visual como tratada não foi interpretada como autorização para merge.
