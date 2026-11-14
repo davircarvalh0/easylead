@@ -1,0 +1,2 @@
+# Preserve upstream skill bytes, including line endings, across checkouts.
+skills-import/sources/** -text

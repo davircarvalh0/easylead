@@ -13,6 +13,19 @@ npm run dev
 
 Abra o endereço exibido pelo Vite. As rotas usam `#`, permitindo recarregar qualquer detalhe sem configuração de servidor.
 
+A interface é escrita em componentes React (`src/main.jsx` e `src/Magnetic.jsx`). Node.js executa o Vite, que transforma JSX e empacota React, JavaScript e CSS para o navegador. O HTML é o ponto de entrada da aplicação; os arquivos em `previa/assets/` são o resultado dessa compilação. Node.js também executa os testes de domínio. Os dados continuam locais ao navegador.
+
+Para testar exatamente a prévia versionada:
+
+```sh
+npm run check:preview
+npm run preview -- --port 5186 --strictPort
+```
+
+Abra `http://localhost:5186`. `check:preview` faz uma compilação independente do código React e compara todos os arquivos com `previa/`, byte a byte; falha se a prévia estiver desatualizada. Após mudar a interface, atualize-a com `npm run build:preview`. Para executar a suíte automatizada sobre essa compilação, pare o servidor manual e rode `npm run test:preview`. A suíte inicia seu próprio servidor na porta 5186.
+
+Na revisão de alterações da tarefa, o botão **Preview** em `previa/index.html` abre a mesma aplicação compilada. As capturas e o roteiro visual estão em [ENTREGA_REDESIGN.md](ENTREGA_REDESIGN.md).
+
 ```sh
 npm run build
 npm test

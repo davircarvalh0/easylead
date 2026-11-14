@@ -1,0 +1,709 @@
+[
+  {
+    "name": "gsap-react",
+    "repository": "https://github.com/greensock/gsap-skills",
+    "commit": "aed9cfd3277740755f6bfc1155c7aa645403b760",
+    "sourceDirectory": "skills/gsap-react",
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 6565,
+        "sha256": "88e2a5312b45e8cc7b3c496637ff5bc9af2ae9c925b555c8b235b34cbc989d74"
+      }
+    ]
+  },
+  {
+    "name": "react-native-best-practices",
+    "repository": "https://github.com/callstackincubator/agent-skills",
+    "commit": "59e9d17446a248b21d86f078fcd0bd2d36db1ca4",
+    "sourceDirectory": "skills/react-native-best-practices",
+    "files": [
+      {
+        "path": "POWER.md",
+        "bytes": 8312,
+        "sha256": "7e39898ec7b7e3335fbc8d290bd3b806020435fecfbc1c5e98ebfd31b2798999"
+      },
+      {
+        "path": "SKILL.md",
+        "bytes": 12348,
+        "sha256": "abdbb7fc34ad739420fe43632e0baa1d646a01d097c6905211aa8b5b41957bf1"
+      },
+      {
+        "path": "agents/openai.yaml",
+        "bytes": 227,
+        "sha256": "13d867840f5d10f87256653bc71da8de508ad13b10fd6931e1eb29cdd8ceb9e6"
+      },
+      {
+        "path": "references/bundle-analyze-app.md",
+        "bytes": 5461,
+        "sha256": "2c43a39bdad593091b2ec6f3fb0307096feb854bf11f4187f31f237a50cf76ca"
+      },
+      {
+        "path": "references/bundle-analyze-js.md",
+        "bytes": 7029,
+        "sha256": "4e97a27c06ea91b49cacb18230f63bad392fc949e40d348787aab39755e8da41"
+      },
+      {
+        "path": "references/bundle-barrel-exports.md",
+        "bytes": 5406,
+        "sha256": "187ac5a80822d22dbccdf3bb07f0fa60905b494285e735b30d97e79961fdfca5"
+      },
+      {
+        "path": "references/bundle-code-splitting.md",
+        "bytes": 7545,
+        "sha256": "4cf3cae585f9ae7f64fc55af7af71d70e5ac3acb93fa6264a3186cc79d939cd7"
+      },
+      {
+        "path": "references/bundle-hermes-mmap.md",
+        "bytes": 4133,
+        "sha256": "5eca09ae487bce41436461cc7d8d96fa8861b39815a2b930263807591778b757"
+      },
+      {
+        "path": "references/bundle-library-size.md",
+        "bytes": 4150,
+        "sha256": "cb87a2d8a3cddd508b524b6b627ca775f5fc5a613f29d8a0f7e037ba054e4a7e"
+      },
+      {
+        "path": "references/bundle-native-assets.md",
+        "bytes": 5041,
+        "sha256": "766fb2d22a3cb8b5f26969fd4afc3caf1dd32fd8f2da6bf9233aac48c2bbfd42"
+      },
+      {
+        "path": "references/bundle-r8-android.md",
+        "bytes": 5356,
+        "sha256": "9f49269531e906e25f26eeb2a77b9af76bd562065d537c3cc0155301eb7bf9c0"
+      },
+      {
+        "path": "references/bundle-tree-shaking.md",
+        "bytes": 5690,
+        "sha256": "3033f006a07a430ca4e2381b456774e59b3ace4fe0aee38740291cd0f305e9ca"
+      },
+      {
+        "path": "references/images/bundle-treemap-source-map-explorer.png",
+        "bytes": 667493,
+        "sha256": "280495fc828cde33b0c1a83a02031d3ab484c0af240ab6fc408a313aa445fd3b"
+      },
+      {
+        "path": "references/images/controlled-textinput-pingpong.png",
+        "bytes": 127223,
+        "sha256": "883cc345490473110ce93536a39c224f692229f691da1203b084488569f48781"
+      },
+      {
+        "path": "references/images/devtools-flamegraph.png",
+        "bytes": 520655,
+        "sha256": "b257c6dbf4304aa6e2ca40ec357a13441cfa2f3cb84d5653af56484861a63c94"
+      },
+      {
+        "path": "references/images/emerge-xray-ios.png",
+        "bytes": 439669,
+        "sha256": "41d00a6e90e89bcc941daa41ad2bfc742e3817e421b4cd6e42fb7f43d304c3b2"
+      },
+      {
+        "path": "references/images/expo-atlas-treemap.png",
+        "bytes": 618904,
+        "sha256": "3e4ef5894d949f0e6a445329b33e3346dc8bded3855e18afe500584cd4c761a2"
+      },
+      {
+        "path": "references/images/flashlight-flatlist-vs-flashlist.png",
+        "bytes": 313215,
+        "sha256": "a9e57f2673669bed947e57c121ad85088e237f462362382008b3bb46570c72ca"
+      },
+      {
+        "path": "references/images/fps-drop-graph.png",
+        "bytes": 152493,
+        "sha256": "bb43718e87b140307e37d66dc2a5332e882881c4f8a14629b96072913b2ca580"
+      },
+      {
+        "path": "references/images/memory-heap-snapshot.png",
+        "bytes": 308032,
+        "sha256": "0cd36795ce16814717cad712b744ad4e523e1acef95263a3b49a8bb24ede8bad"
+      },
+      {
+        "path": "references/images/tti-warm-start-diagram.png",
+        "bytes": 127254,
+        "sha256": "6fc7cbf22a8ce657fe8d31978e7adfec24cd88a9a58c3d2a302f86fb64ff6a8e"
+      },
+      {
+        "path": "references/images/view-hierarchy-flattening.png",
+        "bytes": 2587021,
+        "sha256": "9edaac44f464730d3f5b6c2c0ccd19d2edf24fa358b4470c6ebc4a37b61753d7"
+      },
+      {
+        "path": "references/images/xcode-instruments-templates.png",
+        "bytes": 408360,
+        "sha256": "5d864f068bb1dc5edf9586a557260aa0f27b2b6fc96e473d8d5a8b3c2c1e836b"
+      },
+      {
+        "path": "references/images/xcode-thread-view.png",
+        "bytes": 178440,
+        "sha256": "f3e7b75b87ce445e36293fcac070eecdb0609557fffb98a8cd000bcbe3e1b921"
+      },
+      {
+        "path": "references/js-animations-reanimated.md",
+        "bytes": 8015,
+        "sha256": "b0912deb98d8af8b8bf97d98789e39d467466be28cab9d96def7101b6e799b16"
+      },
+      {
+        "path": "references/js-atomic-state.md",
+        "bytes": 5267,
+        "sha256": "6005f5ba3e46c120d3c3fa38d1ea077bbc026c8c707dea0075025c84a4ff8254"
+      },
+      {
+        "path": "references/js-bottomsheet.md",
+        "bytes": 12199,
+        "sha256": "43eca23b45f2c100d506f51c21e56d72ae501147b5acec7b9fd1cbb92e2d08df"
+      },
+      {
+        "path": "references/js-concurrent-react.md",
+        "bytes": 6652,
+        "sha256": "0b2bab623b62136745e34ce135148f79311c3c4487068b0b0f2fa0b1fab851f2"
+      },
+      {
+        "path": "references/js-lists-flatlist-flashlist.md",
+        "bytes": 5998,
+        "sha256": "4d62b3a9d6325fc77cdc4fc18597d9e5d241e5afd37f9284babf0fc69ce0def7"
+      },
+      {
+        "path": "references/js-measure-fps.md",
+        "bytes": 5306,
+        "sha256": "5efca75bfbe57ebf1ec1e38df8704909e0df2e41df856715bb425d438cb48a34"
+      },
+      {
+        "path": "references/js-memory-leaks.md",
+        "bytes": 5301,
+        "sha256": "52d0f71f0addbd6b03e8a12e46fa7405a5ae68394f106081768e2625f1ffd838"
+      },
+      {
+        "path": "references/js-profile-react.md",
+        "bytes": 5871,
+        "sha256": "c7a283f68320de85d84940871e58c0c40b71182d704202d49a115ba98fdca716"
+      },
+      {
+        "path": "references/js-react-compiler.md",
+        "bytes": 7372,
+        "sha256": "70f873d84646260256e01b93f504468d645a4e57ad5f88eef5d090f63358aa1a"
+      },
+      {
+        "path": "references/js-uncontrolled-components.md",
+        "bytes": 5492,
+        "sha256": "4c27d770d1818edcb193612f141efe62f1ec907aa3aa8fbc54d15e677ffa54e7"
+      },
+      {
+        "path": "references/native-android-16kb-alignment.md",
+        "bytes": 3761,
+        "sha256": "d61c945db16abf89c03099138febb8be2f228187b94a534eab7c385290938806"
+      },
+      {
+        "path": "references/native-measure-tti.md",
+        "bytes": 6527,
+        "sha256": "f27bc1de4d443a9e49d372806aea91bf793bb4c7125e693db7cae3442eff57a1"
+      },
+      {
+        "path": "references/native-memory-leaks.md",
+        "bytes": 5627,
+        "sha256": "3b69f2545bcc541b81dde55c0e0d2803a87671dd7a64da848e041af43019b4f4"
+      },
+      {
+        "path": "references/native-memory-patterns.md",
+        "bytes": 5986,
+        "sha256": "cecf5b6eea44e3de9544976a9077b1b88d11bf5a336bf25cd27e094988ffb17d"
+      },
+      {
+        "path": "references/native-platform-setup.md",
+        "bytes": 3786,
+        "sha256": "767b2d7ee9889fb43eccaec15ef2601cc3e25706f85cef14f264ce052789572e"
+      },
+      {
+        "path": "references/native-profiling.md",
+        "bytes": 4358,
+        "sha256": "7830d1fd35fc52979b34d09646b8d237e895a3894d464ad16d6fd8bb32fe80c9"
+      },
+      {
+        "path": "references/native-sdks-over-polyfills.md",
+        "bytes": 6279,
+        "sha256": "ac9ca06c1f3a3646c4b75d2ca85039ed357cc117522d4d2de112dda5bd75cf2f"
+      },
+      {
+        "path": "references/native-threading-model.md",
+        "bytes": 6882,
+        "sha256": "7543ae88d708a382f0ec4d8fba987e7e89d8f2d2c954586a77a26c449e246b66"
+      },
+      {
+        "path": "references/native-turbo-modules.md",
+        "bytes": 5650,
+        "sha256": "39ca96ce0b787cbff25aa649508cb64ea8bbb1c07ddd08e10c1d6a6ac932ea41"
+      },
+      {
+        "path": "references/native-view-flattening.md",
+        "bytes": 5236,
+        "sha256": "483a25551f4d73199156599874d21d67731dbc4d1bc241ec672f064667265c24"
+      }
+    ]
+  },
+  {
+    "name": "clerk-react-patterns",
+    "repository": "https://github.com/clerk/skills",
+    "commit": "e131b19b06dd3fae68ab5900abe5fb1285ec0e08",
+    "sourceDirectory": "skills/clerk-react-patterns",
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 4397,
+        "sha256": "6abd612b52791c64bf371c443214a25e69b0fab85a8ffecc4c7478dcc733d527"
+      },
+      {
+        "path": "evals/evals.json",
+        "bytes": 4586,
+        "sha256": "d2468a89a047f7c6fd85a30c856d0096b6a16f72bdc3a47c194e414a6c940200"
+      },
+      {
+        "path": "references/custom-flows.md",
+        "bytes": 2900,
+        "sha256": "5e5cd70e593fa3ac0a0b119475b8675ae431224c0e8530bd13bd964d40f26444"
+      },
+      {
+        "path": "references/hooks.md",
+        "bytes": 2671,
+        "sha256": "a7fd67cd8cf9c6401e03b04a0ff958d6c653bd7526d3a970dd46e1a5554719ca"
+      },
+      {
+        "path": "references/protected-routes.md",
+        "bytes": 2230,
+        "sha256": "2e612f390382fd0b53682f15965b3523576bf05ecd8ef937084560bcc792e94a"
+      },
+      {
+        "path": "references/router-integration.md",
+        "bytes": 2064,
+        "sha256": "52d3e68bcdc01dc6a6953ee57814db548200175b946262c538275c61644e1e01"
+      },
+      {
+        "path": "templates/react-basic-auth/index.html",
+        "bytes": 300,
+        "sha256": "c04a056bb17e15764e187d00ffac0ebd79593e39288c477b99c46f2f5784201a"
+      },
+      {
+        "path": "templates/react-basic-auth/package.json",
+        "bytes": 429,
+        "sha256": "70c62fb878f2a24208c17d41eba7e6c06c4ae9233386cffbea704275b658a742"
+      },
+      {
+        "path": "templates/react-basic-auth/src/App.tsx",
+        "bytes": 310,
+        "sha256": "8fb51aa6dc99fad757289f699d13863638087ba4eee6e108875d02fe3a990db7"
+      },
+      {
+        "path": "templates/react-basic-auth/src/main.tsx",
+        "bytes": 288,
+        "sha256": "759657eb7f01391f7a9879a7d0faea2a7a2c714cb78bb53da1006940a687782f"
+      },
+      {
+        "path": "templates/react-basic-auth/tsconfig.json",
+        "bytes": 234,
+        "sha256": "aec98e2e964fea8bb4f8074716dab88403a02c349ac86789bd387d509a6c72d8"
+      },
+      {
+        "path": "templates/react-basic-auth/vite.config.ts",
+        "bytes": 132,
+        "sha256": "ccfbd497508ac4e5318ce7dfb2ef1c275d03423ed65c9be9a767ea79cc4e191b"
+      }
+    ]
+  },
+  {
+    "name": "react-doctor",
+    "repository": "https://github.com/millionco/react-doctor",
+    "commit": "dfffab3bd9f9da1977a7c23fa6bc5ed5abb4bdf6",
+    "sourceDirectory": "skills/react-doctor",
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 5919,
+        "sha256": "ded3d7d7b77626e5308e028733fddab0b586ea513e2e73eafc94ba56afb4160b"
+      },
+      {
+        "path": "references/explain.md",
+        "bytes": 4987,
+        "sha256": "e8165d0e35404711afe5a264582027c6f676276afc189302b32c3c38067cca8f"
+      }
+    ]
+  },
+  {
+    "name": "react-email",
+    "repository": "https://github.com/resend/react-email",
+    "commit": "f27d9e20825233cf7152053590b8dbd9bcf848ad",
+    "sourceDirectory": "skills/react-email",
+    "files": [
+      {
+        "path": "README.md",
+        "bytes": 2011,
+        "sha256": "0a77cf92d1992cfef525a77c32d6474323a01772351453acc5ddeb14bd7768eb"
+      },
+      {
+        "path": "SKILL.md",
+        "bytes": 14424,
+        "sha256": "6316bdbe822e49f93a709e81bc011569d1a1ea20f7de78cd33ea8a0501ad79b7"
+      },
+      {
+        "path": "TESTS.md",
+        "bytes": 23937,
+        "sha256": "65b8fe9fc42ed75a2453c139063ab8555003396a8f1c4e3f88766a2362bc73e4"
+      },
+      {
+        "path": "references/COMPONENTS.md",
+        "bytes": 11992,
+        "sha256": "c70a474382ec0a32711d9c56e28681adf8f1bad5bdb1d2f04b89c968a2c5fd21"
+      },
+      {
+        "path": "references/EDITOR.md",
+        "bytes": 12854,
+        "sha256": "d19fec375947b6a7abb749c87bb674e287672718c19c08096f2dd549ae9d1973"
+      },
+      {
+        "path": "references/I18N.md",
+        "bytes": 14698,
+        "sha256": "28fb07aac6c1dd6133cb2c2dfd59f74452f5e3d81de862da19631bffe9cee721"
+      },
+      {
+        "path": "references/PATTERNS.md",
+        "bytes": 22633,
+        "sha256": "b84e5f80daa412257ee526d225008907ed4b47397b40a75739e1a81ad32f6268"
+      },
+      {
+        "path": "references/SENDING.md",
+        "bytes": 3798,
+        "sha256": "868bca6cece17c500344a4b9ad81b78bc2dea90984a133d8cc1cdb9ef0e1ad45"
+      },
+      {
+        "path": "references/STYLING.md",
+        "bytes": 7819,
+        "sha256": "e373032522151ac5887196ce360f196ddd3e120e3fafeb8e7ada6b0fc43412f8"
+      }
+    ]
+  },
+  {
+    "name": "react-patterns",
+    "repository": "https://github.com/affaan-m/ecc",
+    "commit": "d2ef2680594f9a17526a6e1a2e18b3d242c5d17b",
+    "sourceDirectory": "skills/react-patterns",
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 11466,
+        "sha256": "f3208d44a5d553038c42e046cec4dc16e4a3d90a9dbf931f883a2e21919a64a9"
+      }
+    ]
+  },
+  {
+    "name": "react-router-framework-mode",
+    "repository": "https://github.com/remix-run/agent-skills",
+    "commit": "33578aae4aa36a90c9f8f602105a1ccb0f4efe45",
+    "sourceDirectory": "skills/react-router-framework-mode",
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 4590,
+        "sha256": "f3ea09caa569c280e6cb099590658f164a2c7d58c84932db59bd3c840782ff21"
+      },
+      {
+        "path": "references/actions.md",
+        "bytes": 9127,
+        "sha256": "fc345badd3c820d3ea73bc9a62e4e39e93de3c15aa402b36c3336acda0b8e8de"
+      },
+      {
+        "path": "references/data-loading.md",
+        "bytes": 3883,
+        "sha256": "22095706d3c730d50b2b037de7257d9290009648002d937851f2279273951081"
+      },
+      {
+        "path": "references/error-handling.md",
+        "bytes": 4566,
+        "sha256": "45ca0b41d8acce0c357fa11de55333ed69b72f4033c554761e0c90ae09dc09a3"
+      },
+      {
+        "path": "references/middleware.md",
+        "bytes": 6755,
+        "sha256": "7107a6e8fee78f0534eb31d64ed9eb0c13a2c01dd8135b255864b036a9807c92"
+      },
+      {
+        "path": "references/navigation.md",
+        "bytes": 4246,
+        "sha256": "6ea46f508ee3db016c16b6b8fce392198855b34627f0f73d54a036181b7c2bf2"
+      },
+      {
+        "path": "references/pending-ui.md",
+        "bytes": 6962,
+        "sha256": "67007486fadf3742ec0683194d07b44b7fa8cdabeb0f864cd28bd32d64f677fd"
+      },
+      {
+        "path": "references/rendering-strategies.md",
+        "bytes": 3938,
+        "sha256": "0e82e54dde74ac5ec1b77c4e9bfdf2b7280363e86518f556fc3e8a912d223616"
+      },
+      {
+        "path": "references/route-modules.md",
+        "bytes": 8692,
+        "sha256": "42aebe533ce7e05b98664a4300987af1867759b84b3511cb4ac419d6ace8d3e8"
+      },
+      {
+        "path": "references/routing.md",
+        "bytes": 6119,
+        "sha256": "13bd8a9465f61a7b1b1feca53b9b8debb678b944307ddf22a46dc5c3eeca19cf"
+      },
+      {
+        "path": "references/sessions.md",
+        "bytes": 10438,
+        "sha256": "10e644186a6f06be8fa3a044360884b4cf83c923dc4eaabbc241d9e5c9b59df5"
+      },
+      {
+        "path": "references/special-files.md",
+        "bytes": 12536,
+        "sha256": "7297b936bbaf37c62adb5b1f42588221dd4916a3c1ede7422449bb544610a34a"
+      },
+      {
+        "path": "references/type-safety.md",
+        "bytes": 4178,
+        "sha256": "3b32bca3b5fbca89231d9f8d754dfa1c2a656b70636a4ef8e13a4e0bc8696f64"
+      }
+    ]
+  },
+  {
+    "name": "react-mcp",
+    "repository": "https://github.com/assistant-ui/skills",
+    "commit": "b0609e66baff7e19f21053d5492464dcc22ec9c3",
+    "sourceDirectory": "assistant-ui/skills/react-mcp",
+    "files": [
+      {
+        "path": "SKILL.md",
+        "bytes": 9575,
+        "sha256": "7e9d6aceaf5d7fcabdfceaed12a22d0559547eea80218fb54246a2af29537676"
+      },
+      {
+        "path": "references/oauth.md",
+        "bytes": 4826,
+        "sha256": "ff2806c8061b5a228add790c6bff0a3948d872f61caeb71c8f7690d3f044cbf4"
+      },
+      {
+        "path": "references/setup.md",
+        "bytes": 7794,
+        "sha256": "823d016152defe463925087c2dcb8d281e2cd3629450845554da12ec9cb95639"
+      },
+      {
+        "path": "references/ui.md",
+        "bytes": 6977,
+        "sha256": "0ea84a2966b56e51bdd6d6d44d2f7d09b74119945855b2d06fbab09095a50f53"
+      }
+    ]
+  },
+  {
+    "name": "react-hook-form",
+    "repository": "https://github.com/pproenca/dot-skills",
+    "commit": "cf93c57cac89d6fc3e4194686000411567f5caf3",
+    "sourceDirectory": "skills/.curated/react-hook-form",
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "bytes": 10423,
+        "sha256": "0a0e6d4e9b033aa01331de93b115704488fdaebd58217149b19e3e11f0ab1cd3"
+      },
+      {
+        "path": "README.md",
+        "bytes": 4433,
+        "sha256": "801a4cf98924349f17f2edc6a3ac2176431bdbdea24373b413a225771fa78b5e"
+      },
+      {
+        "path": "SKILL.md",
+        "bytes": 6190,
+        "sha256": "cb317557846187cef84db9148e16994df1d7fc2be702bfb2ad85a720a333f2c3"
+      },
+      {
+        "path": "assets/templates/_template.md",
+        "bytes": 589,
+        "sha256": "c2105a36790e2dc2e55f57f94ec38f3b6188474711fe43282f2a7f89edaf87ad"
+      },
+      {
+        "path": "metadata.json",
+        "bytes": 1967,
+        "sha256": "a483f711606327eb99888ccf6116775c38329c481596ecf654f4bc43ff721851"
+      },
+      {
+        "path": "references/_sections.md",
+        "bytes": 2083,
+        "sha256": "6675eb41b7a3fb4a05e93f0ad59d0f4b2593da607174e99c7fbe11ddd68c9066"
+      },
+      {
+        "path": "references/array-disabled-silently-noops.md",
+        "bytes": 2397,
+        "sha256": "9e6b99aa68ed7464f627e3fc1f5162f25cf91eb489815f0e3ab0b22d3a3c2d79"
+      },
+      {
+        "path": "references/array-separate-crud-operations.md",
+        "bytes": 2003,
+        "sha256": "90a26eb42b60303c94cdd6ca46b234351bf8a2b5d22a8accbd1c83b9ef2e6921"
+      },
+      {
+        "path": "references/array-unique-fieldarray-per-name.md",
+        "bytes": 1738,
+        "sha256": "b14b3828473b810070561db689ad705b8b46610dfbe4ba9a5760d0936cf3d90b"
+      },
+      {
+        "path": "references/array-use-field-id-as-key.md",
+        "bytes": 2101,
+        "sha256": "f30be31bb2e481e779e37a050f68284b7afcd3d0c381a82986216a055db03f67"
+      },
+      {
+        "path": "references/ctrl-controller-field-props.md",
+        "bytes": 1731,
+        "sha256": "1d3107677d6740f2db856b792228507233dcee7de64fbba84bd2245faf2bacd0"
+      },
+      {
+        "path": "references/ctrl-usecontroller-isolation.md",
+        "bytes": 2892,
+        "sha256": "016c050cba16ac8172a5f6a6c6b042dbb374ee0a7aa82ec08a7080b2878157ad"
+      },
+      {
+        "path": "references/formcfg-async-default-values.md",
+        "bytes": 1796,
+        "sha256": "699d1f78c6f1eda68bb7112f5d0a194c6b14db0c9852185dbe141cc830b93d71"
+      },
+      {
+        "path": "references/formcfg-default-values.md",
+        "bytes": 2381,
+        "sha256": "04bb4e4f09dc19bb3f2fa6c9317b6df2ffc70d7163ab15b8b0b33b039641c930"
+      },
+      {
+        "path": "references/formcfg-disabled-prop.md",
+        "bytes": 3839,
+        "sha256": "3767f129326fc76ae6c73a4cc2986c50210b94fefc7f7c086d1865539ce8bf67"
+      },
+      {
+        "path": "references/formcfg-revalidate-mode.md",
+        "bytes": 2352,
+        "sha256": "c3830c86dd99f7078684fee2eee80cfa8930f3018b1ecf2d020847bd5c1f0ed3"
+      },
+      {
+        "path": "references/formcfg-should-unregister.md",
+        "bytes": 2517,
+        "sha256": "d24b9b8c1d52e1dccfb815df3a197058e932ba2ead6969d3d69840d0a720f6f9"
+      },
+      {
+        "path": "references/formcfg-transformed-values-generic.md",
+        "bytes": 3488,
+        "sha256": "2da028c1c0fda542ecc82206db5bc5c94c602c6f818923bc4dbdef6fbe761b32"
+      },
+      {
+        "path": "references/formcfg-useeffect-dependency.md",
+        "bytes": 2401,
+        "sha256": "43052f0007460ea8e9200be84191498a7ad4b75e5bbfde53bf66f36331d4281e"
+      },
+      {
+        "path": "references/formcfg-validation-mode.md",
+        "bytes": 2468,
+        "sha256": "ea191edfe00f85fa221850f40484d3461d7dc220e105337a70bcc3f6c758884e"
+      },
+      {
+        "path": "references/formcfg-values-prop.md",
+        "bytes": 2649,
+        "sha256": "7d26c6aebbd300363f6b482c2c98b2a052b374da421b8406b31089f16fd5b260"
+      },
+      {
+        "path": "references/formstate-async-submit-lifecycle.md",
+        "bytes": 3567,
+        "sha256": "3f16e0f33c0d1a80b6d0f8e4a1f38c5a0d67a55a00f79e7c21bc573dbed59252"
+      },
+      {
+        "path": "references/formstate-avoid-isvalid-with-onsubmit.md",
+        "bytes": 2663,
+        "sha256": "2ac894e4e9d5651bc2b84ed3e60868cd213b7875262b13751e4061ab10cdfdea"
+      },
+      {
+        "path": "references/formstate-destructure-formstate.md",
+        "bytes": 2339,
+        "sha256": "b74be80646e86a5bcd6768ee0f60751c3e973ba5c9afbd1ae490cddfb48a0ea2"
+      },
+      {
+        "path": "references/formstate-handlesubmit-oninvalid.md",
+        "bytes": 2485,
+        "sha256": "561803fa26005e5dbcb07bf49d81fbaa5421c7fe031000f2847a64bf4dd2b916"
+      },
+      {
+        "path": "references/formstate-reset-default-values.md",
+        "bytes": 3190,
+        "sha256": "a316cc097e9dc0ca6354edd9c9b53e0c4e4d16c8f0bc48aaa45ca1a0490704df"
+      },
+      {
+        "path": "references/formstate-useformstate-isolation.md",
+        "bytes": 2301,
+        "sha256": "733b02b99175f9a762f86a8c34d92ed98c95446fc69a51fd5b9361b7f18ce380"
+      },
+      {
+        "path": "references/integ-shadcn-form-import.md",
+        "bytes": 1637,
+        "sha256": "4541b808c9721123a2aac1207355cc3da68d4a59926689e0f4e37f365dc95e17"
+      },
+      {
+        "path": "references/integ-shadcn-select-wiring.md",
+        "bytes": 1904,
+        "sha256": "6a89808d8ff4a67c73144be1b7664986be83f89885f6f0aefc3b58c840426e82"
+      },
+      {
+        "path": "references/integ-value-transform.md",
+        "bytes": 1554,
+        "sha256": "570419904ec6d7e76432b6bdc1af7891c6891ab16b0c56a9d8e8f3a30c49bd72"
+      },
+      {
+        "path": "references/sub-avoid-watch-in-render.md",
+        "bytes": 1604,
+        "sha256": "86460dd45ee08c1448f3bda2095a55ccdafc9862eb70cc966fde8b98e382eec1"
+      },
+      {
+        "path": "references/sub-memo-cannot-beat-context.md",
+        "bytes": 2359,
+        "sha256": "a05dba46c598e654f2b4dfe87509cf5cd8b3e93105e5378600083592767ca949"
+      },
+      {
+        "path": "references/sub-render-prop-components.md",
+        "bytes": 3651,
+        "sha256": "21cb94d280236de1ed4c7c22b52b1531d622bb90d73036d40a810d7775aac726"
+      },
+      {
+        "path": "references/sub-subscribe-outside-react.md",
+        "bytes": 3253,
+        "sha256": "b3bd8e6281e2d959e3c9edc446958f58fb526d6146ad7de8d5f794eb0876d773"
+      },
+      {
+        "path": "references/sub-useformcontext-sparingly.md",
+        "bytes": 1659,
+        "sha256": "1299c443608782b3eb00a731381f24d295a8e8614c7972e5157fe60e6e14fb89"
+      },
+      {
+        "path": "references/sub-usewatch-over-watch.md",
+        "bytes": 2432,
+        "sha256": "d8413d161d7cccb187bb5a8229798387f8a564821c17274d7f2d0786430f4c69"
+      },
+      {
+        "path": "references/sub-watch-specific-fields.md",
+        "bytes": 1847,
+        "sha256": "0223f086b1b121bba7b9f8381510b84cb540f925aa162e48515e893089274714"
+      },
+      {
+        "path": "references/valid-delay-error.md",
+        "bytes": 2127,
+        "sha256": "7f68296104d6e70078b902573e2f5ed1e2189cdbbf750acfaca828bcb1b7cc85"
+      },
+      {
+        "path": "references/valid-resolver-caching.md",
+        "bytes": 2771,
+        "sha256": "a8cefb26eccdeb635862dc00f921f0134543752ab9e4eb2a46d7a3d7f882e94d"
+      },
+      {
+        "path": "references/valid-server-errors.md",
+        "bytes": 3636,
+        "sha256": "74e6fe7d78966e9db6a45bddb73cb3093ddb69b3f91de32fd5561b70564f9e8a"
+      },
+      {
+        "path": "references/valid-valueasnumber-empty-nan.md",
+        "bytes": 2754,
+        "sha256": "b12b9db6df9e4ddbf8197fec4fc81f94b940f016032bf46e0dc5fffaf3ad7ee8"
+      }
+    ]
+  }
+]
