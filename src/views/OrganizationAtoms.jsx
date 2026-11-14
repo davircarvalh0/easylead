@@ -39,7 +39,7 @@ export function MemberForm({areas, initialAreaId = '', saveMember}) {
  </section>;
 }
 
-export function OrganizationAtoms({state, atoms, selectedId, saveMember, projectList}) {
+export function OrganizationAtoms({state, atoms, selectedId, projectList}) {
  const selected = state.areas.find(area=>area.id === selectedId);
  return <div className="organization-atoms">
   <p>Explore as subáreas. Quanto mais integrantes, maior a esfera. A órbita pausa ao interagir ou abrir uma subárea. Use Tab ou as setas para navegar e Enter para abrir.</p>
@@ -51,8 +51,6 @@ export function OrganizationAtoms({state, atoms, selectedId, saveMember, project
     <a href={'#/integrantes?area='+selected.id}>Ver no diretório de Integrantes →</a>
     <h3>Projetos vinculados</h3>{projectList(state.projects.filter(project=>project.areaId===selected.id))}
    </div>
-   <MemberForm key={selected.id} areas={state.areas} initialAreaId={selected.id} saveMember={saveMember}/>
   </section>}
-  {!selectedId && <MemberForm areas={state.areas} saveMember={saveMember}/>}
  </div>;
 }

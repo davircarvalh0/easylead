@@ -7,12 +7,21 @@ for (const width of [360,1280]) test(`órbita: seleção, pausa e retorno em ${w
  await expect(scene).toHaveClass(/is-live/);
  const node=scene.locator('.atom-node').first();
  const position=()=>node.evaluate(el=>el.style.left+' '+el.style.top);
+ await expect(scene.locator('.orb-core')).toHaveCount(0);
+ for(let sample=0;sample<8;sample++) {
+  const fits=await scene.evaluate(el=>{const box=el.getBoundingClientRect();return [...el.querySelectorAll('.atom-node')].every(n=>{const b=n.getBoundingClientRect();return b.left>=box.left && b.right<=box.right && b.top>=box.top && b.bottom<=box.bottom;});});
+  expect(fits).toBe(true);await page.waitForTimeout(100);
+ }
+ await page.screenshot({path:`test-results/orbit-${width}.png`,fullPage:true});
  const start=await position();await page.waitForTimeout(250);expect(await position()).not.toBe(start);
  await node.focus();const focused=await position();await page.waitForTimeout(200);expect(await position()).toBe(focused);
  await page.keyboard.press('Enter');await expect(page.locator('.subarea-atom-detail')).toBeVisible();
+ await expect(page.locator('.member-form-card')).toHaveCount(0);
+ await page.goto('/#/integrantes?area=a0');
  await expect(page.getByLabel('Subárea (obrigatória)')).toHaveValue('a0');
  await page.getByLabel('Nome (obrigatório)').fill('Pessoa Orbital');
  await page.getByRole('button',{name:'Salvar integrante'}).click();
+ await page.goto('/#/organizacao');
  await expect(node).toContainText('2 integrantes');
  const sizes=await scene.locator('.atom-node').evaluateAll(nodes=>nodes.map(n=>parseFloat(n.style.getPropertyValue('--atom-desktop'))));
  expect(sizes[0]).toBeGreaterThan(sizes[1]);
@@ -36,7 +45,7 @@ test('toque e perda do contexto mantêm as ações',async({browser})=>{
  await page.touchscreen.tap(box.x+box.width/2,box.y+box.height/2);await expect(page.locator('.subarea-atom-detail')).toBeVisible();
  await page.locator('.citi-orb canvas').evaluate(canvas=>canvas.dispatchEvent(new Event('webglcontextlost',{cancelable:true})));
  await expect(page.locator('.citi-orb')).toHaveClass(/is-static/);
- await page.locator('.atom-node').nth(1).tap();await expect(page.getByLabel('Subárea (obrigatória)')).toHaveValue('a1');
+ await page.locator('.atom-node').nth(1).tap();await expect(page.locator('.atom-node').nth(1)).toHaveAttribute('aria-current','page');
  await context.close();
 });
 

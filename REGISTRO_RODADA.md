@@ -109,3 +109,8 @@ O Implementador já estava concluído quando esta auditoria foi feita, impedindo
   2. Protótipo interativo da proposta em [proposta-visual/index.html](proposta-visual/index.html) (com [proposta-visual/style.css](proposta-visual/style.css) e [proposta-visual/app.js](proposta-visual/app.js)) para avaliação visual imediata do percurso *Página inicial → Lead → Projeto vinculado → Área e responsáveis* nos modos Desktop (1280px) e Celular (360px).
   3. Pranchas visuais estáticas em SVG para [Desktop 1280px](proposta-visual/desktop-percurso.svg) e [Mobile 360px](proposta-visual/mobile-percurso.svg).
 - **Como foi verificado:** conferência de todos os seletores e fluxos exigidos por `tests/domain.test.js` e `tests/flow.spec.js`, execução local de `npm test` (2/2 aprovados) e `git diff --check` com código 0, e **aprovação explícita do usuário via cartão** (`q-NYL7mJYDTdjE2xT939J_z`) confirmando: (1) a proposta visual desktop e mobile (tema escuro grafite `#0B0E0D` + verde CITi `#00E676`, barra superior compacta sem sidebar fixa e percurso integrado por divisórias discretas) e (2) a regra de priorização de leads por urgência de ação na página inicial (`Ganho` sem projeto → `Proposta` → `Em contato` → `Novo`, mantendo o indicador `Leads abertos = Novo + Em contato + Proposta`). Proposta liberada para implementação na tarefa #6.
+
+
+## Rodada de proporcoes e Organizacao ampla
+
+Entregas integradas seletivamente, previa reconstruida e evidencias atualizadas. Resultados por colaborador e comandos em docs/revisao-integrada.md. Sem merge na main; revisao por IA e aprovacao visual pendentes.

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "test": "node --test tests/domain.test.js",
+    "test": "node --test tests/*.test.js",
     "test:e2e": "playwright test",
     "build:preview": "vite build --base ./ --outDir previa",
     "preview": "vite preview --outDir previa --host 127.0.0.1",

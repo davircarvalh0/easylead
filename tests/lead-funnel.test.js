@@ -17,3 +17,22 @@ test('participação mantém denominador, cruza filtros e responde a mudança de
  assert.equal(leadFunnel(state,{segment:'A',area:'a0',phase:'Delivery',search:'Aurora'}).total,1);
  assert.equal(leadFunnel(state,{segment:'B',area:'a0'}).total,0);
 });
+
+
+test('amostra 2/3/5 mantem participacao do recorte apos selecionar e mover',()=>{
+ let state=structuredClone(seed);
+ state.leads=Array.from({length:10},(_,i)=>({...seed.leads[0],id:`sample-${i}`,stage:i<2?'Novo':i<5?'Em contato':'Proposta',clientSegment:i<5?'A':'B'}));
+ let model=leadFunnel(state,{stage:'Proposta'});
+ assert.equal(model.total,10);
+ assert.deepEqual(model.rows.map(r=>r.participation),[20,30,50,0,0]);
+ assert.equal(model.items.length,5);
+ model=leadFunnel(state,{segment:'A',stage:'Novo'});
+ assert.equal(model.total,5);
+ assert.deepEqual(model.rows.map(r=>r.participation),[40,60,0,0,0]);
+ state=saveLead(state,{...state.leads[0],stage:'Proposta'},'sample-0');
+ model=leadFunnel(state,{segment:'A',stage:'Novo'});
+ assert.equal(model.total,5);
+ assert.deepEqual(model.rows.map(r=>r.participation),[20,60,20,0,0]);
+ assert.equal(model.items.length,1);
+ assert.equal(leadFunnel(state,{search:'inexistente'}).total,0);
+});

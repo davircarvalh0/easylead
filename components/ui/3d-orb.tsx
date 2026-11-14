@@ -4,7 +4,8 @@ import './3d-orb.css';
 type Atom = {id: string; name: string; count: number; desktopDiameter: number; mobileDiameter: number};
 type Props = {atoms: Atom[]; selectedId?: string};
 
-// Adapted from the supplied Globe: local wireframe, atmosphere and a container-sized scene.
+const colors = ['#00e676', '#00e5ff', '#448aff', '#b388ff', '#ffb300'];
+const colorFor = (id: string) => colors[Number(id.replace(/\D/g, '')) % colors.length] || colors[0];
 export default function Globe({atoms, selectedId}: Props) {
  const host = useRef<HTMLDivElement>(null);
  const links = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -31,32 +32,38 @@ export default function Globe({atoms, selectedId}: Props) {
    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
    renderer.domElement.setAttribute('aria-hidden', 'true');
    container.prepend(renderer.domElement);
-   const core = new THREE.Mesh(new THREE.SphereGeometry(1.35, 32, 24), new THREE.MeshBasicMaterial({color: 0x00e676, wireframe: true, transparent: true, opacity: .5}));
-   scene.add(core);
-   const glow = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 24), new THREE.MeshBasicMaterial({color: 0x00e676, transparent: true, opacity: .08, side: THREE.BackSide, blending: THREE.AdditiveBlending}));
-   scene.add(glow);
-   scene.add(new THREE.AmbientLight(0x99ffbb, 2));
-   const light = new THREE.PointLight(0x00ff88, 50); light.position.set(0, 4, 8); scene.add(light);
+   scene.add(new THREE.AmbientLight(0xffffff, 2));
+   const light = new THREE.PointLight(0xffffff, 80); light.position.set(0, 4, 8); scene.add(light);
    const spheres = atoms.map(atom => {
-    const mesh = new THREE.Mesh(new THREE.SphereGeometry(.28 + Math.sqrt(atom.count) * .14, 24, 16), new THREE.MeshPhongMaterial({color: 0x008844, shininess: 80}));
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), new THREE.MeshPhysicalMaterial({color: colorFor(atom.id), transparent: true, opacity: .38, roughness: .12, metalness: .08, clearcoat: 1, clearcoatRoughness: .06}));
     scene.add(mesh); return mesh;
    });
    const ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(Array.from({length:128}, (_,i) => new THREE.Vector3(Math.cos(i /128*Math.PI*2)*5.7, Math.sin(i/128*Math.PI*2)*3.6, 0))), new THREE.LineBasicMaterial({color:0x166d42}));
    scene.add(ring);
-   let width = 1, height = 1, frame = 0, last = 0, phase = 0;
+   let width = 1, height = 1, frame = 0, last = 0, phase = 0, rx = 6.8, ry = 4.1;
    const resize = new ResizeObserver(() => {
     width = container.clientWidth; height = container.clientHeight;
-    camera.aspect = width / height; camera.position.z = width < 600 ? 29 : 19;
-    ring.scale.set(width < 600 ? 3.7/5.7 : 1, width < 600 ? 8.5/3.6 : 1, 1);
+    camera.aspect = width / height;
+    const mobile = width < 600;
+    rx = mobile ? 4.1 : 6.8; ry = mobile ? 6.8 : 4.1;
+    // Fit the entire orbit plus the largest HTML target, including labels.
+    const marginX = Math.max(60, ...atoms.map(a => (mobile ? a.mobileDiameter : a.desktopDiameter)/2 + 12));
+    const marginY = marginX + 36;
+    const usableX = Math.max(.1, 1 - marginX * 2 / width);
+    const usableY = Math.max(.1, 1 - marginY * 2 / height);
+    camera.position.z = Math.max(rx / (usableX * camera.aspect), ry / usableY) / Math.tan(Math.PI/8) + 1.4;
+    ring.scale.set(rx/5.7, ry/3.6, 1);
     camera.updateProjectionMatrix(); renderer.setSize(width, height);
    });
    resize.observe(container);
    function draw(now: number) {
     const dt = Math.min((now-last)/1000 || 0, .05); last = now;
-    if (!paused.current && !selection.current) { phase += dt * .12; core.rotation.y += dt*.08; }
+    if (!paused.current && !selection.current) { phase += dt * .12; }
     spheres.forEach((sphere, i) => {
      const a = phase + i / Math.max(atoms.length,1)*Math.PI*2;
-     sphere.position.set(Math.cos(a)*(width<600?3.7:5.7), Math.sin(a)*(width<600?8.5:3.6), Math.sin(a)*1.2);
+     sphere.position.set(Math.cos(a)*rx, Math.sin(a)*ry, Math.sin(a)*1.2);
+     const diameter = width < 600 ? atoms[i].mobileDiameter : atoms[i].desktopDiameter;
+     sphere.scale.setScalar(diameter / height * (camera.position.z - sphere.position.z) * Math.tan(Math.PI/8));
      const point = sphere.position.clone().project(camera);
      const link = links.current[i];
      if (link) { link.style.left = `${(point.x+1)*width/2}px`; link.style.top = `${(1-point.y)*height/2}px`; }
@@ -88,9 +95,8 @@ export default function Globe({atoms, selectedId}: Props) {
   if (offset && index >= 0) { event.preventDefault(); links.current[(index+offset+atoms.length)%atoms.length]?.focus(); }
  }
  return <div className={`citi-orb ${live?'is-live':'is-static'}`} ref={host} onPointerEnter={()=>{paused.current=true;}} onPointerLeave={()=>{paused.current=false;}} onFocusCapture={()=>{paused.current=true;}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget)) paused.current=false;}} onPointerDownCapture={()=>{paused.current=true;}}>
-  <div className="orb-core" aria-hidden="true">CITi</div>
   <nav className="orb-links" aria-label="Subáreas da organização" onKeyDown={move}>
-   {atoms.map((atom,i)=><a ref={el=>{links.current[i]=el;}} key={atom.id} className="atom-node" href={'#/organizacao/'+atom.id} aria-current={selectedId===atom.id?'page':undefined} style={{'--atom-desktop':atom.desktopDiameter+'px','--atom-mobile':atom.mobileDiameter+'px'} as React.CSSProperties}>
+   {atoms.map((atom,i)=><a ref={el=>{links.current[i]=el;}} key={atom.id} className="atom-node" href={'#/organizacao/'+atom.id} aria-current={selectedId===atom.id?'page':undefined} style={{'--orb-color':colorFor(atom.id),'--atom-desktop':atom.desktopDiameter+'px','--atom-mobile':atom.mobileDiameter+'px'} as React.CSSProperties}>
     <span className="atom-sphere" aria-hidden="true"/><strong>{atom.name}</strong><span className="atom-count-badge">{atom.count} {atom.count===1?'integrante':'integrantes'}</span>
    </a>)}
   </nav>
