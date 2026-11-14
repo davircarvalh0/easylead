@@ -38,6 +38,8 @@ export function createLeadProjectService(repository = createStateRepository()) {
     return state;
   }
   return {
+    organizationAtoms,
+    saveMember: (state, data, id) => persist(saveMember(state, data, id)),
     filterProjects, calculateAverageMetrics, valueBlocks,
     addValueDemo: state => persist(addValueDemo(state)),
     changePhase: (state,id) => persist(changePhase(state,id)),
@@ -133,4 +135,24 @@ export function addValueDemo(state) {
   next=convert(next,demoId,{name,areaId,ownerId,contractValue:value,phase:id==='l0'?'Delivery':'Discovery',squadName:id==='l0'?'Squad Aurora IA':'Squad Horizonte'}).state;
  }
  return next;
+}
+
+export function saveMember(state, data, id = crypto.randomUUID()) {
+ const name = typeof data.name === 'string' ? data.name.trim() : '';
+ if (!name) throw Error('Preencha o nome do integrante.');
+ if (!state.areas.some(area => area.id === data.areaId)) throw Error('Selecione uma subárea válida.');
+ if (state.members.some(member => member.id === id)) throw Error('Integrante já cadastrado.');
+ const role = typeof data.role === 'string' ? data.role.trim() : '';
+ return {...state, members: [...state.members, {id, name, areaId: data.areaId, role: role || 'Integrante'}]};
+}
+export function organizationAtoms(state) {
+ const counts = new Map(state.areas.map(area => [area.id, 0]));
+ for (const member of state.members) if (counts.has(member.areaId)) counts.set(member.areaId, counts.get(member.areaId) + 1);
+ const min = Math.min(...counts.values());
+ const max = Math.max(1, ...counts.values());
+ return state.areas.map(area => {
+  const count = counts.get(area.id);
+  const ratio = max === min ? 0.45 : Math.sqrt((count - min) / (max - min));
+  return {...area, count, desktopDiameter: Math.round(108 + ratio * 88), mobileDiameter: Math.round(88 + ratio * 56)};
+ });
 }

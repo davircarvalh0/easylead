@@ -141,3 +141,43 @@ test('blocos distinguem valores e excluem não contratos, mantendo escala global
  assert.equal(valueBlocks(noContract,'projects').unvalued.length,2);
  assert.equal(seed.projects.length,0);
 });
+
+import {saveMember, organizationAtoms} from '../src/services/leadProjectService.js';
+test('cadastro mínimo persiste sem alterar dados existentes e recalcula população',()=>{
+ let raw;
+ const storage={getItem:()=>raw || null,setItem:(_,value)=>{raw=value;}};
+ const service=createLeadProjectService(createStateRepository(()=>storage));
+ const initial=service.load();
+ let next=initial;
+ for(let i=0;i<5;i++) next=service.saveMember(next,{name:`  Pessoa ${i}  `,areaId:'a0'},`new-${i}`);
+ assert.equal(next.members.at(-1).role,'Integrante');
+ assert.equal(next.members.at(-1).name,'Pessoa 4');
+ assert.deepEqual(initial.members,seed.members);
+ assert.deepEqual(next.projects,initial.projects);
+ const atoms=organizationAtoms(next);
+ assert.equal(atoms.find(a=>a.id==='a0').count,6);
+ assert.equal(atoms.find(a=>a.id==='a0').desktopDiameter,196);
+ assert.equal(atoms.find(a=>a.id==='a4').desktopDiameter,108);
+ assert.equal(atoms.find(a=>a.id==='a0').mobileDiameter,144);
+ assert.equal(atoms.find(a=>a.id==='a4').mobileDiameter,88);
+ const reloaded=createLeadProjectService(createStateRepository(()=>storage)).load();
+ assert.deepEqual(reloaded.members,next.members);
+ assert.equal(reloaded.members.filter(m=>m.areaId==='a0').length,6);
+});
+test('cadastro rejeita dados inválidos e falha de armazenamento',()=>{
+ for(const data of [{name:' ',areaId:'a0'},{name:'Ana',areaId:'inexistente'},{name:42,areaId:'a0'}]) assert.throws(()=>saveMember(seed,data));
+ assert.throws(()=>saveMember(seed,{name:'Ana',areaId:'a0'},'m0'));
+ const service=createLeadProjectService({write(){throw Error('Sem espaço');}});
+ assert.throws(()=>service.saveMember(seed,{name:'Nova',areaId:'a0'}),/Sem espaço/);
+ assert.equal(seed.members.length,5);
+});
+test('escala mantém igualdade, vazio e limites com grande população',()=>{
+ assert.deepEqual(organizationAtoms({...seed,areas:[]}),[]);
+ const equal=organizationAtoms(seed);
+ assert.equal(new Set(equal.map(a=>a.desktopDiameter)).size,1);
+ const empty=organizationAtoms({...seed,members:[]});
+ assert.ok(empty.every(a=>a.count===0 && a.mobileDiameter===88));
+ const large=organizationAtoms({...seed,members:Array.from({length:1000},(_,i)=>({id:String(i),areaId:'a0'}))});
+ assert.equal(large[0].desktopDiameter,196);
+ assert.equal(large[1].mobileDiameter,88);
+});
