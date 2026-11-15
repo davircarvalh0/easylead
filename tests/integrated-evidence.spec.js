@@ -1,5 +1,6 @@
 ﻿import {test,expect} from '@playwright/test';
 import {mkdir,copyFile} from 'node:fs/promises';
+test.setTimeout(60000);
 for(const width of [1280,390]) test(`evidência integrada ${width}`,async({browser})=>{
  const context=await browser.newContext({viewport:{width,height:900},recordVideo:{dir:'test-results/integrated-video',size:{width,height:900}},hasTouch:width===390,isMobile:width===390});
  const page=await context.newPage();const video=page.video();
@@ -18,5 +19,9 @@ for(const width of [1280,390]) test(`evidência integrada ${width}`,async({brows
  await page.getByRole('link',{name:'Leads',exact:true}).click();await expect(page.getByRole('region',{name:'Funil de leads'})).toBeVisible();
  // Let the route entrance finish before recording the final visual evidence.
  await page.waitForTimeout(1500);await page.screenshot({path:`evidencias/rodada/funil-${width}.png`,fullPage:true});
+ await page.getByRole("combobox",{name:"Segmento da contratante",exact:true}).selectOption("Não classificado");
+ await page.screenshot({path:`evidencias/rodada/funil-filtrado-${width}.png`,fullPage:true});
  await context.close();await mkdir('evidencias/rodada',{recursive:true});await copyFile(await video.path(),`evidencias/rodada/percurso-${width}.webm`);
 });
+
+

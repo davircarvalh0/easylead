@@ -19,8 +19,8 @@ for(const width of [1280,360]) test(`cadastro, escala e persistência em ${width
  await expect(page.locator('.member-form-card')).toHaveCount(0);
  const nodes=page.locator('.atom-node');
  await expect(nodes.first()).toContainText('6 integrantes');
- expect(await nodes.first().locator('.atom-sphere').evaluate(el=>el.getBoundingClientRect().width)).toBe(width===360?144:196);
- expect(await nodes.last().locator('.atom-sphere').evaluate(el=>el.getBoundingClientRect().width)).toBe(width===360?88:108);
+ expect(await nodes.first().locator('.atom-sphere').evaluate(el=>el.getBoundingClientRect().width)).toBe(width===360?116:152);
+ expect(await nodes.last().locator('.atom-sphere').evaluate(el=>el.getBoundingClientRect().width)).toBe(width===360?96:121);
  for(const node of await nodes.all()){
   const box=await node.boundingBox();expect(box.width).toBeGreaterThanOrEqual(104);expect(box.height).toBeGreaterThanOrEqual(104);
  }

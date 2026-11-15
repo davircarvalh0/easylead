@@ -20,3 +20,12 @@
  .organization-atoms .atom-node strong { font-size:13px; }
  .organization-atoms .atom-count-badge { font-size:11px; }
 }
+
+/* The HTML sphere reserves the exact canvas diameter and anchors its label below. */
+.is-live .atom-sphere { visibility:hidden; }
+.organization-atoms .is-live .atom-sphere { width:var(--rendered-diameter); height:var(--rendered-diameter); }
+.organization-atoms .is-live .atom-node { justify-content:flex-start; transform:translate(-50%,calc(var(--rendered-diameter) / -2)); }
+.organization-atoms .is-static .atom-sphere { transition:width .6s ease,height .6s ease; }
+@media(prefers-reduced-motion:reduce) { .organization-atoms .is-static .atom-sphere { transition:none; } }
+
+.organization-atoms .is-live .atom-node strong { width:160px; flex-shrink:0; }

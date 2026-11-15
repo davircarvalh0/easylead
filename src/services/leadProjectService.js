@@ -149,11 +149,10 @@ export function saveMember(state, data, id = crypto.randomUUID()) {
 export function organizationAtoms(state) {
  const counts = new Map(state.areas.map(area => [area.id, 0]));
  for (const member of state.members) if (counts.has(member.areaId)) counts.set(member.areaId, counts.get(member.areaId) + 1);
- const min = Math.min(...counts.values());
- const max = Math.max(1, ...counts.values());
  return state.areas.map(area => {
   const count = counts.get(area.id);
-  const ratio = max === min ? 0.45 : Math.sqrt((count - min) / (max - min));
+  // Fixed scale: zero remains visible; each additional member grows smoothly.
+  const ratio = count / (count + 6);
   return {...area, count, desktopDiameter: Math.round(108 + ratio * 88), mobileDiameter: Math.round(88 + ratio * 56)};
  });
 }

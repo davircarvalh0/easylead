@@ -156,10 +156,10 @@ test('cadastro mínimo persiste sem alterar dados existentes e recalcula popula�
  assert.deepEqual(next.projects,initial.projects);
  const atoms=organizationAtoms(next);
  assert.equal(atoms.find(a=>a.id==='a0').count,6);
- assert.equal(atoms.find(a=>a.id==='a0').desktopDiameter,196);
- assert.equal(atoms.find(a=>a.id==='a4').desktopDiameter,108);
- assert.equal(atoms.find(a=>a.id==='a0').mobileDiameter,144);
- assert.equal(atoms.find(a=>a.id==='a4').mobileDiameter,88);
+ assert.equal(atoms.find(a=>a.id==='a0').desktopDiameter,152);
+ assert.equal(atoms.find(a=>a.id==='a4').desktopDiameter,121);
+ assert.equal(atoms.find(a=>a.id==='a0').mobileDiameter,116);
+ assert.equal(atoms.find(a=>a.id==='a4').mobileDiameter,96);
  const reloaded=createLeadProjectService(createStateRepository(()=>storage)).load();
  assert.deepEqual(reloaded.members,next.members);
  assert.equal(reloaded.members.filter(m=>m.areaId==='a0').length,6);
@@ -178,6 +178,13 @@ test('escala mantém igualdade, vazio e limites com grande população',()=>{
  const empty=organizationAtoms({...seed,members:[]});
  assert.ok(empty.every(a=>a.count===0 && a.mobileDiameter===88));
  const large=organizationAtoms({...seed,members:Array.from({length:1000},(_,i)=>({id:String(i),areaId:'a0'}))});
- assert.equal(large[0].desktopDiameter,196);
+ assert.equal(large[0].desktopDiameter,195);
  assert.equal(large[1].mobileDiameter,88);
+});
+
+test('escala absoluta cresce com 0, 1 e v?rios sem depender das outras ?reas',()=>{
+ const atoms = n => organizationAtoms({...seed,members:Array.from({length:n},(_,i)=>({id:String(i),areaId:'a0'}))});
+ assert.ok(atoms(0)[0].desktopDiameter < atoms(1)[0].desktopDiameter);
+ assert.ok(atoms(1)[0].desktopDiameter < atoms(6)[0].desktopDiameter);
+ assert.equal(atoms(1)[0].desktopDiameter,organizationAtoms({...seed,members:[{id:'x',areaId:'a0'},...Array.from({length:50},(_,i)=>({id:String(i),areaId:'a1'}))]})[0].desktopDiameter);
 });
