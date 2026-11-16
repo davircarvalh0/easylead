@@ -29,3 +29,12 @@
 @media(prefers-reduced-motion:reduce) { .organization-atoms .is-static .atom-sphere { transition:none; } }
 
 .organization-atoms .is-live .atom-node strong { width:160px; flex-shrink:0; }
+/* Scoped to Organization: no shared layout or funnel rules. */
+.organization-atoms .citi-orb { touch-action:none; }
+.organization-atoms .is-loading { height:clamp(590px,72dvh,780px); }
+.organization-atoms .is-loading .orb-links { visibility:hidden; }
+.orb-loading { position:absolute; inset:45% 0 auto; text-align:center; }
+.orb-controls { position:absolute; z-index:3; top:12px; left:12px; right:12px; display:flex; flex-wrap:wrap; gap:8px; }
+.organization-atoms .orb-controls button { min-height:44px; padding:8px 12px; background:#102219e6; border:1px solid #386b4f; color:#effff4; border-radius:12px; }
+.organization-atoms .atom-node { cursor:pointer; }
+.organization-atoms .is-live .atom-node { width:max(104px,var(--rendered-diameter)); }

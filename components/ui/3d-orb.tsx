@@ -20,19 +20,47 @@ export default function Globe({atoms, selectedId}: Props) {
  const selection = useRef(selectedId);
  selection.current = selectedId;
  const [live, setLive] = useState(false);
+ const [fallback, setFallback] = useState(false);
+ const controls = useRef({turn: 0, tilt: 0, zoom: 1});
+ const pointers = useRef(new Map<number, {x:number; y:number}>());
+ const gesture = useRef({x:0,y:0,moved:false,pinch:0});
+ function reset() { controls.current = {turn:0,tilt:0,zoom:1}; location.hash = '/organizacao'; }
+ function down(event: React.PointerEvent) {
+  if ((event.target as HTMLElement).closest('.orb-controls')) { gesture.current.moved=false; return; }
+  pointers.current.set(event.pointerId,{x:event.clientX,y:event.clientY});
+  gesture.current = {x:event.clientX,y:event.clientY,moved:pointers.current.size>1,pinch:0};
+ }
+ function drag(event: React.PointerEvent) {
+  const previous = pointers.current.get(event.pointerId); if (!previous) return;
+  pointers.current.set(event.pointerId,{x:event.clientX,y:event.clientY});
+  const points = [...pointers.current.values()];
+  if (points.length>1) {
+   const distance=Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y);
+   if(gesture.current.pinch) controls.current.zoom=Math.max(.65,Math.min(1.8,controls.current.zoom*distance/gesture.current.pinch));
+   gesture.current.pinch=distance; gesture.current.moved=true;
+  } else {
+   if(Math.hypot(event.clientX-gesture.current.x,event.clientY-gesture.current.y)>6) gesture.current.moved=true;
+   if(gesture.current.moved) { controls.current.turn+=(event.clientX-previous.x)*.008; controls.current.tilt=Math.max(-1,Math.min(1,controls.current.tilt+(event.clientY-previous.y)*.005)); }
+  }
+  if(gesture.current.moved) event.currentTarget.setPointerCapture(event.pointerId);
+ }
+ function up(event: React.PointerEvent) { pointers.current.delete(event.pointerId); }
+
  useEffect(() => {
+  const escape = (event: KeyboardEvent) => { if(event.key==='Escape' && selection.current) reset(); };
+  document.addEventListener('keydown',escape);
   const media = matchMedia('(prefers-reduced-motion: reduce)');
   let disposed = false, stop = () => {};
   async function start() {
-   stop(); setLive(false);
-   if (media.matches || new URLSearchParams(location.search).has('noWebGL')) return;
+   stop(); setLive(false); setFallback(false);
+   if (new URLSearchParams(location.search).has('noWebGL')) { setFallback(true); return; }
    let THREE: typeof import('three');
-   try { THREE = await import('three'); } catch { return; }
-   if (disposed || media.matches || !host.current) return;
+   try { THREE = await import('three'); } catch { if(!disposed) setFallback(true); return; }
+   if (disposed || !host.current) return;
    const container = host.current;
    let renderer;
    try { renderer = new THREE.WebGLRenderer({alpha: true, antialias: true}); }
-   catch { return; }
+   catch { setFallback(true); return; }
    const scene = new THREE.Scene();
    const camera = new THREE.PerspectiveCamera(45, 1, .1, 100);
    camera.position.set(0, 0, 19);
@@ -73,7 +101,8 @@ export default function Globe({atoms, selectedId}: Props) {
    scene.add(stars);
    const ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(Array.from({length:128}, (_,i) => new THREE.Vector3(Math.cos(i /128*Math.PI*2)*5.7, Math.sin(i/128*Math.PI*2)*3.6, 0))), new THREE.LineBasicMaterial({color:0x166d42}));
    scene.add(ring);
-   let width = 1, height = 1, frame = 0, last = 0, phase = 0, rx = 6.8, ry = 4.1;
+   let width = 1, height = 1, frame = 0, last = 0, phase = 0, rx = 6.8, ry = 4.1, baseZ = 19;
+   const target = new THREE.Vector3();
    const resize = new ResizeObserver(() => {
     width = container.clientWidth; height = container.clientHeight;
     camera.aspect = width / height;
@@ -84,40 +113,52 @@ export default function Globe({atoms, selectedId}: Props) {
     const marginY = marginX + 36;
     const usableX = Math.max(.1, 1 - marginX * 2 / width);
     const usableY = Math.max(.1, 1 - marginY * 2 / height);
-    camera.position.z = Math.max(rx / (usableX * camera.aspect), ry / usableY) / Math.tan(Math.PI/8) + 1.4;
+    baseZ = Math.max(rx / (usableX * camera.aspect), ry / usableY) / Math.tan(Math.PI/8) + 1.4;
     ring.scale.set(rx/5.7, ry/3.6, 1);
+    if (!last) camera.position.set(0,0,baseZ);
     camera.updateProjectionMatrix(); renderer.setSize(width, height);
    });
    resize.observe(container);
+   const wheel = (event: WheelEvent) => { event.preventDefault(); controls.current.zoom=Math.max(.65,Math.min(1.8,controls.current.zoom*Math.exp(-event.deltaY*.001))); };
+   container.addEventListener('wheel',wheel,{passive:false});
    const diameters = currentAtoms.current.map(() => container.clientWidth < 600 ? 88 : 108);
    function draw(now: number) {
-    const dt = Math.min((now-last)/1000 || 0, .05); last = now;
-    if (!paused.current && !selection.current) { phase += dt * .12; }
+    const dt = Math.min((now-last)/1000 || 0, .15); last = now;
+    if (!media.matches && !paused.current && !selection.current && !pointers.current.size) { phase += dt * .12; }
     spheres.forEach((sphere, i) => {
-     const a = phase + i / Math.max(atoms.length,1)*Math.PI*2;
-     sphere.position.set(Math.cos(a)*rx, Math.sin(a)*ry, Math.sin(a)*1.2);
+     const a = phase + controls.current.turn + i / Math.max(atoms.length,1)*Math.PI*2;
+     sphere.position.set(Math.cos(a)*rx, Math.sin(a)*ry, Math.sin(a)*1.2 + Math.sin(a)*controls.current.tilt*3);
      const atom = currentAtoms.current[i];
      const target = width < 600 ? atom.mobileDiameter : atom.desktopDiameter;
      diameters[i] += (target - diameters[i]) * (1 - Math.exp(-dt * 7));
      const diameter = diameters[i];
-     sphere.children[0].rotation.y += dt * .06;
-     sphere.children[1].rotation.y += dt * .06;
-     sphere.children[2].rotation.y += dt * .03;
-     sphere.scale.setScalar(diameter / height * (camera.position.z - sphere.position.z) * Math.tan(Math.PI/8));
+     sphere.children[0].rotation.y += media.matches ? 0 : dt * .06;
+     sphere.children[1].rotation.y += media.matches ? 0 : dt * .06;
+     sphere.children[2].rotation.y += media.matches ? 0 : dt * .03;
+     sphere.scale.setScalar(diameter / height * (baseZ - sphere.position.z) * Math.tan(Math.PI/8));
      const point = sphere.position.clone().project(camera);
+     const rendered = diameter * (baseZ-sphere.position.z) / Math.max(1,camera.position.z-sphere.position.z);
      const link = links.current[i];
-     if (link) { link.style.setProperty('--rendered-diameter', `${diameter}px`); link.style.left = `${(point.x+1)*width/2}px`; link.style.top = `${(1-point.y)*height/2}px`; }
+     if (link) { link.style.setProperty('--rendered-diameter', `${rendered}px`); link.style.left = `${(point.x+1)*width/2}px`; link.style.top = `${(1-point.y)*height/2}px`; }
     });
-    stars.rotation.y += dt * .006;
+    const index = currentAtoms.current.findIndex(atom=>atom.id===selection.current);
+    const focus = index>=0 ? spheres[index].position : new THREE.Vector3();
+    const ease = media.matches ? 1 : 1-Math.exp(-dt*5);
+    target.lerp(focus,ease);
+    const distance = baseZ / (index>=0 ? 1.55 : 1) / controls.current.zoom;
+    camera.position.lerp(new THREE.Vector3(target.x,target.y,target.z+distance),ease);
+    camera.lookAt(target);
+    container.dataset.zoom=controls.current.zoom.toFixed(2);
+    stars.rotation.y += media.matches ? 0 : dt * .006;
     renderer.render(scene,camera);
     frame = requestAnimationFrame(draw);
    }
    function visibility() { cancelAnimationFrame(frame); last=0; if (!document.hidden) frame=requestAnimationFrame(draw); }
-   const lost = (event: Event) => { event.preventDefault(); stop(); setLive(false); };
+   const lost = (event: Event) => { event.preventDefault(); stop(); setLive(false); setFallback(true); };
    renderer.domElement.addEventListener('webglcontextlost',lost);
    document.addEventListener('visibilitychange', visibility);
    stop = () => {
-    cancelAnimationFrame(frame); resize.disconnect(); document.removeEventListener('visibilitychange',visibility);
+    cancelAnimationFrame(frame); container.removeEventListener('wheel',wheel); resize.disconnect(); document.removeEventListener('visibilitychange',visibility);
     renderer.domElement.removeEventListener('webglcontextlost',lost);
     scene.traverse(object => { const mesh = object as import('three').Mesh; mesh.geometry?.dispose(); if (mesh.material) (Array.isArray(mesh.material)?mesh.material:[mesh.material]).forEach(m=>m.dispose()); });
     renderer.dispose(); renderer.domElement.remove();
@@ -126,7 +167,7 @@ export default function Globe({atoms, selectedId}: Props) {
   }
   const change = () => { void start(); };
   void start(); media.addEventListener('change',change);
-  return () => { disposed=true; stop(); media.removeEventListener('change',change); };
+  return () => { disposed=true; document.removeEventListener('keydown',escape); stop(); media.removeEventListener('change',change); };
  }, [topology]);
  function move(event: React.KeyboardEvent) {
   const index = links.current.indexOf(document.activeElement as HTMLAnchorElement);
@@ -135,8 +176,21 @@ export default function Globe({atoms, selectedId}: Props) {
   const offset = {ArrowRight:1, ArrowLeft:-1, ArrowDown:1, ArrowUp:-1}[event.key];
   if (offset && index >= 0) { event.preventDefault(); links.current[(index+offset+atoms.length)%atoms.length]?.focus(); }
  }
- return <div className={`citi-orb ${live?'is-live':'is-static'}`} ref={host} onPointerEnter={()=>{paused.current=true;}} onPointerLeave={()=>{paused.current=false;}} onFocusCapture={()=>{paused.current=true;}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget)) paused.current=false;}} onPointerDownCapture={()=>{paused.current=true;}}>
-  <nav className="orb-links" aria-label="Subáreas da organização" onKeyDown={move}>
+ return <div className={`citi-orb ${live?'is-live':fallback?'is-static':'is-loading'}`} ref={host}
+  onPointerDown={down} onPointerMove={drag} onPointerUp={up} onPointerCancel={up}
+  onClickCapture={event=>{if(gesture.current.moved) {event.preventDefault();event.stopPropagation();gesture.current.moved=false;}}}
+  onClick={event=>{if(event.target===event.currentTarget || (event.target as HTMLElement).classList.contains('orb-links')) reset();}}
+  onKeyDown={event=>{if(event.key==='Escape') reset();}}
+  onPointerEnter={()=>{paused.current=true;}} onPointerLeave={()=>{paused.current=false; pointers.current.clear();}}
+  onFocusCapture={()=>{paused.current=true;}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget)) paused.current=false;}}>
+  <div className="orb-controls" aria-label="Controles da cena">
+   <button type="button" aria-label="Aproximar" onClick={()=>{controls.current.zoom=Math.min(1.8,controls.current.zoom*1.2);}}>+</button>
+   <button type="button" aria-label="Afastar" onClick={()=>{controls.current.zoom=Math.max(.65,controls.current.zoom/1.2);}}>&#8722;</button>
+   <button type="button" onClick={reset}>Voltar &#224; vis&#227;o completa</button>
+  </div>
+  {!live && !fallback && <p role="status" className="orb-loading">Preparando globos 3D...</p>}
+
+  <nav className="orb-links" aria-label="Sub&#225;reas da organiza&#231;&#227;o" onKeyDown={move}>
    {atoms.map((atom,i)=><a ref={el=>{links.current[i]=el;}} key={atom.id} className="atom-node" href={'#/organizacao/'+atom.id} aria-current={selectedId===atom.id?'page':undefined} style={{'--orb-color':colorFor(atom.id),'--atom-desktop':atom.desktopDiameter+'px','--atom-mobile':atom.mobileDiameter+'px'} as React.CSSProperties}>
     <span className="atom-sphere" aria-hidden="true"/><strong>{atom.name}</strong><span className="atom-count-badge">{atom.count} {atom.count===1?'integrante':'integrantes'}</span>
    </a>)}

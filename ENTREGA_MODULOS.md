@@ -19,7 +19,7 @@ Não foram alterados FunnelChart.jsx, LeadFunnel.jsx, lead-funnel.css nem leadFu
 | Ficha de projeto | Superfície de módulo e contexto preservado | Status, fase, squad, área e origem mantidos |
 | Integrantes | Diretório principal e cadastro secundário; uma coluna no celular | Busca, área e link para globos; vazio testado |
 | Squad | Superfície de módulo, contexto e rodapé para integrantes | Projetos e subárea mantidos; vazio de projetos existente |
-| Organização | Integração pendente da tarefa dos globos | Não considerar a rodada integrada até receber a publicação |
+| Organização | Globos integrados: carregamento, arrasto, zoom, seleção e retorno com canvas contínuo | Seis testes passaram; fallback, toque, teclado, pinça simulada e perda de contexto cobertos |
 
 ## Evidência reproduzível
 
@@ -34,7 +34,17 @@ Não foram alterados FunnelChart.jsx, LeadFunnel.jsx, lead-funnel.css nem leadFu
 - `npm test`: 15 testes passaram.
 - `npx playwright test --config playwright.modules.config.js`: 21 testes passaram, incluindo login normal/reduzido, teclado, filtros, proporções, etapa zero, edição, novos módulos e seus vazios.
 - `npm run build`: passou; avisos existentes da biblioteca Motion e tamanho de Three.js.
-- Revisão e prévia integrada aguardam os globos. Não houve merge; a aprovação do usuário continua obrigatória.
+- Globos incorporados da branch publicada da tarefa de Organização, somente nos arquivos combinados. Prévia integrada gerada em `previa/index.html`; `npm run check:preview` confirmou igualdade byte a byte com o build React. Não houve merge; a aprovação do usuário continua obrigatória.
 - Regressões adicionais: 19 testes passaram na execução inicial; o teste de percurso completo foi atualizado para incluir o novo link no tab order e passou na repetição. Abrange conversão, persistência, médias, valores, cadastro, teclado e toque.
 - O vídeo da abertura está em `evidencias/modulos/abertura.webm`.
 - A tarefa de acompanhamento da revisão ainda não tem conversa iniciada; o envio de status a ela não foi entregue.
+
+## Validação integrada
+
+- Repetição de `compare-modules.mjs depois` e `compare-funnel-pixels.mjs` após incorporar Organização: zero pixels diferentes nas três larguras.
+- Os quatro arquivos diretos do funil continuam sem alteração contra b40930b.
+- Seis testes de exploração/órbita passaram com a key estável de Organização; quinze testes de domínio passaram.
+- Vídeo real do percurso integrado: `evidencias/modulos/exploracao-integrada.webm`, gerado por `scripts/capture-exploration.mjs`.
+- Pinça foi simulada via Pointer Events. Não houve teste em aparelho físico.
+- Repetição integrada dos 21 testes de abertura, módulos e funil: todos passaram.
+- Prévia compilada: nove testes de abertura normal/reduzida, módulos e exploração passaram usando `playwright.modules-preview.config.js`.

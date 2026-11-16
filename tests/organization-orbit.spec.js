@@ -31,8 +31,8 @@ for (const width of [360,1280]) test(`órbita: seleção, pausa e retorno em ${w
  const hidden=await position();await page.waitForTimeout(200);expect(await position()).toBe(hidden);
  await page.evaluate(()=>{delete document.hidden;document.dispatchEvent(new Event('visibilitychange'));});
  await page.waitForTimeout(250);expect(await position()).not.toBe(hidden);
- await page.emulateMedia({reducedMotion:'reduce'});await expect(scene).toHaveClass(/is-static/);
- await expect(scene.locator('canvas')).toHaveCount(0);
+ await page.emulateMedia({reducedMotion:'reduce'});await expect(scene).toHaveClass(/is-live/);
+ await expect(scene.locator('canvas')).toHaveCount(1);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
 

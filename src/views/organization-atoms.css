@@ -3,3 +3,12 @@
 .member-form-card form { display:grid; gap:10px; }
 .member-form-card input,.member-form-card select { width:100%; min-width:0; }
 .member-form-card button { min-height:44px; }
+.organization-atoms.has-selection { display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,32%); gap:20px; align-items:start; }
+.organization-atoms.has-selection > p { grid-column:1 / -1; }
+.organization-atoms .subarea-atom-detail { margin-top:20px; padding:20px; border:1px solid #386b4f; border-radius:20px; background:#0b1711eb; min-width:0; max-height:680px; overflow:auto; }
+.organization-atoms .scene-return { display:inline-block; padding:10px 0; }
+@media(max-width:760px) {
+ .organization-atoms.has-selection { grid-template-columns:minmax(0,1fr); gap:0; }
+ .organization-atoms.has-selection .is-live { height:360px; }
+ .organization-atoms .subarea-atom-detail { margin-top:0; max-height:none; }
+}
