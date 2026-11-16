@@ -1,9 +1,6 @@
 
-Algorithm Hash                                                             Path                                        
---------- ----                                                             ----                                        
+Algorithm Hash                                                             Path
+--------- ----                                                             ----
 SHA256    3D40CCE0CBC4672E9CF85CD14912FC91F21A5F8324866AF3CE0CD4A615D8FE5B C:\Users\Davi Carvalho\.tds\workspaces\01...
 SHA256    C1ED7FD2DE5F2D4FC07C44C82331C45D8F846CB237C68A38693F3520180E05C4 C:\Users\Davi Carvalho\.tds\workspaces\01...
 SHA256    4A8B473BC21B5546F03AEB89AC0AAEE4C48D38094339A9B2614A7F7C394442D2 C:\Users\Davi Carvalho\.tds\workspaces\01...
-
-
-
