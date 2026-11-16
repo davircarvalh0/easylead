@@ -1,15 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './3d-orb.css';
+import {GLOBE_GREEN, globeWirePositions} from './globe-geometry.js';
 
 type Atom = {id: string; name: string; count: number; desktopDiameter: number; mobileDiameter: number};
 type Props = {atoms: Atom[]; selectedId?: string};
 
-const colors = ['#00e676', '#00e5ff', '#448aff', '#b388ff', '#ffb300'];
-const colorFor = (id: string) => {
- const numeric = /^a(\d+)$/.exec(id);
- const hash = numeric ? Number(numeric[1]) : Array.from(id).reduce((value, char) => (value * 31 + char.charCodeAt(0)) >>> 0, 0);
- return colors[hash % colors.length];
-};
 export default function Globe({atoms, selectedId}: Props) {
  const host = useRef<HTMLDivElement>(null);
  const links = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -70,13 +65,14 @@ export default function Globe({atoms, selectedId}: Props) {
    scene.add(new THREE.AmbientLight(0xffffff, 2));
    const light = new THREE.PointLight(0xffffff, 80); light.position.set(0, 4, 8); scene.add(light);
    // Globe source layers: radii 5.2 / 5 / 4.9, normalized to radius 1.
-   // Geometry is shared; materials stay per-area to preserve stable colors.
-   const wireGeometry = new THREE.SphereGeometry(1, 32, 32);
+   // Allocate once: selection and camera movement never rebuild the topology.
+   const wireGeometry = new THREE.BufferGeometry();
+   wireGeometry.setAttribute('position', new THREE.BufferAttribute(globeWirePositions(), 3));
    const atmosphereGeometry = new THREE.SphereGeometry(1.04, 32, 32);
    const solidGeometry = new THREE.SphereGeometry(.98, 64, 64);
    const spheres = currentAtoms.current.map(atom => {
     const group = new THREE.Group();
-    const wire = new THREE.Mesh(wireGeometry, new THREE.MeshBasicMaterial({color: colorFor(atom.id), wireframe: true, transparent: true, opacity: .5}));
+    const wire = new THREE.LineSegments(wireGeometry, new THREE.LineBasicMaterial({color: GLOBE_GREEN, transparent: true, opacity: .5}));
     const atmosphere = new THREE.Mesh(atmosphereGeometry, new THREE.ShaderMaterial({
      vertexShader: `varying vec3 vNormal;
       void main() { vNormal = normalize(normalMatrix * normal);
@@ -84,20 +80,25 @@ export default function Globe({atoms, selectedId}: Props) {
      fragmentShader: `uniform vec3 glowColor; varying vec3 vNormal;
       void main() { float intensity = pow(0.6 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
        gl_FragColor = vec4(glowColor, 1.0) * intensity; }`,
-     uniforms: {glowColor: {value: new THREE.Color(colorFor(atom.id))}},
+     uniforms: {glowColor: {value: new THREE.Color(GLOBE_GREEN)}},
      blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
     }));
     // Liquid Glass adaptation of the source's transparent Phong core.
-    const solid = new THREE.Mesh(solidGeometry, new THREE.MeshPhysicalMaterial({color: colorFor(atom.id), transparent: true, opacity: .22, roughness: .12, metalness: .08, clearcoat: 1, clearcoatRoughness: .06, depthWrite: false}));
+    const solid = new THREE.Mesh(solidGeometry, new THREE.MeshPhysicalMaterial({color: GLOBE_GREEN, transparent: true, opacity: .22, roughness: .12, metalness: .08, clearcoat: 1, clearcoatRoughness: .06, depthWrite: false}));
     group.add(solid, wire, atmosphere); scene.add(group);
     return group;
    });
    // Source star layer, shared by the scene rather than duplicated per globe.
    const starGeometry = new THREE.BufferGeometry();
-   const positions = new Float32Array(10000 * 3);
-   for (let i = 0; i < positions.length; i++) positions[i] = (Math.random() - .5) * 2000;
+   const positions = new Float32Array(360 * 3);
+   // Deterministic stars inside the camera range, behind the entire orbit.
+   for (let i = 0; i < 360; i++) {
+    positions[i*3] = (Math.sin(i*127.1+1)*43758.5453 % 1) * 65;
+    positions[i*3+1] = (Math.sin(i*311.7+2)*23421.631 % 1) * 45;
+    positions[i*3+2] = -18 - (i % 37);
+   }
    starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-   const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({color: 0xffffff, size: .7, sizeAttenuation: true}));
+   const stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({color: 0xffffff, size: .055, sizeAttenuation: true, transparent: true, opacity: .45, depthWrite: false}));
    scene.add(stars);
    const ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(Array.from({length:128}, (_,i) => new THREE.Vector3(Math.cos(i /128*Math.PI*2)*5.7, Math.sin(i/128*Math.PI*2)*3.6, 0))), new THREE.LineBasicMaterial({color:0x166d42}));
    scene.add(ring);
@@ -191,7 +192,7 @@ export default function Globe({atoms, selectedId}: Props) {
   {!live && !fallback && <p role="status" className="orb-loading">Preparando globos 3D...</p>}
 
   <nav className="orb-links" aria-label="Sub&#225;reas da organiza&#231;&#227;o" onKeyDown={move}>
-   {atoms.map((atom,i)=><a ref={el=>{links.current[i]=el;}} key={atom.id} className="atom-node" href={'#/organizacao/'+atom.id} aria-current={selectedId===atom.id?'page':undefined} style={{'--orb-color':colorFor(atom.id),'--atom-desktop':atom.desktopDiameter+'px','--atom-mobile':atom.mobileDiameter+'px'} as React.CSSProperties}>
+   {atoms.map((atom,i)=><a ref={el=>{links.current[i]=el;}} key={atom.id} className="atom-node" href={'#/organizacao/'+atom.id} aria-current={selectedId===atom.id?'page':undefined} style={{'--orb-color':GLOBE_GREEN,'--atom-desktop':atom.desktopDiameter+'px','--atom-mobile':atom.mobileDiameter+'px'} as React.CSSProperties}>
     <span className="atom-sphere" aria-hidden="true"/><strong>{atom.name}</strong><span className="atom-count-badge">{atom.count} {atom.count===1?'integrante':'integrantes'}</span>
    </a>)}
   </nav>

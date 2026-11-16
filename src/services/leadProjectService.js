@@ -1,3 +1,4 @@
+import {saveGoal} from './analyticsService.js';
 import {leadFunnel} from './leadFunnelService.js';
 import {stages, statuses, phases, demoProjects} from '../domain.js';
 import {createStateRepository} from '../repositories/stateRepository.js';
@@ -7,6 +8,7 @@ export function saveLead(state, data, id=crypto.randomUUID()) {
  if (!stages.includes(data.stage)) throw Error('Estágio inválido.');
  const estimatedValue=data.estimatedValue==null || data.estimatedValue===''?null:Number(data.estimatedValue);
  if(estimatedValue!==null && (!Number.isFinite(estimatedValue)||estimatedValue<0)) throw Error('Valor estimado inválido.');
+ validateDates(data,['createdAt']);
  const old=state.leads.find(l=>l.id===id);
  if(old?.projectId && data.stage!=='Ganho') throw Error('Um lead convertido permanece em Ganho.');
  const lead={...old,...data,id,name:data.name.trim(),company:data.company.trim(),contact:data.contact.trim(),clientSegment:data.clientSegment?.trim() || old?.clientSegment || 'Não classificado',...(data.estimatedValue!==undefined?{estimatedValue}:{})};
@@ -23,7 +25,9 @@ export function convert(state,leadId,data) {
  if(!member) throw Error('Selecione um responsável da área.');
  const memberIds=[...new Set([data.ownerId,...(data.memberIds||[])])];
  if(memberIds.some(id=>!state.members.some(m=>m.id===id))) throw Error('Integrante inválido.');
- const terms=validateTerms(data);
+ validateDates(data,['convertedAt','contractStart','contractEnd']);
+ if(data.contractStart&&data.contractEnd&&data.contractStart>data.contractEnd) throw Error('Vig?ncia final anterior ? inicial.');
+ const terms={...validateTerms(data),convertedAt:data.convertedAt||null,contractStart:data.contractStart||null,contractEnd:data.contractEnd||null};
  const squadId=crypto.randomUUID();
  const project={...terms,phase:data.phase || 'Discovery',originPhase:data.phase || 'Discovery',company:lead.company,clientSegment:lead.clientSegment || 'Não classificado',squadId,id:crypto.randomUUID(),name:data.name.trim(),areaId:data.areaId,ownerId:data.ownerId,memberIds,leadId,status:'Planejado'};
  return {state:{...state,leads:state.leads.map(l=>l.id===leadId?{...l,projectId:project.id}:l),squads:[...(state.squads || []),{id:squadId,name:data.squadName?.trim() || `Squad · ${project.name}`,areaId:data.areaId,ownerId:data.ownerId,memberIds,specialty:'Equipe do projeto'}],projects:[...state.projects,project]},project};
@@ -40,6 +44,7 @@ export function createLeadProjectService(repository = createStateRepository()) {
   }
   return {
     leadFunnel, organizationAtoms,
+    saveGoal: (state,data)=>persist(saveGoal(state,data)),
     saveMember: (state, data, id) => persist(saveMember(state, data, id)),
     filterProjects, calculateAverageMetrics, valueBlocks,
     addValueDemo: state => persist(addValueDemo(state)),
@@ -92,6 +97,7 @@ export function addDemo(state) {
   if(next.leads.some(l=>l.id===id)) return;
   next=saveLead(next,{name,company:`Contratante fictícia ${i+1}`,contact:`demo${i}@example.com`,clientSegment,stage:'Ganho'},id);
   next=convert(next,id,{name,phase,areaId,ownerId,contractValue,contractStatus,squadName:['Squad Maré','Squad Horus IA','Squad Vega UX','Squad Saúde','Squad Agentes'][i]}).state;
+  if(i===0){const project=next.projects.find(p=>p.leadId===id);next=changeStatus(next,project.id,'Em andamento');}
  });
  return next;
 }
@@ -156,3 +162,5 @@ export function organizationAtoms(state) {
   return {...area, count, desktopDiameter: Math.round(108 + ratio * 88), mobileDiameter: Math.round(88 + ratio * 56)};
  });
 }
+
+function validateDates(data,keys){for(const key of keys){if(data[key] && (!/^\d{4}-\d{2}-\d{2}$/.test(data[key])||Number.isNaN(Date.parse(data[key])))) throw Error('Data inv?lida.');}}

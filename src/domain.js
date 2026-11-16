@@ -23,5 +23,5 @@ export const demoProjects = [
  ['Motor IA de Crédito', 'Finanças & Pagamentos', 'Discovery', 'a0', 'm0', 72000, 'Contratado'],
  ['Checkout Omni', 'Varejo & E-commerce', 'Discovery', 'a3', 'm3', 36000, 'Contratado'],
  ['Portal Clínico', 'Saúde & Biotech', 'Discovery', 'a3', 'm3', null, 'Contratado'],
- ['Agente Interno', 'Finanças & Pagamentos', 'Delivery', 'a0', 'm0', 28000, 'Sem contrato'],
+ ['Agente Interno', 'Finanças & Pagamentos', 'Delivery', 'a0', 'm0', null, 'Sem contrato'],
 ];

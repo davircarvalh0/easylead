@@ -1,4 +1,4 @@
-.citi-orb { position:relative; isolation:isolate; background:radial-gradient(ellipse at center,#10221955,transparent 70%); border-radius:24px; margin:20px 0; overflow:hidden; }
+.citi-orb { position:relative; isolation:isolate; background:radial-gradient(ellipse at 50% 42%,#0c191b 0%,#05090f 55%,#020408 100%); border-radius:24px; margin:20px 0; overflow:hidden; }
 .citi-orb canvas { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
 .orb-links { display:grid; grid-template-columns:repeat(auto-fit,minmax(204px,1fr)); gap:32px; padding:32px 12px; }
 .organization-atoms .atom-node { position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; min-width:104px; min-height:104px; padding:0; border:0; border-radius:50%; text-align:center; color:#f2fff7; background:transparent; text-decoration:none; }

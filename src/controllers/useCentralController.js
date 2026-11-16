@@ -1,4 +1,5 @@
 import {useRef, useState} from 'react';
+import {analytics} from '../services/analyticsService.js';
 import {seed} from '../domain.js';
 import {createLeadProjectService} from '../services/leadProjectService.js';
 
@@ -44,5 +45,5 @@ export function useCentralController() {
   function changePhase(id) { try { publish(service.changePhase(current.current,id)); } catch(error) { setMessage(error.message); } }
   function addDemo() { try { publish(service.addDemo(current.current)); } catch(error) { setMessage(error.message); } }
   function addValueDemo() { try { publish(service.addValueDemo(current.current)); } catch(error) { setMessage(error.message); } }
-  return {leadFunnel: filters => service.leadFunnel(state, filters), saveMember, organizationAtoms: service.organizationAtoms(state), addValueDemo,valueBlocks:(kind,filters,grouping)=>service.valueBlocks(state,kind,filters,grouping),changePhase,addDemo,filterProjects: filters=>service.filterProjects(state,filters),averageMetrics:(filters,grouping)=>service.calculateAverageMetrics(state,filters,grouping),state, storageError: initial.storageError, message, saveTick, saveLead, convert, changeStatus};
+  return {analyticsModel: filters=>analytics(state,filters),saveGoal: data=>publish(service.saveGoal(current.current,data)),leadFunnel: filters => service.leadFunnel(state, filters), saveMember, organizationAtoms: service.organizationAtoms(state), addValueDemo,valueBlocks:(kind,filters,grouping)=>service.valueBlocks(state,kind,filters,grouping),changePhase,addDemo,filterProjects: filters=>service.filterProjects(state,filters),averageMetrics:(filters,grouping)=>service.calculateAverageMetrics(state,filters,grouping),state, storageError: initial.storageError, message, saveTick, saveLead, convert, changeStatus};
 }
