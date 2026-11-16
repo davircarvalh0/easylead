@@ -48,8 +48,9 @@ test('login inválido, revelação única, foco, rotas, reload e novo login', as
   await expect(page.getByLabel('E-mail',{exact:true})).toBeFocused();
   await fill(page);await page.getByRole('button',{name:'Entrar no CITi/all'}).click();
   await expect(page.getByRole('dialog')).toBeVisible();
-  await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Pular abertura'})).toBeFocused();
-  await page.keyboard.press('Enter');await expect(heading(page)).toBeFocused();
+  await page.keyboard.press('Tab');await expect(page.getByRole('dialog')).toBeFocused();
+  await expect(page.getByRole('button',{name:'Pular abertura'})).toHaveCount(0);
+  await expect(heading(page)).toBeFocused();
 });
 
 for(const width of [360,1280]) test(`entrada reduzida e primeira dobra ${width}`,async({page})=>{

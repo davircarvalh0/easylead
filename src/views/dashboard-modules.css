@@ -1,0 +1,17 @@
+﻿/* Dedicated module rules: no global controls, main, navigation or funnel selectors. */
+.dashboard-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:20px;align-items:start}
+.fr-module{min-width:0;margin:20px 0;border:1px solid #ffffff20;border-radius:18px;background:linear-gradient(140deg,#102019e8,#0b100ff5);box-shadow:inset 0 1px #ffffff0d;overflow:hidden;backdrop-filter:blur(12px)}
+.dashboard-grid>.fr-module{margin-top:0}
+.fr-primary{border-color:#00e67645}
+.fr-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px;border-bottom:1px solid #ffffff12}
+.fr-header h2{margin:6px 0 0;font-size:22px}
+.fr-header a{font-size:13px;flex-shrink:0}
+.fr-body{padding:20px;min-width:0}
+.fr-footer{padding:14px 22px;background:#090e0ce8;border-top:1px solid #ffffff12;color:#9cb4a7;font-size:12px}
+.leads-command{background:linear-gradient(110deg,#12322380,#0b100f40);border-radius:12px;box-shadow:inset 0 1px #00e67630}
+.fr-body .project-rows{display:flex;flex-direction:column}
+.fr-body .project-rows>.card{border-width:0 0 1px;border-radius:0;background:transparent}
+.route-integrantes .fr-primary{grid-column:1;grid-row:1}
+.route-integrantes .fr-module:not(.fr-primary){grid-column:2}
+.route-leads .split-panel,.route-leads>form,.route-projetos>.detail,.route-squads>.detail{border:1px solid #00e67630;border-radius:18px;background:#0b1712ee;padding:22px}
+@media(max-width:860px){.dashboard-grid{grid-template-columns:1fr}.route-integrantes .fr-module{grid-column:1!important;grid-row:auto}.route-integrantes .fr-primary{grid-row:1}.fr-header{flex-wrap:wrap;padding:16px}.fr-body{padding:16px}}

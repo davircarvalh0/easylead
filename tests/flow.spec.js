@@ -59,6 +59,8 @@ test('fluxo completo, relações, indicadores, persistência e responsividade',a
  await page.goto('/#/leads/novo');
  await expect(page.getByRole('heading',{level:1})).toBeFocused();
  await page.keyboard.press('Tab');
+ await expect(page.getByRole('link',{name:/Consultar leads/})).toBeFocused();
+ await page.keyboard.press('Tab');
  await expect(page.getByLabel('Nome da oportunidade')).toBeFocused();
  await page.keyboard.type('Lead teclado');
  await page.keyboard.press('Tab');

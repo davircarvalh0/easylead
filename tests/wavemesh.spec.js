@@ -7,7 +7,7 @@ for(const width of [360,1280]) test(`WaveMesh persistente, toque e teclado ${wid
  await page.getByRole('button',{name:'Preencher acesso de demonstração'}).click();
  await page.getByRole('button',{name:'Entrar no CITi/all'}).click();
  await expect(page.locator('.passage-visual')).toHaveAttribute('data-mode','light');
- await page.keyboard.press('Tab');await expect(page.getByRole('button',{name:'Pular abertura'})).toBeFocused();
+ await page.keyboard.press('Tab');await expect(page.getByRole('dialog',{name:'Entrando no CITi/all'})).toBeFocused();
  await page.keyboard.press('Enter');
  for(let i=0;i<3;i++)for(const name of ['Leads','Projetos','Visão geral']){
   await page.getByRole('link',{name,exact:true}).click();

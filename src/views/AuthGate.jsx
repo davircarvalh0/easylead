@@ -7,7 +7,7 @@ function Brand() {
   return <div className="auth-brand"><img src={logo} alt="CITi"/><strong><span>/all</span></strong></div>;
 }
 export function AuthGate({children}) {
-  const {session, entering, error, login, logout, finish} = useSessionController();
+  const {session, entering, error, login, logout} = useSessionController();
   const [opening, setOpening] = useState(() => !session && !matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,9 +35,9 @@ export function AuthGate({children}) {
     };
   }, [opening]);
   const emailInput = useRef(null);
-  const skip = useRef(null);
+  const passage = useRef(null);
   useEffect(() => {
-    if (entering) skip.current?.focus();
+    if (entering) passage.current?.focus();
     else if (session) document.querySelector('main h1')?.focus();
     else if (!opening) emailInput.current?.focus();
   }, [session, entering, opening]);
@@ -56,9 +56,8 @@ export function AuthGate({children}) {
   </section></main>;
   return <>
     <div className={`app-entry ${entering ? "app-entering" : ""}`} inert={entering ? true : undefined}>{children({logout, sessionError: error})}</div>
-    {entering && <div className="brand-entry" role="dialog" aria-modal="true" aria-label="Entrando no CITi/all" onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();skip.current?.focus();}}}>
+    {entering && <div ref={passage} tabIndex="-1" className="brand-entry" role="dialog" aria-modal="true" aria-label="Entrando no CITi/all" onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();passage.current?.focus();}}}>
       <LoginPassage/><Brand/>
-      <button ref={skip} type="button" className="quiet-button" onClick={finish}>Pular abertura</button>
     </div>}
   </>;
 }

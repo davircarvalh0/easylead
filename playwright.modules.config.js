@@ -1,0 +1,2 @@
+﻿import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'./tests',testMatch:['dashboard-modules.spec.js','initial-opening.spec.js','login-passage-clean.spec.js','lead-funnel.spec.js','funnel-original.spec.js','auth.spec.js'],workers:2,use:{baseURL:'http://localhost:5186',headless:true},webServer:{command:'npm run dev -- --port 5186 --strictPort',url:'http://localhost:5186',reuseExistingServer:true}});
