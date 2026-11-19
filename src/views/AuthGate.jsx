@@ -16,7 +16,7 @@ export function AuthGate({children}) {
     if (entering) passage.current?.focus();
     else if (session) document.querySelector('main h1')?.focus();
     else emailInput.current?.focus();
-  },[session,entering]);
+  },[session,entering,loading]);
 
   if(loading)return <main className="easylead-login"><p role="status">Verificando acesso…</p></main>;
   if (!session) return <main className="easylead-login">

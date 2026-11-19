@@ -83,3 +83,52 @@ test('carregamento lento mantém só a marca e abre a IA sem página intermediá
  await expect(page.locator('.wave-mesh')).toHaveCSS('visibility','hidden');
  release();await expect(page.getByRole('region',{name:'Assistente EasyLead'})).toBeVisible();await expect(loading).toHaveCount(0);
 });
+
+
+test('endereço inicial sempre abre login, mesmo com cookie válido',async({page})=>{
+ let workspaceCalls=0;
+ await page.route('**/api/easylead/session',route=>route.fulfill({json:{session:{authenticated:true,email:'demo@easylead.example',loggedAt:1}}}));
+ await page.route('**/api/easylead/workspace',route=>{workspaceCalls++;return route.fulfill({json:{state:seed,revision:0}});});
+ await page.goto('/');await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('heading',{name:'Entrar no EasyLead'})).toBeVisible();expect(workspaceCalls).toBe(0);
+});
+
+for(const route of ['/leads','/projetos','/organizacao','/configuracoes'])test('sem autorização redireciona '+route+' para login',async({page})=>{
+ await page.addInitScript(()=>localStorage.setItem('citi-all-session-v1',JSON.stringify({authenticated:true,email:'forged@example.com',loggedAt:Date.now()})));
+ await page.route('**/api/easylead/session',route=>route.fulfill({json:{session:null}}));
+ await page.goto('/#'+route);await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('button',{name:'Entrar como usuário de demonstração'})).toBeVisible();await expect(page.getByRole('navigation',{name:'Navegação principal'})).toHaveCount(0);
+});
+
+test('401 da carteira devolve ao login em vez de prender no carregamento',async({page})=>{
+ await page.route('**/api/easylead/session',route=>route.fulfill({json:{session:{authenticated:true,email:'demo@easylead.example',loggedAt:1}}}));
+ await page.route('**/api/easylead/workspace',route=>route.fulfill({status:401,json:{error:'Sessão expirada.'}}));
+ await page.goto('/#/leads');await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('heading',{name:'Entrar no EasyLead'})).toBeVisible();
+});
+
+test('sessão expirada durante conversa volta ao login e não reaparece pelo voltar',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.route('**/api/easylead/session',route=>route.fulfill({json:{session:{authenticated:true,email:'demo@easylead.example',loggedAt:1}}}));
+ await page.route('**/api/easylead/workspace',route=>route.fulfill({json:{state:seed,revision:0}}));
+ await page.route('**/api/easylead/assistant',route=>route.fulfill({status:401,json:{error:'Sessão expirada.'}}));
+ await page.goto('/#/easylead');const input=page.getByRole('textbox',{name:'Mensagem para o EasyLead'});await input.fill('Resuma meus leads');await input.press('Enter');
+ await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('heading',{name:'Entrar no EasyLead'})).toBeVisible();
+ await page.evaluate(()=>location.hash='/projetos');await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('navigation',{name:'Navegação principal'})).toHaveCount(0);
+});
+
+test('sessão revogada é detectada ao voltar à janela',async({page})=>{
+ let authorized=true;
+ await page.route('**/api/easylead/session',route=>route.fulfill({json:{session:authorized?{authenticated:true,email:'demo@easylead.example',loggedAt:1}:null}}));
+ await page.route('**/api/easylead/workspace',route=>route.fulfill({json:{state:seed,revision:0}}));
+ await page.goto('/#/easylead');await expect(page.getByRole('region',{name:'Assistente EasyLead'})).toBeVisible();authorized=false;
+ await page.evaluate(()=>window.dispatchEvent(new Event('focus')));await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('heading',{name:'Entrar no EasyLead'})).toBeVisible();
+});
+
+
+test('navegação revalida acesso revogado e logout fixa a rota de login',async({page})=>{
+ let authorized=true;
+ await page.route('**/api/easylead/session',route=>{if(route.request().method()==='DELETE')authorized=false;return route.fulfill({json:{session:authorized?{authenticated:true,email:'demo@easylead.example',loggedAt:1}:null}});});
+ await page.route('**/api/easylead/workspace',route=>route.fulfill({json:{state:seed,revision:0}}));
+ await page.goto('/#/easylead');await expect(page.getByRole('region',{name:'Assistente EasyLead'})).toBeVisible();authorized=false;
+ await page.getByRole('navigation',{name:'Navegação principal'}).getByRole('link',{name:'Projetos',exact:true}).click();await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('heading',{name:'Entrar no EasyLead'})).toBeVisible();
+ authorized=true;await page.getByRole('button',{name:'Entrar como usuário de demonstração'}).click();await expect(page.getByRole('region',{name:'Assistente EasyLead'})).toBeVisible();
+ await page.getByRole('button',{name:'Menu do perfil'}).click();await page.getByRole('button',{name:'Sair',exact:true}).click();await expect(page).toHaveURL(/#\/login$/);await expect(page.getByRole('heading',{name:'Entrar no EasyLead'})).toBeVisible();
+});

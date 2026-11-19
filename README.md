@@ -50,6 +50,7 @@ O **EasyLead** é uma plataforma para acompanhar oportunidades comerciais e proj
 - Navegação e controles com efeito liquid glass e animações que respeitam a preferência por movimento reduzido.
 - Exportação da carteira em JSON pelas configurações.
 - Modo local com persistência no navegador e modo hospedado com **PostgreSQL**, compatível com Neon ou Supabase.
+- Entrada pelo login em `#/login`, com redirecionamento ao login quando o acesso não é autorizado ou a sessão expira.
 - No modo hospedado, autenticação no servidor, cookies de sessão e controle de versão para evitar sobrescrever alterações de outra pessoa.
 
 ## Executar localmente

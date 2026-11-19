@@ -1,3 +1,4 @@
+import {authorizedFetch} from './cloudClient.js';
 import {assistantSnapshot} from '../../server/assistant-data.js';
 import {readLeadFile} from './leadImport.js';
 import {isOutsideLeadIcp} from './leadWorkspace.js';
@@ -11,7 +12,7 @@ export async function askAssistant(state,messages,question,signal,attachmentCont
   ]);
   const snapshot=assistantSnapshot(state);
   if(attachmentContext)snapshot.attachment_leads=attachmentContext.rows;
-  const response = await fetch('/api/easylead/assistant',{
+  const response = await authorizedFetch('/api/easylead/assistant',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({question,history,snapshot,attachmentContext:attachmentContext?{files:attachmentContext.files,errors:attachmentContext.errors}:undefined}),
@@ -25,7 +26,7 @@ export async function askAssistant(state,messages,question,signal,attachmentCont
 }
 
 async function requestColumns(headers,signal) {
-  const response = await fetch('/api/easylead/assistant',{
+  const response = await authorizedFetch('/api/easylead/assistant',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({kind:'lead-import-columns',headers}),
@@ -57,7 +58,7 @@ async function classifyImportSectors(rows,signal) {
     signal.throwIfAborted();
     const batch = names.slice(index,index+batchSize);
     try {
-      const response = await fetch('/api/easylead/assistant',{
+      const response = await authorizedFetch('/api/easylead/assistant',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({kind:'lead-import-sectors',companies:batch}),
