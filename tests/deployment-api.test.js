@@ -5,7 +5,7 @@ import {once} from 'node:events';
 import {seed} from '../src/domain.js';
 import {createDeploymentApi} from '../server/deployment-api.js';
 import {deploymentConfig} from '../server/deployment-config.js';
-import {signSession,parseSession} from '../server/auth.js';
+import {signSession,parseSession,assertSameOrigin} from '../server/auth.js';
 import {applyWorkspaceCommand,createPostgresRepository} from '../server/postgres.js';
 
 const env={DATABASE_URL:'postgresql://example:example@localhost/example',APP_ACCESS_CODE:'test-access-code-123',SESSION_SECRET:'test-secret-with-at-least-thirty-two-characters',APP_ALLOWED_EMAILS:'user@example.com',APP_ORIGIN:'http://localhost',DEEPSEEK_API_KEY:'server-only-test-key',DEEPSEEK_MODEL:'test-configured-model'};
@@ -88,4 +88,17 @@ test('demo entra sem código ou allowlist, mantém cookie verificável e respeit
   assert.throws(()=>deploymentConfig({...minimal,APP_DEMO_ACCESS:'false'}),/APP_ACCESS_CODE/);
   currentEnv={};const failure=await enter({demo:true});assert.equal(failure.status,503);assert.doesNotMatch(await failure.text(),/APP_ACCESS_CODE|SESSION_SECRET|DATABASE_URL|Configure no servidor/);
  }finally{server.close();server.closeAllConnections();}
+});
+
+
+test('origem aceita aliases explícitos da Vercel e rejeita Host e Origin arbitrários',()=>{
+ const config=deploymentConfig({...env,APP_ORIGIN:'https://easylead.example.com',VERCEL_URL:'easylead-commit.vercel.app',VERCEL_PROJECT_PRODUCTION_URL:'easylead.vercel.app',VERCEL_BRANCH_URL:'easylead-git-main.vercel.app'});
+ for(const domain of ['easylead-commit.vercel.app','easylead.vercel.app','easylead-git-main.vercel.app','easylead.example.com']){
+  const req={method:'POST',headers:{host:domain,origin:'https://'+domain,'sec-fetch-site':'same-origin'}};
+  assert.doesNotThrow(()=>assertSameOrigin(req,config));
+  assert.throws(()=>assertSameOrigin({...req,headers:{...req.headers,origin:'https://outside.example'}},config),error=>error.status===403);
+  assert.throws(()=>assertSameOrigin({...req,headers:{...req.headers,'sec-fetch-site':'cross-site'}},config),error=>error.status===403);
+  assert.throws(()=>assertSameOrigin({...req,headers:{...req.headers,origin:'null'}},config),error=>error.status===403);
+ }
+ assert.throws(()=>assertSameOrigin({method:'POST',headers:{host:'outside.example',origin:'https://outside.example','x-forwarded-host':'outside.example','sec-fetch-site':'same-origin'}},config),error=>error.status===403);
 });

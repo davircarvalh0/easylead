@@ -59,3 +59,14 @@ test('erro ao entrar pela demo apresenta mensagem simples',async({page})=>{
  await page.goto('/');await page.getByRole('button',{name:'Entrar como usuário de demonstração'}).click();
  await expect(page.getByRole('alert')).toHaveText('Não foi possível entrar agora. Tente novamente em instantes.');
 });
+
+
+for(const width of [390,747,1024,1440])test('layout do login mantém campos e demo visíveis '+width,async({page},testInfo)=>{
+ await page.setViewportSize({width,height:844});
+ await page.route('**/api/easylead/session',async route=>{await new Promise(resolve=>setTimeout(resolve,150));return route.fulfill({json:{session:null}});});
+ await page.goto('/');
+ const button=page.getByRole('button',{name:'Entrar como usuário de demonstração'});await expect(button).toBeVisible();
+ await page.screenshot({path:testInfo.outputPath('login.png')});
+ await expect(button).toBeInViewport({ratio:1});await expect(page.getByLabel('E-mail',{exact:true})).toBeInViewport({ratio:1});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+});
