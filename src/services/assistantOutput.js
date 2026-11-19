@@ -1,3 +1,4 @@
+import {publicAssistantReply} from './assistantProtocol.js';
 // Only a small, bounded chart format is accepted. Model output never becomes HTML or code.
 export function validateAssistantChart(value) {
   if (!value || !['bar','line'].includes(value.type) || typeof value.title!=='string'
@@ -9,6 +10,7 @@ export function validateAssistantChart(value) {
 }
 
 export function parseAssistantBlocks(reply) {
+  reply=publicAssistantReply(reply);
   const blocks=[];
   const pattern=/^```chart\s*\r?\n([\s\S]*?)(?:^```[^\S\r\n]*(?=\r?$)|$(?![\s\S]))/gm;
   let cursor=0;

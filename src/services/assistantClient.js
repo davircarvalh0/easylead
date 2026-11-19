@@ -1,3 +1,4 @@
+import {publicAssistantReply} from './assistantProtocol.js';
 import {authorizedFetch} from './cloudClient.js';
 import {assistantSnapshot} from '../../server/assistant-data.js';
 import {readLeadFile} from './leadImport.js';
@@ -8,7 +9,7 @@ import {formatNumber} from '../views/DashboardValue.jsx';
 export async function askAssistant(state,messages,question,signal,attachmentContext) {
   if (location.protocol==='file:') throw Error('Abra o EasyLead pelo servidor local para consultar o DeepSeek.');
   const history = messages.slice(-6).flatMap(({query,reply})=>[
-    {role:'user',content:query}, {role:'assistant',content:reply},
+    {role:'user',content:query}, {role:'assistant',content:publicAssistantReply(reply)},
   ]);
   const snapshot=assistantSnapshot(state);
   if(attachmentContext)snapshot.attachment_leads=attachmentContext.rows;
@@ -22,7 +23,7 @@ export async function askAssistant(state,messages,question,signal,attachmentCont
   if (!response.ok || typeof result?.reply!=='string') {
     throw Error(result?.error || 'O servidor do assistente está indisponível. Reinicie o EasyLead.');
   }
-  return result;
+  return {...result,reply:publicAssistantReply(result.reply)};
 }
 
 async function requestColumns(headers,signal) {
