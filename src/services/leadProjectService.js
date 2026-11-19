@@ -1,7 +1,15 @@
 import {saveGoal} from './analyticsService.js';
 import {leadFunnel} from './leadFunnelService.js';
+import {leadOwnerMembers, leadProject, linkedInUrl, proposalDocumentUrl, isOutsideLeadIcp, brazilianStates} from './leadWorkspace.js';
 import {stages, statuses, phases, demoProjects} from '../domain.js';
 import {createStateRepository} from '../repositories/stateRepository.js';
+
+import {leadActivityDay} from './leadActivityService.js';
+
+function contactDaysFor(lead, stage, today) {
+ const days = Array.isArray(lead?.contactDays) ? lead.contactDays : [];
+ return stage === 'Em contato' && lead?.stage !== stage && !days.includes(today) ? [...days, today] : days;
+}
 
 export function saveLead(state, data, id=crypto.randomUUID()) {
  if (![data.name,data.company,data.contact].every(v=>typeof v==='string' && v.trim())) throw Error('Preencha nome, organização e contato.');
@@ -9,11 +17,79 @@ export function saveLead(state, data, id=crypto.randomUUID()) {
  const estimatedValue=data.estimatedValue==null || data.estimatedValue===''?null:Number(data.estimatedValue);
  if(estimatedValue!==null && (!Number.isFinite(estimatedValue)||estimatedValue<0)) throw Error('Valor estimado inválido.');
  validateDates(data,['createdAt']);
+ const city = data.city?.trim();
+ const uf = data.uf?.trim().toUpperCase();
+ if (uf && !brazilianStates.includes(uf)) throw Error('Selecione uma UF válida.');
+ const linkedin = linkedInUrl(data.linkedin);
+ if (data.linkedin != null && (typeof data.linkedin !== 'string' || (data.linkedin.trim() && !linkedin))) {
+  throw Error('Informe uma URL válida do LinkedIn.');
+ }
  const old=state.leads.find(l=>l.id===id);
+ if (data.businessOwnerId && data.businessOwnerId !== old?.businessOwnerId
+   && !leadOwnerMembers(state).some(member=>member.id===data.businessOwnerId)) {
+  throw Error('Selecione um integrante de um setor habilitado para leads.');
+ }
  if(old?.projectId && data.stage!=='Ganho') throw Error('Um lead convertido permanece em Ganho.');
- const lead={...old,...data,id,name:data.name.trim(),company:data.company.trim(),contact:data.contact.trim(),clientSegment:data.clientSegment?.trim() || old?.clientSegment || 'Não classificado',...(data.estimatedValue!==undefined?{estimatedValue}:{})};
+ const today = leadActivityDay();
+ const contactDays = contactDaysFor(old, data.stage, today);
+ const lead={...old,...data,...(!old&&!data.createdAt?{createdAt:today}:{}),...(contactDays.length?{contactDays}:{}),id,name:data.name.trim(),company:data.company.trim(),contact:data.contact.trim(),clientSegment:data.clientSegment?.trim() || old?.clientSegment || 'Não classificado',...(data.estimatedValue!==undefined?{estimatedValue}:{}),...(city!==undefined?{city}:{}),...(uf!==undefined?{uf}:{}),...(data.linkedin!==undefined?{linkedin:linkedin || ''}:{})};
  return {...state,leads:old?state.leads.map(l=>l.id===id?lead:l):[...state.leads,lead]};
 }
+function importIdentity({company,contact,name}) {
+ return JSON.stringify([company,contact,name].map(value=>String(value ?? '').trim().toLocaleLowerCase('pt-BR')));
+}
+
+export function importLeads(state, rows) {
+ const identities=new Set(state.leads.map(importIdentity));
+ const imported=[];
+ const errors=[];
+ let duplicates=0;
+ let outsideIcp=0;
+ const empty={...state,leads:[]};
+
+ for (const {file,record,data} of rows) {
+  if (isOutsideLeadIcp(data.idealCustomerProfile)) {
+   outsideIcp++;
+   continue;
+  }
+  const company=data.company.trim();
+  const contact=data.contact.trim();
+  const name=data.name.trim() || company;
+  const segment=data.contractorSegment.trim();
+  const area=state.areas.find(item=>item.id===segment || item.name.localeCompare(segment,'pt-BR',{sensitivity:'base'})===0);
+  if (!company || !contact || (segment && !area)) {
+   errors.push({file,record,message:!company || !contact ? 'Empresa e contato são obrigatórios.' : 'Área da contratante não encontrada.'});
+   continue;
+  }
+  const identity=importIdentity({company,contact,name});
+  if (identities.has(identity)) {duplicates++; continue;}
+  try {
+   const importedFields=Object.fromEntries(['contactName','phone','email','decisionPower','idealCustomerProfile']
+    .filter(field=>data[field]).map(field=>[field,data[field]]));
+   const next=saveLead(empty,{company,contact,name,stage:'Novo',clientSegment:data.clientSegment,
+    contractorSegment:area?.id || '',linkedin:data.linkedin,...importedFields});
+   imported.push(next.leads[0]);
+   identities.add(identity);
+  } catch (error) {
+   errors.push({file,record,message:error.message});
+  }
+ }
+ const next=imported.length ? {...state,leads:[...state.leads,...imported]} : state;
+ return {state:next,added:imported.length,duplicates,outsideIcp,errors};
+}
+
+export function saveProposal(state, leadId, data) {
+ const lead = state.leads.find(item=>item.id === leadId);
+ if (!['Proposta','Ganho'].includes(lead?.stage)) throw Error('Abra um lead em Proposta ou Ganho para editar a proposta.');
+ const documentUrl = proposalDocumentUrl(data.documentUrl);
+ if (data.documentUrl.trim() && !documentUrl) throw Error('Informe um link HTTP ou HTTPS para o documento.');
+ const price = data.price === '' ? null : Number(data.price);
+ if (price !== null && (!Number.isFinite(price) || price <= 0)) throw Error('Informe um valor positivo para a proposta.');
+ const attachment = data.attachment === undefined ? lead.proposal?.attachment : data.attachment;
+ const proposal = {documentUrl, description:data.description.trim(), price, attachment:attachment ?? null};
+ return {...state, leads:state.leads.map(item=>item.id === leadId ? {...item,proposal} : item)};
+}
+
 export function convert(state,leadId,data) {
  const lead=state.leads.find(l=>l.id===leadId);
  if(!lead) throw Error('Lead não encontrado.');
@@ -21,17 +97,45 @@ export function convert(state,leadId,data) {
  if(existing) return {state,project:existing};
  if(lead.stage!=='Ganho') throw Error('Somente leads ganhos podem ser convertidos.');
  if(!data.name?.trim() || !state.areas.some(a=>a.id===data.areaId)) throw Error('Informe nome e área do projeto.');
- const member=state.members.find(m=>m.id===data.ownerId && m.areaId===data.areaId);
- if(!member) throw Error('Selecione um responsável da área.');
- const memberIds=[...new Set([data.ownerId,...(data.memberIds||[])])];
+ const ownerId=data.ownerId || null;
+ if(ownerId && !state.members.some(member=>member.id===ownerId && member.areaId===data.areaId)) {
+  throw Error('Selecione um responsável da área.');
+ }
+ const memberIds=[...new Set([...(ownerId ? [ownerId] : []),...(data.memberIds||[])])];
  if(memberIds.some(id=>!state.members.some(m=>m.id===id))) throw Error('Integrante inválido.');
  validateDates(data,['convertedAt','contractStart','contractEnd']);
- if(data.contractStart&&data.contractEnd&&data.contractStart>data.contractEnd) throw Error('Vig?ncia final anterior ? inicial.');
+ if(data.contractStart&&data.contractEnd&&data.contractStart>data.contractEnd) throw Error('A data final da vigência deve ser igual ou posterior à inicial.');
  const terms={...validateTerms(data),convertedAt:data.convertedAt||null,contractStart:data.contractStart||null,contractEnd:data.contractEnd||null};
- const squadId=crypto.randomUUID();
- const project={...terms,phase:data.phase || 'Discovery',originPhase:data.phase || 'Discovery',company:lead.company,clientSegment:lead.clientSegment || 'Não classificado',squadId,id:crypto.randomUUID(),name:data.name.trim(),areaId:data.areaId,ownerId:data.ownerId,memberIds,leadId,status:'Planejado'};
- return {state:{...state,leads:state.leads.map(l=>l.id===leadId?{...l,projectId:project.id}:l),squads:[...(state.squads || []),{id:squadId,name:data.squadName?.trim() || `Squad · ${project.name}`,areaId:data.areaId,ownerId:data.ownerId,memberIds,specialty:'Equipe do projeto'}],projects:[...state.projects,project]},project};
+ const squadId=memberIds.length ? crypto.randomUUID() : null;
+ const contractDate = terms.contractStatus === 'Contratado' && !terms.convertedAt ? {contractClosedAt:leadActivityDay()} : {};
+ const project={...terms,...contractDate,phase:data.phase || 'Discovery',originPhase:data.phase || 'Discovery',company:lead.company,clientSegment:lead.clientSegment || 'Não classificado',squadId,id:crypto.randomUUID(),name:data.name.trim(),areaId:data.areaId,ownerId,memberIds,leadId,status:'Planejado'};
+ const squads=state.squads || [];
+ const linkedSquads=squadId
+  ? [...squads,{id:squadId,name:data.squadName?.trim() || `Squad · ${project.name}`,areaId:data.areaId,ownerId,memberIds,specialty:'Equipe do projeto'}]
+  : squads;
+ return {state:{...state,leads:state.leads.map(l=>l.id===leadId?{...l,projectId:project.id}:l),squads:linkedSquads,projects:[...state.projects,project]},project};
 }
+export function saveProjectScope(state,leadId,{areaId,phase,contractValue}) {
+ const lead=state.leads.find(item=>item.id===leadId);
+ if (!lead) throw Error('Lead não encontrado.');
+ if (lead.stage!=='Ganho') throw Error('Somente leads ganhos podem ter valor e escopo definidos.');
+ if (!state.areas.some(area=>area.id===areaId)) throw Error('Selecione a área responsável pelo projeto.');
+ if (!phases.includes(phase)) throw Error('Selecione Discovery ou Delivery.');
+
+ const project=leadProject(state,lead);
+ if (!project) return convert(state,leadId,{name:lead.name || lead.company,areaId,phase,contractValue});
+
+ const terms=validateTerms({
+  contractValue,
+  contractStatus:contractValue==='' || contractValue==null ? project.contractStatus : 'Contratado',
+ });
+ if (project.contractValue>0 && terms.contractValue===null) throw Error('Informe o valor contratado.');
+ const contractDate=terms.contractStatus==='Contratado' && project.contractStatus!=='Contratado'
+  && !project.convertedAt && !project.contractClosedAt ? {contractClosedAt:leadActivityDay()} : {};
+ const updated={...project,...terms,...contractDate,areaId,phase};
+ return {state:{...state,projects:state.projects.map(item=>item.id===project.id ? updated : item)},project:updated};
+}
+
 export function changeStatus(state,id,status) {
  if(!statuses.includes(status)) throw Error('Status inválido.');
  return {...state,projects:state.projects.map(p=>p.id===id?{...p,status}:p)};
@@ -46,14 +150,33 @@ export function createLeadProjectService(repository = createStateRepository()) {
     leadFunnel, organizationAtoms,
     saveGoal: (state,data)=>persist(saveGoal(state,data)),
     saveMember: (state, data, id) => persist(saveMember(state, data, id)),
+    saveIcp: (state, budget) => persist(saveIcp(state,budget)),
+    saveArea: (state, name, id) => persist(saveArea(state, name, id)),
+    setAreaLeadOwnership: (state, id, enabled) => persist(setAreaLeadOwnership(state, id, enabled)),
+    removeArea: (state, id) => persist(removeArea(state, id)),
     filterProjects, calculateAverageMetrics, valueBlocks,
     addValueDemo: state => persist(addValueDemo(state)),
     changePhase: (state,id) => persist(changePhase(state,id)),
     addDemo: state => persist(addDemo(state)),
     load: () => repository.read(),
     saveLead: (state, data, id) => persist(saveLead(state, data, id)),
+    importLeads(state, rows) {
+      const result=importLeads(state,rows);
+      if (result.state!==state) persist(result.state);
+      return result;
+    },
+    saveProposal: (state, id, data) => persist(saveProposal(state, id, data)),
+    moveLeadStage(state, id, stage) {
+      const next = moveLeadStage(state, id, stage);
+      return next === state ? state : persist(next);
+    },
     convert(state, leadId, data) {
       const result = convert(state, leadId, data);
+      persist(result.state);
+      return result;
+    },
+    saveProjectScope(state, leadId, data) {
+      const result=saveProjectScope(state,leadId,data);
       persist(result.state);
       return result;
     },
@@ -76,7 +199,8 @@ export function changePhase(state,id) {
  return {...state,projects:state.projects.map(p=>p.id===id?{...p,originPhase:p.originPhase || p.phase,phase:'Delivery'}:p)};
 }
 export function filterProjects(state, filters={}) {
- return state.projects.filter(p=>(!filters.segment || p.clientSegment===filters.segment) && (!filters.phase || p.phase===filters.phase) && (!filters.area || p.areaId===filters.area) && (!filters.status || p.status===filters.status));
+ const search=filters.projectSearch?.trim().toLocaleLowerCase();
+ return state.projects.filter(p=>(!search || `${p.name} ${p.company || ''}`.toLocaleLowerCase().includes(search)) && (!filters.segment || p.clientSegment===filters.segment) && (!filters.phase || p.phase===filters.phase) && (!filters.area || p.areaId===filters.area) && (!filters.status || p.status===filters.status));
 }
 export function isEligibleForAverage(p) {
  return p.contractStatus==='Contratado' && typeof p.contractValue==='number' && Number.isFinite(p.contractValue) && p.contractValue>0;
@@ -142,6 +266,67 @@ export function addValueDemo(state) {
   next=convert(next,demoId,{name,areaId,ownerId,contractValue:value,phase:id==='l0'?'Delivery':'Discovery',squadName:id==='l0'?'Squad Aurora IA':'Squad Horizonte'}).state;
  }
  return next;
+}
+
+export function moveLeadStage(state, id, stage) {
+ const lead = state.leads.find(item => item.id === id);
+ if (!lead) throw Error('Lead não encontrado.');
+ if (!stages.includes(stage)) throw Error('Estágio inválido.');
+ if (lead.stage === stage) return state;
+ if (stage !== 'Ganho' && (lead.projectId || state.projects.some(project => project.leadId === id))) {
+  throw Error('Um lead convertido permanece em Ganho.');
+ }
+ const contactDays = contactDaysFor(lead, stage, leadActivityDay());
+ const updated = {...lead, stage, ...(contactDays.length ? {contactDays} : {})};
+ return {...state, leads:state.leads.map(item => item.id === id ? updated : item)};
+}
+
+export function saveIcp(state, {minimum,maximum}) {
+ const parseBudget = value => value === '' || value == null ? null : Number(value);
+ const min = parseBudget(minimum);
+ const max = parseBudget(maximum);
+ if ([min,max].some(value=>value!==null && (!Number.isFinite(value) || value<0))) {
+  throw Error('Informe valores de orçamento válidos.');
+ }
+ if (min!==null && max!==null && min>max) {
+  throw Error('O orçamento máximo deve ser maior ou igual ao mínimo.');
+ }
+ return {...state,icpBudget:{minimum:min,maximum:max}};
+}
+
+export function saveArea(state, name, id = crypto.randomUUID()) {
+ const label=typeof name==='string' ? name.trim().replace(/\s+/g,' ') : '';
+ if (!label) throw Error('Informe o nome do setor.');
+ const canonical=value=>value.normalize('NFD').replace(/\p{M}/gu,'').toLocaleLowerCase('pt-BR');
+ if (state.areas.some(area=>area.id===id || canonical(area.name)===canonical(label))) {
+  throw Error('Já existe um setor com esse nome.');
+ }
+ return {...state,areas:[...state.areas,{id,name:label,leadOwnershipEnabled:false}]};
+}
+
+export function setAreaLeadOwnership(state, id, enabled) {
+ if (!state.areas.some(area=>area.id===id)) throw Error('Setor não encontrado.');
+ return {...state,areas:state.areas.map(area=>area.id===id ? {...area,leadOwnershipEnabled:enabled} : area)};
+}
+
+export function removeArea(state, id) {
+ const area = state.areas.find(item => item.id === id);
+ if (!area) throw Error('Setor não encontrado.');
+
+ const detachArea = item => item.areaId === id ? {...item, areaId:null} : item;
+ return {
+  ...state,
+  areas:state.areas.filter(item => item.id !== id),
+  projects:state.projects.map(detachArea),
+  members:state.members.map(detachArea),
+  squads:(state.squads || []).map(detachArea),
+  leads:state.leads.map(lead => {
+   const segment = lead.contractorSegment;
+   const linked = segment === id || (typeof segment === 'string'
+    && segment.trim().localeCompare(area.name,'pt-BR',{sensitivity:'base'}) === 0);
+   return linked ? {...lead, contractorSegment:''} : lead;
+  }),
+ };
 }
 
 export function saveMember(state, data, id = crypto.randomUUID()) {

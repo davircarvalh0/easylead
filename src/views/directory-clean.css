@@ -1,0 +1,114 @@
+/* The two directories share table geometry, pagination and neutral surfaces. */
+.studio-layout[data-clean-dashboard="true"] .dashboard-route:has(>.prospect-header) {
+  --directory-list-height:clamp(24rem,62vh,38rem);
+  --viz-mint:var(--clean-ink);
+  --viz-lilac:var(--clean-muted);
+  --viz-sky:var(--clean-muted);
+  --viz-amber:var(--clean-muted);
+  --easy-glass-chrome:var(--clean-surface);
+  --easy-action-primary:var(--clean-ink);
+  --lead-search-surface:var(--clean-inset);
+  --lead-search-border:var(--clean-line);
+  --lead-action-height:42px;
+}
+.studio-layout .dashboard-route:has(>.prospect-header) :is(.prospect-module,.project-portfolio)>.fr-body { padding:var(--panel-padding); }
+.studio-layout .dashboard-route:has(>.prospect-header) :is(.toolbar,.lead-choice-trigger,.lead-choice-options,.sector-search-options,.project-filter-panel,.prospect-table-scroll,.contract-table) {
+  background:var(--panel); background-image:none; border-color:var(--panel-line); box-shadow:none; backdrop-filter:none;
+}
+.studio-layout .dashboard-route:has(>.prospect-header) .toolbar { border-radius:8px; padding:.85rem; }
+.studio-layout .dashboard-route:has(>.prospect-header) :is(.lead-choice-trigger,input,select) { background:var(--panel-inset); background-image:none; border-color:var(--panel-line); box-shadow:none; color:var(--panel-text); }
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-choice-options { border-radius:8px; box-shadow:0 6px 20px #00000014; }
+.studio-layout .dashboard-route:has(>.prospect-header) [data-stage] { --stage-accent:var(--panel-muted); }
+.studio-layout .dashboard-route:has(>.prospect-header) :is(.lead-pending-label,.prospect-card-value,.prospect-deal-amount strong,.project-value,.badge.green) { color:var(--panel-text); }
+.studio-layout .dashboard-route:has(>.prospect-header) :is(.prospect-deal-stage,.directory-status,.badge) { display:inline-block; padding:.25rem .5rem; border:1px solid var(--panel-line); border-radius:5px; background:var(--panel-inset); color:var(--panel-text); font-size:.72rem; font-weight:500; white-space:nowrap; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-steps { padding:.8rem 0 .3rem; gap:.35rem; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-step-node,
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-steps button::before { display:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-steps button { min-height:38px; padding:.45rem; gap:0; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-steps button strong { color:inherit; font-weight:600; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-step-halo { background:var(--panel-raised); border:1px solid var(--panel-line); box-shadow:none; border-radius:6px; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-toggle.lead-glass-switch { background:var(--panel-inset); box-shadow:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-toggle.lead-glass-switch::before { background:var(--panel); background-image:none; box-shadow:0 1px 3px #00000008; }
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-glass-action { background-image:none; box-shadow:none; backdrop-filter:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-glass-action-primary { background:var(--clean-ink); color:var(--clean-surface); }
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-glass-action-primary:hover { color:var(--clean-surface); }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table-scroll {
+  width:100%; max-width:100%; block-size:var(--directory-list-height); min-width:0; margin:0;
+  overflow:auto; overscroll-behavior:contain; scrollbar-gutter:stable; scrollbar-color:var(--panel-line) var(--panel);
+  border:1px solid var(--panel-line); border-radius:8px; background:var(--panel);
+}
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table {
+  width:100%; min-width:56rem; table-layout:fixed; border-collapse:separate; border-spacing:0; font-size:.83rem;
+}
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table :is(th,td) { box-sizing:border-box; padding:.65rem .85rem; text-align:start; vertical-align:middle; border:0; border-bottom:1px solid var(--panel-line); overflow-wrap:anywhere; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table thead th { position:sticky; top:0; z-index:1; height:44px; background:var(--panel-inset); color:var(--panel-muted); font-size:.76rem; font-weight:500; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table thead th:first-child { width:9rem; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table thead th:nth-child(2) { width:31%; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table thead th:nth-child(4) { width:13rem; text-align:end; white-space:normal; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table tbody tr { height:84px; background:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table tbody tr:is(:hover,:focus-within) { background:var(--panel-inset); }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table tbody th { font-weight:400; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table :is(.table-value,.prospect-deal-amount) { text-align:end; font-variant-numeric:tabular-nums; }
+.directory-record,.directory-record>span,.directory-record>small,.directory-secondary { display:block; }
+.directory-record { color:var(--panel-text); line-height:1.4; }
+.directory-record>strong,.directory-table .prospect-company>strong { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:.86rem; font-weight:600; }
+.directory-record>span,.directory-record>small,.directory-secondary { color:var(--panel-muted); font-size:.74rem; margin-top:.15rem; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.directory-secondary { white-space:normal; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-deal-name>span:not(.prospect-deal-open),
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-deal-name>small { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.directory-pagination { display:flex; align-items:center; justify-content:space-between; gap:.65rem 1rem; flex-wrap:wrap; padding-top:1rem; color:var(--panel-muted); font-size:.78rem; }
+.directory-pagination-controls { display:flex; align-items:center; gap:.6rem; }
+.directory-pagination-controls>span { min-width:3rem; text-align:center; font-variant-numeric:tabular-nums; }
+.directory-pagination button { min-height:38px; padding:.4rem .7rem; border:1px solid var(--panel-line); border-radius:6px; background:var(--panel); color:var(--panel-text); font:inherit; cursor:pointer; }
+.directory-pagination button:disabled { opacity:.35; cursor:default; }
+.directory-pagination button:not(:disabled):hover { background:var(--panel-inset); }
+.directory-pagination-compact { padding:.5rem; gap:.4rem; font-size:.7rem; }
+.directory-pagination-compact>span { width:100%; text-align:center; }
+.directory-pagination-compact .directory-pagination-controls { width:100%; justify-content:space-between; gap:.2rem; }
+.directory-pagination-compact button span { display:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) :is(.prospect-lane,.prospect-card,.prospect-move-menu) { background:var(--panel); background-image:none; border-color:var(--panel-line); box-shadow:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-lane { overflow:hidden; border-radius:8px; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-lane header { color:var(--panel-text); min-height:44px; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-lane ul { max-height:calc(var(--directory-list-height) - 120px); overflow:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-lane[data-drop-active] { border-color:var(--panel-text); background:var(--panel-inset); box-shadow:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-card { background:var(--panel-inset); border-radius:6px; }
+.studio-layout .dashboard-route:has(>.prospect-header) .project-rows { block-size:var(--directory-list-height); overflow:auto; align-content:start; overscroll-behavior:contain; }
+.studio-layout .dashboard-route:has(>.prospect-header) .project-rows .card { background:var(--panel); background-image:none; border-color:var(--panel-line); color:var(--panel-text); border-radius:8px; box-shadow:none; }
+.studio-layout .dashboard-route:has(>.prospect-header) :is(.prospect-module,.project-portfolio) .empty { min-height:var(--directory-list-height); display:grid; place-items:center; margin:0; }
+body:has(.prospect-module) .prospect-drag-preview { --panel:#1a1d20; --panel-text:#f0f1f2; --panel-muted:#a5abb2; --panel-line:#555b60; --stage-accent:#f0f1f2; background:var(--panel); border-color:var(--panel-line); box-shadow:0 8px 24px #0004; }
+body:has(.studio-layout[data-theme="light"] .prospect-module) .prospect-drag-preview { --panel:#fff; --panel-text:#252a28; --panel-muted:#69716c; --panel-line:#a5abb2; --stage-accent:#252a28; }
+@media(max-width:520px) {
+  .directory-pagination { justify-content:center; }
+  .directory-pagination>span { width:100%; text-align:center; }
+  .studio-layout .dashboard-route:has(>.prospect-header) { --directory-list-height:clamp(24rem,62vh,38rem); }
+}
+
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-company { align-items:center; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-company>strong { flex:1; -webkit-line-clamp:1; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-company>.lead-pending-label { flex:none; max-width:50%; font-size:.65rem; white-space:nowrap; }
+.studio-layout .dashboard-route:has(>.prospect-header) .directory-table .dashboard-value,
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-deal-amount strong { font-weight:550; font-style:normal; }
+
+.studio-layout[data-clean-dashboard="true"] .dashboard-route:has(>.prospect-header) {
+  --panel:var(--clean-surface); --panel-inset:var(--clean-inset); --panel-raised:var(--clean-raised);
+  --panel-text:var(--clean-ink); --panel-muted:var(--clean-muted); --panel-line:var(--clean-line);
+}
+
+.studio-layout .dashboard-route:has(>.prospect-header) .project-filter-panel .glass-filters>label>select { width:100%; height:36px; min-height:36px; font-size:.83rem; font-weight:400; padding:.4rem .55rem; }
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-search-field { box-shadow:none; border:1px solid var(--panel-line); background:var(--panel-inset); color:var(--panel-muted); }
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-search-field:focus-within { outline-color:var(--panel-muted); }
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-search-field .lead-search-input { min-width:0; width:100%; }
+
+.studio-layout .dashboard-route:has(>.prospect-header) .lead-search-field { border:0; box-shadow:inset 0 0 0 1px var(--panel-line); }
+
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-filter-module { padding:var(--panel-padding); }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-filter-module .toolbar {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.65rem; padding:0; margin:0;
+  border:0; border-radius:0; background:none; box-shadow:none;
+}
+@media(max-width:760px) {
+  .studio-layout .dashboard-route:has(>.prospect-header) .prospect-filter-module .toolbar { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-filter-module { position:relative; z-index:2; }
+.studio-layout .dashboard-route:has(>.prospect-header) .prospect-filter-module:has(.lead-choice-options) { z-index:5; }

@@ -1,0 +1,94 @@
+.topbar.easylead-topbar {
+  --easylead-brand-width:2.5rem;
+  --easylead-item-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:calc(100% - 1.5rem);
+  border:0;
+  background:none;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+.nimbus-nav.easylead-navbar {
+  display:grid;
+  grid-template-columns:var(--easylead-brand-width) repeat(3,minmax(0,1fr));
+  width:min(100% - 8rem,29rem);
+}
+.easylead-navbar .nimbus-item { justify-content:center; min-height:0; padding-inline:.35rem; white-space:nowrap; }
+.easylead-navbar { --n-drop-highlight:50%; }
+.easylead-navbar .nimbus-item[data-brand] { padding-inline:0; color:#fff; }
+.easylead-navbar .nimbus-item[data-brand] .nimbus-label {
+  position:absolute;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+.easylead-nav-actions { position:absolute; inset-inline-end:0; z-index:2; display:flex; align-items:center; gap:.4rem; }
+.easylead-profile { position:relative; }
+.easylead-profile-options {
+  border:1px solid #ffffff32;
+  background:rgba(28,28,28,.82);
+  backdrop-filter:blur(10px) saturate(.12);
+  box-shadow:inset 0 1px 1px #ffffff2c,0 8px 24px #0005;
+  color:#fafafa;
+}
+.nimbus-nav:is(.easylead-profile-liquid,.easylead-theme-liquid) .nimbus-item {
+  justify-content:center;
+  width:var(--easylead-brand-width);
+  padding:0;
+}
+.easylead-nav-actions .nv-ico svg { width:1.5rem; height:1.5rem; }
+.easylead-profile-options {
+  position:absolute;
+  inset-block-start:calc(100% + .4rem);
+  inset-inline-end:0;
+  min-width:10.5rem;
+  padding:.25rem;
+  border-radius:.9rem;
+}
+.easylead-profile-options :is(a,button) {
+  display:flex;
+  align-items:center;
+  width:100%;
+  min-height:40px;
+  padding:.45rem .75rem;
+  border:0;
+  border-radius:.65rem;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  font-size:.85rem;
+  text-align:start;
+  text-decoration:none;
+  cursor:pointer;
+}
+.easylead-profile-options :is(a,button):hover { background:#ffffff14; }
+.easylead-profile :focus-visible { outline:2px solid #d0d0d0; outline-offset:1px; }
+.easylead-settings dl { display:block; margin:0 0 1rem; }
+.easylead-settings dd { margin:0; overflow-wrap:anywhere; }
+.easylead-logo {
+  display:block;
+  width:8.5rem;
+  aspect-ratio:508 / 100;
+  background:currentColor;
+  mask:url("./easylead-brand.png") 13.95% 50.21% / 201.575% auto no-repeat luminance;
+}
+.easylead-navbar .easylead-logo {
+  width:1.5rem;
+  aspect-ratio:212 / 185;
+  mask-size:483.02% auto;
+  mask-position:89.9% 49.1%;
+}
+
+@media (max-width:1100px) {
+  .easylead-navbar .nimbus-label { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .nimbus-nav.easylead-navbar { width:min(100% - 7rem,20rem); }
+}
+@media (max-width:600px) {
+  .topbar.easylead-topbar { flex-direction:column; gap:.35rem; }
+  .nimbus-nav.easylead-navbar { width:min(100%,16rem); }
+  .easylead-nav-actions { position:relative; align-self:flex-end; }
+}

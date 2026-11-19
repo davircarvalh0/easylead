@@ -1,17 +1,23 @@
 import {useEffect, useState} from 'react';
+import {isCloud} from '../services/cloudClient.js';
 import {createSessionService} from '../services/sessionService.js';
+
+export const LOGIN_TRANSITION_MS = 560;
 
 export function useSessionController() {
   const [service] = useState(createSessionService);
-  const [session, setSession] = useState(() => service.load());
+  const [session, setSession] = useState(() => isCloud?null:service.load());
   const [entering, setEntering] = useState(false);
   const [error, setError] = useState('');
+  const [loading,setLoading]=useState(isCloud);
+  const [submitting,setSubmitting]=useState(false);
+  useEffect(()=>{if(!isCloud)return;let active=true;service.load().then(next=>{if(active)setSession(next);}).catch(error=>{if(active)setError(error.message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[service]);
   useEffect(() => {
     if (!entering) return;
     const media = matchMedia('(prefers-reduced-motion: reduce)');
     const finish = () => setEntering(false);
     const change = () => { if (media.matches) finish(); };
-    let remaining = 1600, started = performance.now(), timer;
+    let remaining = LOGIN_TRANSITION_MS, started = performance.now(), timer;
     const visibility = () => {
       clearTimeout(timer);
       if (document.hidden) remaining -= performance.now() - started;
@@ -22,18 +28,19 @@ export function useSessionController() {
     media.addEventListener('change', change);
     return () => { clearTimeout(timer); document.removeEventListener('visibilitychange', visibility); media.removeEventListener('change', change); };
   }, [entering]);
-  function login(email, password) {
+  async function login(email, password) {
+    if(submitting)return;setSubmitting(true);
     try {
-      const next = service.login(email, password);
-      location.hash = '/';
+      const next = await service.login(email, password);
+      location.hash = '/easylead';
       setError('');
       setEntering(!matchMedia('(prefers-reduced-motion: reduce)').matches);
       setSession(next);
-    } catch (failure) { setError(failure.message); }
+    } catch (failure) { setError(failure.message); }finally{setSubmitting(false);}
   }
-  function logout() {
-    try { service.logout(); setSession(null); setEntering(false); setError(''); }
+  async function logout() {
+    try { await service.logout(); setSession(null); setEntering(false); setError(''); }
     catch (failure) { setError(failure.message); }
   }
-  return {session, entering, error, login, logout, finish: () => setEntering(false)};
+  return {session, entering, error, loading,submitting,login, logout, finish: () => setEntering(false)};
 }

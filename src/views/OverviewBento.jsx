@@ -1,20 +1,102 @@
-import React from 'react';
-import {actionableLeads,stages} from '../domain.js';
-import {Magnetic} from '../Magnetic.jsx';
-import {ProjectFilters,ProjectList,SceneEntry} from './Pipeline.jsx';
+import React, { useId } from 'react';
+import { actionableLeads } from '../domain.js';
+import { Magnetic } from '../Magnetic.jsx';
+import { DashboardValue, formatNumber } from './DashboardValue.jsx';
+import { updateChartGlow, useChartEntrance } from './ChartSurface.jsx';
+import './overview-bento.css';
 
-export function OverviewBento({state,count,filters,setFilter,values,projects,addDemo}) {
- const priorities=actionableLeads(state);
- return <><div className="overview-bento">
- <section className="bento-module module-pipeline" aria-labelledby="pipeline-title">
- <div className="pipeline-opening"><div className="module-header"><div><span className="eyebrow">DO PRIMEIRO CONTATO À ENTREGA</span><h2 id="pipeline-title">O trabalho conectado.<br/>A equipe por perto.</h2></div><Magnetic href="#/leads/novo">Cadastrar oportunidade ↗</Magnetic></div>
- <div className="stats">{[['Leads abertos',count.open,'/leads?estagio=abertos'],['Projetos em andamento',count.active,'/projetos?status=Em andamento'],['Leads ganhos',state.leads.filter(l=>l.stage==='Ganho').length,'/leads?estagio=Ganho'],['Total de projetos',state.projects.length,'/projetos']].map(([label,n,url])=><a key={label} href={'#'+url}><span>{label}</span><strong>{n}</strong><small>Consultar →</small></a>)}</div>
- <div className="funnel">{stages.map(s=><a key={s} href={'#/leads?estagio='+encodeURIComponent(s)}><strong>{state.leads.filter(l=>l.stage===s).length}</strong>{s}</a>)}</div>
- </div><div className="pipeline-priorities"><h3>Leads que precisam de ação</h3><div className="priority-list">{priorities.map(l=><a className="priority-row" key={l.id} href={'#/leads/'+l.id}><span className={'badge '+(l.stage==='Ganho'?'green':'')}>{l.stage}{l.stage==='Ganho'?' · Pronto para converter':''}</span><strong>{l.name}</strong><small>{l.company} · {l.contact}</small><span>{l.stage==='Ganho'?'Converter':'Abrir'} →</span></a>)}</div>{!priorities.length&&<p>Nenhum lead precisa de ação agora.</p>}
- </div><div className="fr-footer"><a href="#/leads">Consultar todos os leads →</a> ? {state.leads.length} oportunidades cadastradas</div></section>
- <section className="bento-module module-average" aria-label="Valores e filtros">{React.cloneElement(values,{inspectGroups:true})}<ProjectFilters state={state} filters={filters} setFilter={setFilter}/></section>
- <section className="bento-module module-projects" aria-labelledby="projects-title"><div className="module-header"><h2 id="projects-title">Projetos em destaque</h2><a href="#/projetos">Todos os projetos →</a></div><ProjectList items={[...projects].sort((a,b)=>Number(b.status==='Em andamento')-Number(a.status==='Em andamento'))} state={state}/><div className="fr-footer">{projects.length} projetos no recorte · <a href="#/projetos">Abrir carteira →</a></div></section>
- <section className="bento-module module-owners" aria-labelledby="owners-title"><h2 id="owners-title">Acesso direto aos responsáveis</h2><div>{state.members.map(m=><article className="owner-row" key={m.id}><span className="avatar" aria-hidden="true">{m.name.split(' ').map(n=>n[0]).join('')}</span><div><strong>{m.name}</strong><small>{m.role} · {state.areas.find(a=>a.id===m.areaId)?.name}</small><small>{state.projects.filter(p=>p.ownerId===m.id).length} projeto(s) liderado(s)</small><div className="owner-links"><a href={'#/organizacao/'+m.areaId}>Abrir subárea →</a><a href={'#/integrantes?area='+m.areaId}>Ver integrantes →</a></div></div></article>)}</div><a href="#/organizacao">Explorar Organização Atômica →</a></section>
- <div className="module-scene"><SceneEntry/></div>
- </div><button className="quiet-button" onClick={addDemo}>Adicionar exemplos de filtros e médias</button></>;
+const colors = ['#69aafa', '#ac8cff', '#f4bd66', '#46dca5', '#ef8998'];
+const initials = name => name.trim().split(/\s+/).slice(0, 2).map(word => word[0]).join('');
+
+function scopedLink(path, query, key, value) {
+  const params = new URLSearchParams(query);
+  if (key) params.set(key, value);
+  return `#${path}${params.size ? '?' + params : ''}`;
+}
+
+export function OverviewBento({ state, indicators, funnel, query, values, projects, addDemo }) {
+  const ownerGroup = useId();
+  const stageChart = useChartEntrance();
+  const priorities = actionableLeads({ ...state, leads: funnel.items });
+  const featured = [...projects].sort((a, b) => Number(b.status === 'Em andamento') - Number(a.status === 'Em andamento')).slice(0, 4);
+  const owners = new Map();
+  for (const project of projects) owners.set(project.ownerId, (owners.get(project.ownerId) || 0) + 1);
+  const members = [...state.members].sort((a, b) => (owners.get(b.id) || 0) - (owners.get(a.id) || 0));
+  const stats = [
+    ['Leads abertos', indicators.open, '/leads', 'estagio', 'abertos'],
+    ['Projetos em andamento', indicators.active, '/projetos', 'status', 'Em andamento'],
+    ['Leads ganhos', indicators.won, '/leads', 'estagio', 'Ganho'],
+    ['Total de projetos', indicators.projects, '/projetos'],
+  ];
+  const projectsLink = scopedLink('/projetos', query);
+  const leadsLink = scopedLink('/leads', query);
+
+  return <>
+    <div className="overview-workspace">
+      <div className="overview-column">
+        <section className="bento-module overview-opportunities" aria-labelledby="pipeline-title">
+          <header className="bento-section-header">
+            <h2 id="pipeline-title">Oportunidades e entregas</h2>
+            <Magnetic href="#/leads/novo">Cadastrar oportunidade ↗</Magnetic>
+          </header>
+          <div className="overview-signals">
+            {stats.map(([label, value, path, key, filter], index) => <a key={label}
+              href={scopedLink(path, query, key, filter)} className="overview-signal chart-surface" onPointerMove={updateChartGlow}
+              style={{ '--signal': colors[index] }} aria-label={label + ' ' + formatNumber(value) + ' Consultar'}>
+              <span>{label}</span><DashboardValue value={value}/><span className="go-arrow" aria-hidden="true">↗</span>
+            </a>)}
+          </div>
+          <div ref={stageChart} className="overview-stage-chart" role="group" aria-label="Leads por estágio">
+            <div className="overview-stage-band" aria-hidden="true">
+              {funnel.rows.map(({ stage, count }, index) => count > 0 &&
+                <i key={stage} style={{ flexGrow: count, background: colors[index] }}/>)}
+            </div>
+            <div className="overview-stage-legend">
+              {funnel.rows.map(({ stage, count }, index) => <a key={stage} href={scopedLink('/leads', query, 'estagio', stage)}
+                aria-label={stage + ', ' + formatNumber(count) + ' leads'}>
+                <i aria-hidden="true" style={{ background: colors[index] }}/>{stage}
+              </a>)}
+            </div>
+          </div>
+          <header className="bento-section-header overview-queue-head"><h3>Leads que precisam de ação</h3><a href={leadsLink}>Todos os leads ↗</a></header>
+          {priorities.length ? <ul className="overview-queue">{priorities.slice(0, 4).map(lead => <li key={lead.id}>
+            <a href={'#/leads/' + lead.id}><span className="overview-glyph" aria-hidden="true">{lead.stage === 'Ganho' ? '✓' : '↗'}</span>
+              <span><strong>{lead.name}</strong><small>{lead.stage === 'Ganho' ? 'Pronto para converter' : lead.stage}</small></span><span aria-hidden="true">↗</span>
+            </a>
+          </li>)}</ul> : <p className="empty">Nenhum lead precisa de ação neste recorte.</p>}
+        </section>
+
+        <section className="bento-module overview-projects" aria-labelledby="overview-projects">
+          <header className="bento-section-header"><h2 id="overview-projects">Projetos em destaque</h2><a href={projectsLink}>Abrir carteira ↗</a></header>
+          {featured.length ? <div className="overview-project-grid">{featured.map((project, index) => <a
+            href={'#/projetos/' + project.id} key={project.id} className="overview-project chart-surface" onPointerMove={updateChartGlow}
+            style={{ '--project-color': colors[index] }}>
+            <span className="overview-project-art" aria-hidden="true"><i/><i/><i/></span>
+            <span className="overview-project-status">{project.status}</span>
+            <strong>{project.name}</strong><small>{project.phase || 'Delivery'}</small><span className="go-arrow" aria-hidden="true">↗</span>
+          </a>)}</div> : <p className="empty">Nenhum projeto neste recorte.</p>}
+        </section>
+
+      </div>
+      <div className="overview-column">
+        <section className="bento-module overview-average" aria-label="Valores e filtros">
+          {React.cloneElement(values, { inspectGroups: true })}
+        </section>
+
+        <section className="bento-module overview-owners" aria-labelledby="overview-owners">
+          <header className="bento-section-header"><h2 id="overview-owners">Responsáveis por projetos</h2><a href="#/organizacao">Organização ↗</a></header>
+          {members.length ? <div className="overview-owner-grid">{members.map((member, index) => <details name={ownerGroup} key={member.id}>
+            <summary><span className="overview-avatar" aria-hidden="true" style={{ '--avatar-color': colors[index % colors.length] }}>{initials(member.name)}</span>
+              <strong>{member.name}</strong><span className="owner-expand" aria-hidden="true">+</span></summary>
+            <div className="overview-owner-info">
+              <small>{member.role} · {state.areas.find(area => area.id === member.areaId)?.name || 'Área não informada'}</small>
+              <p>{formatNumber(owners.get(member.id) || 0)} {(owners.get(member.id) || 0) === 1 ? 'projeto no recorte' : 'projetos no recorte'}</p>
+              <a href={'#/organizacao/' + member.areaId}>Abrir subárea ↗</a>
+            </div>
+          </details>)}</div> : <p className="empty">Nenhum integrante cadastrado.</p>}
+        </section>
+      </div>
+    </div>
+    <button className="quiet-button" onClick={addDemo}>Adicionar exemplos de filtros e médias</button>
+  </>;
 }

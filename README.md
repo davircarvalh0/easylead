@@ -1,32 +1,90 @@
-﻿# Central do CITi
+# EasyLead
 
-Demonstração React do fluxo lead → projeto, com dados fictícios e armazenamento local.
+O **EasyLead** é uma plataforma para acompanhar oportunidades comerciais e projetos em um só lugar. Reúne gestão de leads, indicadores de conversão, organização de equipes e um assistente de IA para analisar a carteira e apoiar a priorização de contatos.
 
-O percurso agora inclui squad, fases Discovery → Delivery, filtros combinados e médias por subárea ou segmento. Veja [a entrega da esteira](ENTREGA_ESTEIRA_MEDIAS.md) para abrir a prévia, conferir fontes, capturas e resultados de teste.
+## Principais funcionalidades
 
-## Executar
+### Gestão de leads
 
-Requer Node.js 22.12+ (verificado com Node 24.14.1).
+- Cadastro e edição de empresas, contatos e oportunidades.
+- Visualização em **lista ou quadro Kanban**, com os estágios Novo, Em contato, Proposta, Ganho e Perdido.
+- Pesquisa, ordenação e filtros por setor, segmento, fase, cidade, UF e aderência ao perfil de cliente ideal (ICP).
+- Carregamento da listagem em partes, evitando exibir todos os registros de uma vez.
+- Definição do ICP e acompanhamento de propostas, valores e documentos anexados.
+- Conversão de oportunidades ganhas em projetos, preservando o vínculo com o lead de origem.
+
+### Dashboards e análises
+
+- Indicadores de conversão em contrato, contratos fechados, contatos e novos leads.
+- Funil de leads e comparações por setor e sazonalidade.
+- Ranking de setores por mês e detalhes dos indicadores de cada setor.
+- Indicadores de projetos, valor contratado e média por contrato.
+- Gráficos interativos, filtros e alternância entre gráfico e resumo/histórico nos módulos que oferecem essa opção.
+
+### Gestão de projetos
+
+- Listagem com pesquisa e filtros combinados.
+- Detalhes do projeto, escopo, valor contratado, responsáveis e equipe.
+- Acompanhamento de status e das fases **Discovery → Delivery**.
+- Associação de projetos às áreas da organização.
+
+### Organização e equipes
+
+- Áreas apresentadas em cartões com ícones relacionados ao setor.
+- Acesso aos detalhes de cada área, seus integrantes e projetos.
+- Cadastro de setores e integrantes, atribuição de responsáveis e gestão dos vínculos com a carteira.
+
+### Assistente de IA
+
+- Integração com **DeepSeek** para responder a perguntas sobre leads, projetos e indicadores do EasyLead.
+- Respostas com formatação, tabelas e gráficos quando aplicável.
+- Análise de arquivos **CSV e XML** para ajudar a identificar oportunidades e priorizar leads com base no histórico de conversão.
+- Distinção entre **analisar** e **cadastrar**: anexar um arquivo não importa os registros automaticamente; o cadastro exige um pedido explícito.
+- Importação com validação e identificação de duplicados.
+- Continuidade da conversa ao navegar entre páginas; o histórico é limpo ao recarregar a aplicação.
+- Caixa de mensagem ancorada na parte inferior, com rolagem independente do histórico.
+
+### Interface e dados
+
+- Layout responsivo, modos claro e escuro e módulos com estética minimalista.
+- Navegação e controles com efeito liquid glass e animações que respeitam a preferência por movimento reduzido.
+- Exportação da carteira em JSON pelas configurações.
+- Modo local com persistência no navegador e modo hospedado com **PostgreSQL**, compatível com Neon ou Supabase.
+- No modo hospedado, autenticação no servidor, cookies de sessão e controle de versão para evitar sobrescrever alterações de outra pessoa.
+
+## Executar localmente
+
+Requer **Node.js 24.10 ou superior, na versão 24.x**, e npm.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Abra o endereço exibido pelo Vite. As rotas usam `#`, permitindo recarregar qualquer detalhe sem configuração de servidor.
+Abra o endereço informado pelo Vite. As rotas usam `#`, permitindo recarregar as páginas de detalhes sem configurar rewrites.
 
-A interface é escrita em componentes React (`src/main.jsx` e `src/Magnetic.jsx`). Node.js executa o Vite, que transforma JSX e empacota React, JavaScript e CSS para o navegador. O HTML é o ponto de entrada da aplicação; os arquivos em `previa/assets/` são o resultado dessa compilação. Node.js também executa os testes de domínio. Os dados continuam locais ao navegador.
+Por padrão, o desenvolvimento usa a carteira local do navegador. Os dados fictícios da demo são a base inicial; alterações locais não são transferidas automaticamente para a versão hospedada.
 
-Para testar exatamente a prévia versionada:
+### Configurar a IA
 
-```sh
-npm run check:preview
-npm run preview -- --port 5186 --strictPort
+Crie um arquivo `.env` na raiz do aplicativo e configure:
+
+```dotenv
+DEEPSEEK_API_KEY=sua_chave
+DEEPSEEK_MODEL=deepseek-flash
 ```
 
-Abra `http://localhost:5186`. `check:preview` faz uma compilação independente do código React e compara todos os arquivos com `previa/`, byte a byte; falha se a prévia estiver desatualizada. Após mudar a interface, atualize-a com `npm run build:preview`. Para executar a suíte automatizada sobre essa compilação, pare o servidor manual e rode `npm run test:preview`. A suíte inicia seu próprio servidor na porta 5186.
+Reinicie o servidor depois de alterar as variáveis. A chave é usada somente no servidor. O assistente envia à API a pergunta, o contexto recente e os dados necessários à análise.
 
-Na revisão de alterações da tarefa, o botão **Preview** em `previa/index.html` abre a mesma aplicação compilada. As capturas e o roteiro visual estão em [ENTREGA_REDESIGN.md](ENTREGA_REDESIGN.md).
+Para analisar um arquivo, anexe um CSV ou XML e pergunte, por exemplo: **“Quais leads devo priorizar pela conversão do setor?”** Para importar, peça explicitamente: **“Cadastre os leads deste arquivo.”**
+
+## Publicar na Vercel
+
+O projeto inclui funções de API para PostgreSQL, sessões, documentos e DeepSeek, além da configuração de build da Vercel.
+
+Siga o [guia de implantação](DEPLOY_VERCEL.md) para configurar as variáveis, criar as tabelas e importar a carteira inicial. Use [.env.example](.env.example) como referência. As credenciais de banco e API devem permanecer no servidor, sem o prefixo `VITE_`.
+
+## Build e testes
 
 ```sh
 npm run build
@@ -35,14 +93,19 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-## Roteiro de demonstração
+Outros comandos disponíveis:
 
-1. Em Leads, cadastre oportunidade, organização e contato fictícios. Na visão geral, confira o aumento dos leads abertos.
-2. Edite o lead, marque Ganho e salve. O contador de abertos diminui.
-3. Preencha a conversão com nome, área e responsável; opcionalmente adicione outros integrantes. O projeto abre como Planejado.
-4. Altere para Em andamento. Abra a área para consultar projeto e integrantes; confira o indicador na visão geral e clique para abrir a lista filtrada.
-5. Recarregue. Abra o lead de origem e use Abrir projeto vinculado: o mesmo projeto abre, sem duplicação. O estágio do lead permanece travado em Ganho.
+| Comando | Finalidade |
+|---|---|
+| `npm run build:preview` | Gerar a prévia local em `previa/` |
+| `npm run preview` | Recompilar e servir a prévia local |
+| `npm run check:preview` | Conferir se a prévia corresponde ao código atual |
+| `npm run test:cloud` | Testar a interface no modo servidor com integrações simuladas |
+| `npm run build:vercel` | Gerar o build com o modo servidor habilitado |
+| `npm run check:deployment` | Gerar o build e verificar se credenciais de teste aparecem nos arquivos públicos |
 
-Dados ficam neste navegador e nesta origem, na chave `central-citi-v1`; não há servidor compartilhado, autenticação ou uso de dados reais. Para reiniciar a demonstração, remova essa chave nas ferramentas do navegador. Falhas na escrita impedem a alteração e mostram erro; dados locais ilegíveis não são sobrescritos automaticamente. Evite edições simultâneas em abas diferentes.
+Os testes automatizados usam serviços simulados quando necessário. A conexão com PostgreSQL e DeepSeek deve ser validada com as credenciais do ambiente de implantação.
 
-Áreas, integrantes e decisões adicionais são exemplos de demonstração, não uma representação institucional confirmada. Consulte [o registro da rodada](REGISTRO_RODADA.md) e [a entrada de Produto preservada](RECORTE_PRODUTO.md).
+## Tecnologias
+
+**React 19**, **Vite**, **Node.js**, **PostgreSQL**, **DeepSeek**, **Vercel Functions** e **Playwright**.

@@ -10,7 +10,7 @@ h1,h2,h3{letter-spacing:-.5px}
 h1{font-size:30px;margin:12px 0 0;line-height:1.2}
 h2{font-size:18px}
 h3{font-size:15px}
-main{max-width:1180px;margin:auto;padding:28px 28px 40px;min-width:0}
+main{max-width:1180px;margin:auto;padding:28px 28px 0;min-width:0}
 .topbar{border-bottom:1px solid var(--line);background:#0b0e0d}
 .topbar-inner{max-width:1180px;min-height:56px;margin:auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;white-space:nowrap}
@@ -80,7 +80,7 @@ dt{font-size:12px;color:var(--muted)}
 .feedback{font-size:12px;color:var(--green);min-height:18px;margin:8px 0 18px}
 .feedback span{display:block;animation:reveal 160ms ease-out}
 .route-content{animation:reveal 160ms ease-out}
-footer{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:40px;padding:20px 0}
+.page-end{border:0;border-top:1px solid var(--line);margin:40px 0 0}
 .skip{position:absolute;top:8px;left:16px;z-index:20;background:#111614;padding:15px;opacity:0;pointer-events:none;transform:translateY(-160%)}
 .skip:focus,.skip:focus-visible{opacity:1;pointer-events:auto;transform:translateY(0)}
 @keyframes reveal{from{opacity:.4;transform:translateY(3px)}
@@ -91,7 +91,7 @@ to{opacity:1;transform:translateY(0)}
 .demo{margin-left:auto}
 nav{order:3;width:100%;justify-content:space-between;gap:0}
 nav a{font-size:11px;padding:12px 4px;min-height:44px}
-main{padding:20px 16px 32px}
+main{padding:20px 16px 0}
 h1{font-size:26px}
 .intro{padding:0 0 24px}
 .intro h2{font-size:25px}
@@ -255,7 +255,7 @@ dd{padding-top:6px}
 .initial-opening .auth-brand{animation:initial-brand .72s ease both}
 .auth-opening .auth-card{opacity:0}
 .auth-ready .auth-card{animation:form-reveal .24s ease both}
-@keyframes initial-brand{0%,55%{opacity:1;transform:translateY(0) scale(1.1)}100%{opacity:0;transform:translateY(-100px) scale(1)}}
+@keyframes initial-brand{0%{opacity:1;transform:translateY(4px) scale(1.04)}54%{opacity:1;transform:translateY(-8px) scale(1.10)}100%{opacity:0;transform:translateY(-64px) scale(1.03)}}
 @keyframes form-reveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .brand-entry{background:rgba(6,10,8,.8);animation:none;overflow:hidden}
 .brand-entry>.auth-brand,.brand-entry>p,.brand-entry>button{position:relative;z-index:2}
@@ -299,7 +299,6 @@ html.page-hidden *,html.page-hidden *::before,html.page-hidden *::after{animatio
 .module-average{grid-column:span 4}
 .module-projects{grid-column:span 7}
 .module-owners{grid-column:span 5}
-.module-scene{grid-column:1/-1;min-width:0}
 .module-header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
 .module-header h2{margin:8px 0 16px}
 .overview-bento .stats{margin-top:16px;grid-template-columns:repeat(4,minmax(0,1fr))}

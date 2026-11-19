@@ -1,56 +1,68 @@
-import React, {useId, useState} from 'react';
+import React, {useEffect, useId, useRef, useState} from 'react';
+import {useReducedMotion} from 'motion/react';
+import {AreaDashboard} from './AreaDashboard.jsx';
+import {OrganizationAreas} from './OrganizationAreas.jsx';
 import './organization-atoms.css';
-import Globe from '../../components/ui/3d-orb';
 
 
+export function Organization({state, areas, selectedId, projectList, saveArea, removeArea, saveMember, setAreaLeadOwnership}) {
+ const selected = areas.find(area=>area.id===selectedId);
+ const reduced = useReducedMotion();
+ const [adding,setAdding] = useState(false);
+ const [error,setError] = useState('');
+ const trigger = useRef(null);
+ const field = useRef(null);
+ const formId = useId();
 
-export function MemberForm({areas, initialAreaId = '', saveMember}) {
- const prefix = useId();
- const [error, setError] = useState('');
- const [feedback, setFeedback] = useState('');
- function submit(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const data = Object.fromEntries(new FormData(form));
-  try {
-   saveMember(data);
-   setError('');
-   setFeedback(`${data.name.trim()} cadastrado. Dados salvos neste navegador.`);
-   form.reset();
-   form.elements.name.focus();
-  } catch (failure) { setFeedback(''); setError(failure.message); }
+ useEffect(()=>{
+  if (adding) field.current?.focus();
+ },[adding]);
+
+ function cancel() {
+  setAdding(false);
+  setError('');
+  trigger.current?.focus();
  }
- return <section className="member-form-card" aria-labelledby={prefix+'title'}>
-  <h2 id={prefix+'title'}>Adicionar integrante</h2>
-  <form onSubmit={submit} aria-describedby={error ? prefix+'error' : undefined}>
-   <label htmlFor={prefix+'name'}>Nome (obrigatório)</label>
-   <input id={prefix+'name'} name="name" required autoComplete="name"/>
-   <label htmlFor={prefix+'area'}>Subárea (obrigatória)</label>
-   <select id={prefix+'area'} name="areaId" required defaultValue={initialAreaId}>
-    <option value="">Selecione uma subárea</option>
-    {areas.map(area=><option key={area.id} value={area.id}>{area.name}</option>)}
-   </select>
-   <label htmlFor={prefix+'role'}>Papel / função (opcional)</label>
-   <input id={prefix+'role'} name="role" placeholder="Integrante"/>
-   {error && <p id={prefix+'error'} role="alert" className="error">{error}</p>}
-   <p role="status">{feedback}</p>
-   <button type="submit">Salvar integrante</button>
-  </form>
- </section>;
-}
 
-export function OrganizationAtoms({state, atoms, selectedId, projectList}) {
- const selected = state.areas.find(area=>area.id === selectedId);
- return <div className={`organization-atoms ${selected ? "has-selection" : ""}`}>
-  <p>Arraste para explorar; use roda, pin&#231;a ou os bot&#245;es para aproximar. Explore as subáreas. Quanto mais integrantes, maior a esfera. A órbita pausa ao interagir ou abrir uma subárea. Use Tab ou as setas para navegar e Enter para abrir.</p>
-  <Globe atoms={atoms} selectedId={selectedId}/>
-  {selectedId && !selected && <p role="alert">Subárea não encontrada. <a href="#/organizacao">Ver todas as subáreas</a></p>}
-  {selected && <section className="subarea-atom-detail">
-   <div><a className="scene-return" href="#/organizacao">Voltar &#224; vis&#227;o completa &#8634;</a><h2>{selected.name}</h2><h3>Integrantes da subárea · {state.members.filter(m=>m.areaId===selected.id).length}</h3>
-    {state.members.filter(m=>m.areaId===selected.id).map(member=><p className="area-person" key={member.id}>{member.name} · {member.role || 'Integrante'}</p>)}
-    <a href={'#/integrantes?area='+selected.id}>Ver no diretório de Integrantes →</a>
-    <h3>Projetos vinculados</h3>{projectList(state.projects.filter(project=>project.areaId===selected.id))}
+ async function submit(event) {
+  event.preventDefault();
+  try {
+   const id=await saveArea(new FormData(event.currentTarget).get('name'));
+   setAdding(false);
+   setError('');
+   location.hash='/organizacao/'+encodeURIComponent(id);
+  } catch (failure) {
+   setError(failure.message);
+   field.current?.focus();
+  }
+ }
+
+ if (selected) return <AreaDashboard key={selected.id} area={selected}
+  members={state.members.filter(member=>member.areaId===selected.id)}
+  onAddMember={data=>saveMember({...data,areaId:selected.id})}
+  onChangeLeadOwnership={enabled=>setAreaLeadOwnership(selected.id,enabled)}
+  projects={state.projects.filter(project=>project.areaId===selected.id)}
+  projectList={projectList} reduced={reduced} removeArea={removeArea}/>;
+
+ return <section className="organization-directory" aria-labelledby="organization-title">
+  <header className="organization-heading lead-opening">
+   <h1 className="lead-route-heading" id="organization-title" tabIndex={-1}>Organização</h1>
+   <div className="lead-opening-actions">
+    <button ref={trigger} className="lead-glass-action lead-glass-action-primary" type="button" aria-expanded={adding}
+     aria-controls={formId} onClick={()=>adding ? cancel() : setAdding(true)}>
+     <span aria-hidden="true">+</span> Adicionar setor
+    </button>
    </div>
-  </section>}
- </div>;
+  </header>
+  {selectedId && <p role="alert" className="empty">Setor não encontrado.</p>}
+  <form id={formId} hidden={!adding} className="organization-add-form" onSubmit={submit}>
+   <label>Nome do setor<input ref={field} name="name" required onChange={()=>setError('')} aria-describedby={error ? formId+'-error' : undefined}/></label>
+   <div className="organization-form-actions">
+    <button type="button" className="lead-glass-action" onClick={cancel}>Cancelar</button>
+    <button type="submit" className="lead-glass-action lead-glass-action-primary">Salvar setor</button>
+   </div>
+   {error && <p className="error" role="alert" id={formId+'-error'}>{error}</p>}
+  </form>
+  <OrganizationAreas areas={areas} state={state}/>
+ </section>;
 }

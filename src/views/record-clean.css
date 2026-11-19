@@ -1,0 +1,36 @@
+/* Keep existing module placement; use the dashboard's neutral surfaces and controls. */
+.studio-layout[data-record-page="true"][data-clean-dashboard="true"] .dashboard-route {
+  --panel:var(--clean-surface); --panel-inset:var(--clean-inset); --panel-raised:var(--clean-raised);
+  --panel-line:var(--clean-line); --panel-text:var(--clean-ink); --panel-muted:var(--clean-muted);
+  --viz-mint:var(--clean-ink); --viz-lilac:var(--clean-muted); --viz-sky:var(--clean-muted); --viz-amber:var(--clean-muted);
+  --easy-glass-chrome:var(--clean-surface); --easy-action-primary:var(--clean-ink);
+  --lead-search-surface:var(--clean-inset); --lead-search-border:var(--clean-line);
+}
+.studio-layout[data-record-page="true"] .lead-record-header { --lead-record-display-size:clamp(1.8rem,3.2vw,2.6rem); color:var(--clean-ink); }
+.studio-layout[data-record-page="true"] .lead-record-breadcrumb,
+.studio-layout[data-record-page="true"] .lead-proposal-value>span { color:var(--clean-muted); }
+.studio-layout[data-record-page="true"] .lead-proposal-value strong,
+.studio-layout[data-record-page="true"] .lead-proposal-reference b { color:var(--clean-ink); }
+.studio-layout[data-record-page="true"] .dashboard-route :is(.fr-module,.lead-proposal-overview,.lead-support) {
+  background:var(--clean-surface); background-image:none; border:1px solid var(--clean-line); border-radius:12px; box-shadow:none; backdrop-filter:none;
+}
+.studio-layout[data-record-page="true"] .lead-proposal-overview { padding:var(--panel-padding); }
+.studio-layout[data-record-page="true"] .lead-proposal-description { font-size:1rem; line-height:1.65; }
+.studio-layout[data-record-page="true"] .dashboard-route :is(.fr-header,.fr-footer) { border-color:var(--panel-line); }
+.studio-layout[data-record-page="true"] .dashboard-route .fr-header h2 { font-size:.95rem; font-weight:550; }
+.studio-layout[data-record-page="true"] .dashboard-route :is(input:not([type=checkbox]),select,textarea,.lead-choice-trigger,.lead-sector-options,.lead-choice-options) {
+  color:var(--panel-text); background:var(--panel-inset); background-image:none; border-color:var(--panel-line); box-shadow:none; border-radius:7px;
+}
+.studio-layout[data-record-page="true"] .dashboard-route :is(input:not([type=checkbox]),select) { font-size:.88rem; font-weight:400; }
+.studio-layout[data-record-page="true"] .dashboard-route :is(label,.lead-choice-label,dt) { color:var(--panel-muted); }
+.studio-layout[data-record-page="true"] .dashboard-route :is(.lead-glass-action,.quiet-button) { background:var(--panel); color:var(--panel-text); border-color:var(--panel-line); background-image:none; border-radius:7px; box-shadow:none; backdrop-filter:none; font-size:.83rem; font-weight:550; }
+.studio-layout[data-record-page="true"] .dashboard-route :is(.lead-glass-action-primary,.btn-inner,.panel-button) { background:var(--clean-ink); color:var(--clean-surface); border-color:var(--clean-ink); box-shadow:none; font-weight:550; }
+.studio-layout[data-record-page="true"] .dashboard-route .lead-glass-action-primary:hover { background:var(--clean-ink); color:var(--clean-surface); }
+.studio-layout[data-record-page="true"] .dashboard-route .button:hover .btn-inner { background:var(--clean-ink); color:var(--clean-surface); }
+.studio-layout[data-record-page="true"] .dashboard-route .button:active .btn-inner { outline-color:var(--clean-muted); }
+.studio-layout[data-record-page="true"] .dashboard-route :focus-visible { outline-color:var(--clean-muted); }
+.studio-layout[data-record-page="true"] .dashboard-route .lead-workflow-notice { background:var(--panel-inset); border-color:var(--panel-line); color:var(--panel-muted); }
+.studio-layout[data-record-page="true"] .dashboard-route .lead-choice-options { background:var(--panel); box-shadow:0 5px 18px #00000012; }
+.studio-layout[data-record-page="true"] .dashboard-route :is(.sector-search-option,.lead-sector-options button):hover { background:var(--panel-raised); color:var(--panel-text); }
+.studio-layout[data-record-page="true"] .dashboard-route .project-value { color:var(--panel-text); }
+.studio-layout[data-record-page="true"] .dashboard-route .lead-form-panel:has(.lead-choice-options) { position:relative; z-index:2; }

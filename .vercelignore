@@ -1,0 +1,12 @@
+node_modules
+previa
+test-results
+evidencias
+skills-import
+.git
+.env
+.env.*
+!.env.example
+*.pdf
+ENTREGA_*.md
+PROPOSTA_*.md

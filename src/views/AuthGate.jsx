@@ -1,63 +1,55 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {LoginPassage,preloadLoginScene} from './LoginPassage.jsx';
-import logo from '../../proposta-visual/assets/logo-citi-simbolo.png';
-import {useSessionController} from '../controllers/useSessionController.js';
+import {isCloud} from '../services/cloudClient.js';
+import {useSessionController, LOGIN_TRANSITION_MS} from '../controllers/useSessionController.js';
+import {EasyLeadLogo} from './TopNavigation.jsx';
+import {LiquidChrome} from './LiquidChrome.jsx';
+import './login-passage.css';
 
-function Brand() {
-  return <div className="auth-brand"><img src={logo} alt="CITi"/><strong><span>/all</span></strong></div>;
-}
 export function AuthGate({children}) {
-  const {session, entering, error, login, logout} = useSessionController();
-  const [opening, setOpening] = useState(() => !session && !matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const {session, entering, error, loading,submitting,login, logout} = useSessionController();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  useEffect(()=>{
-    if (!session && !matchMedia('(prefers-reduced-motion: reduce)').matches && !new URLSearchParams(location.search).has('noWebGL')) preloadLoginScene();
-  },[session]);
-  useEffect(() => {
-    if (!opening) return;
-    const media = matchMedia('(prefers-reduced-motion: reduce)');
-    let remaining = 720, started = performance.now(), timer;
-    const end = () => setOpening(false);
-    const change = () => { if (media.matches) end(); };
-    const visibility = () => {
-      clearTimeout(timer);
-      if (document.hidden) remaining -= performance.now() - started;
-      else { started = performance.now(); timer = setTimeout(end, Math.max(0, remaining)); }
-    };
-    if (!document.hidden) timer = setTimeout(end, remaining);
-    media.addEventListener('change', change);
-    document.addEventListener('visibilitychange', visibility);
-    return () => {
-      clearTimeout(timer);
-      media.removeEventListener('change', change);
-      document.removeEventListener('visibilitychange', visibility);
-    };
-  }, [opening]);
   const emailInput = useRef(null);
   const passage = useRef(null);
-  useEffect(() => {
+
+  useEffect(()=>{
     if (entering) passage.current?.focus();
     else if (session) document.querySelector('main h1')?.focus();
-    else if (!opening) emailInput.current?.focus();
-  }, [session, entering, opening]);
-  if (!session) return <main className={`auth-page ${opening ? 'auth-opening' : 'auth-ready'}`}>
-    {opening && <div className="initial-opening" aria-hidden="true"><Brand/></div>}
-    <section onFocusCapture={() => { if (opening) setOpening(false); }} onPointerDown={() => { if (opening) setOpening(false); }} className="auth-card" aria-labelledby="login-title">
-    <Brand/><h1 id="login-title">Entre no CITi/all</h1><p>Oportunidades, projetos e pessoas conectados.</p>
-    <p className="section-note">Demonstração local. Use qualquer e-mail válido e um código de pelo menos 4 caracteres. Não use sua senha institucional.</p>
-    <form noValidate onSubmit={event => {event.preventDefault(); login(email, password);}}>
-      <label>E-mail<input ref={emailInput} type="email" autoComplete="username" required value={email} onChange={e=>setEmail(e.target.value)}/></label>
-      <label>Código de acesso da demonstração<input type="password" autoComplete="off" required value={password} onChange={e=>setPassword(e.target.value)}/></label>
-      {error && <p role="alert" className="error">{error}</p>}
-      <button className="button" type="submit"><span className="btn-inner">Entrar no CITi/all →</span></button>
-      <button className="quiet-button" type="button" onClick={()=>{setEmail('lideranca@citi.org.br');setPassword('citi-2026');emailInput.current?.focus();}}>Preencher acesso de demonstração</button>
-    </form><p className="section-note">Dados fictícios, salvos apenas neste navegador.</p>
-  </section></main>;
+    else emailInput.current?.focus();
+  },[session,entering]);
+
+  if(loading)return <main className="easylead-login"><p role="status">Verificando acesso…</p></main>;
+  if (!session) return <main className="easylead-login">
+    <div className="login-shell">
+      <LiquidChrome/>
+      <section className="login-panel" aria-labelledby="login-title">
+        <div className="login-content">
+          <EasyLeadLogo/>
+          <h1 id="login-title">Entrar no EasyLead</h1>
+          <form noValidate onSubmit={event=>{event.preventDefault();login(email,password);}}>
+            <label>E-mail<input ref={emailInput} type="email" autoComplete="username" required
+              placeholder="voce@exemplo.com" value={email} onChange={event=>setEmail(event.target.value)}/></label>
+            <label>Código de acesso<input type="password" autoComplete="off" required
+              placeholder="Digite seu código" value={password} onChange={event=>setPassword(event.target.value)}/></label>
+            {error && <p role="alert" className="login-error">{error}</p>}
+            <button className="login-submit" type="submit" disabled={submitting}>{submitting?'Entrando…':'Entrar no EasyLead'}</button>
+            {!isCloud&&<button className="login-demo" type="button" onClick={()=>{
+              setEmail('lideranca@citi.org.br');
+              setPassword('citi-2026');
+              emailInput.current?.focus();
+            }}>Preencher acesso de demonstração</button>}
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>;
+
   return <>
-    <div className={`app-entry ${entering ? "app-entering" : ""}`} inert={entering ? true : undefined}>{children({logout, sessionError: error})}</div>
-    {entering && <div ref={passage} tabIndex="-1" className="brand-entry" role="dialog" aria-modal="true" aria-label="Entrando no CITi/all" onKeyDown={e=>{if(e.key==='Tab'){e.preventDefault();passage.current?.focus();}}}>
-      <LoginPassage/><Brand/>
+    <div className="app-entry" inert={entering || undefined}>{children({logout,sessionError:error,accountEmail:session.email})}</div>
+    {entering && <div ref={passage} tabIndex={-1} className="login-transition" role="dialog" aria-modal="true"
+      aria-label="Entrando no EasyLead" style={{'--login-transition-duration':LOGIN_TRANSITION_MS+'ms'}}
+      onKeyDown={event=>{if(event.key==='Tab') event.preventDefault();}}>
+      <EasyLeadLogo/>
     </div>}
   </>;
 }

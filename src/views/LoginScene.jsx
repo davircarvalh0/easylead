@@ -1,33 +1,95 @@
-﻿import React,{useEffect,useRef} from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import * as THREE from 'three';
+import { cubicBezier } from 'motion/react';
+import { createBrandObject } from './brand-object.js';
 
-// Loaded separately from the form; all GPU resources belong to this effect.
-export default function LoginScene({onFailure}) {
- const host=useRef(null);
- useEffect(()=>{
-  let renderer,raf=0,scene,camera; const resources=[];
-  const fail=()=>onFailure();
-  const lost=e=>{e.preventDefault();fail();};
-  try {
-   renderer=new THREE.WebGLRenderer({alpha:true,antialias:false});
-   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
-   host.current.append(renderer.domElement);
-   renderer.domElement.addEventListener('webglcontextlost',lost);
-   scene=new THREE.Scene(); camera=new THREE.PerspectiveCamera(65,1,.1,80); camera.position.z=9;
-   const material=new THREE.MeshBasicMaterial({color:0x00e676,wireframe:true,transparent:true,opacity:.65});resources.push(material);
-   for(let i=0;i<5;i++) {
-    const geometry=new THREE.TorusGeometry(2.4,.035,6,48);resources.push(geometry);
-    const portal=new THREE.Mesh(geometry,material);portal.position.set((i%2?1:-1)*.5,0,-i*4);scene.add(portal);
-    const boxGeometry=new THREE.BoxGeometry(.65,1,.3);resources.push(boxGeometry);
-    const block=new THREE.Mesh(boxGeometry,material);block.position.set(i%2?2:-2,-.5,-i*4);scene.add(block);
+const ease = cubicBezier(.24,.7,.21,1);
+const duration = 1600;
+const width = 220;
+const height = 110;
+
+export async function prepareLoginScene(signal) {
+ const {group:brand, resources} = await createBrandObject(THREE);
+ let renderer;
+ let contextLost = false;
+ const lose = event => { event.preventDefault(); contextLost = true; };
+ const dispose = () => {
+  resources.forEach(resource => resource.dispose());
+  if (renderer) {
+   renderer.domElement.removeEventListener('webglcontextlost',lose);
+   renderer.dispose();
+   renderer.forceContextLoss();
+   renderer.domElement.remove();
+  }
+ };
+ try {
+  signal.throwIfAborted();
+  renderer = new THREE.WebGLRenderer({ alpha:true, antialias:true });
+  renderer.domElement.addEventListener('webglcontextlost',lose);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  renderer.setSize(width,height,false);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, width/height, .1, 30);
+  camera.position.z = 7;
+  const keyLight = new THREE.DirectionalLight('#fff8ee', 2);
+  const edgeLight = new THREE.DirectionalLight('#a8decf', 1.75);
+  edgeLight.position.set(-4, 1, -2);
+  scene.add(brand, new THREE.AmbientLight('#d9f4e9', 1.5), keyLight, edgeLight);
+  const fittedScale = 154 / height * 2 * Math.tan(Math.PI/9) * camera.position.z / 4.25;
+
+  function render(progress) {
+   const settle = ease(progress);
+   const arc = Math.sin(Math.PI * progress);
+   brand.scale.setScalar(fittedScale * (.92 + arc * .13));
+   brand.position.set(0,0,-.18 + arc * .18);
+   brand.rotation.set(-.16 + arc*.24, -.66*(1-settle) + arc*.27, -.075*(1-settle));
+   keyLight.position.set(-4 + settle*9,2.6,4);
+   renderer.render(scene,camera);
+  }
+
+  await renderer.compileAsync(scene,camera);
+  signal.throwIfAborted();
+  render(0);
+  return { Scene: LoginScene, canvas:renderer.domElement, render, dispose, get lost() { return contextLost; } };
+ } catch (error) {
+  dispose();
+  throw error;
+ }
+}
+
+function LoginScene({ prepared, onFailure }) {
+ const host = useRef(null);
+
+ useLayoutEffect(() => {
+  if (prepared.lost) { onFailure(); return; }
+  let frame = 0, elapsed = 0, last = performance.now();
+  const {canvas, render} = prepared;
+  const lost = () => onFailure();
+  canvas.addEventListener('webglcontextlost',lost);
+  host.current.append(canvas);
+  render(0);
+  function draw(now) {
+   elapsed += now - last;
+   last = now;
+   render(Math.min(1,elapsed/duration));
+   if (elapsed < duration) frame = requestAnimationFrame(draw);
+  }
+  function visibility() {
+   cancelAnimationFrame(frame);
+   if (!document.hidden) {
+    last = performance.now();
+    frame = requestAnimationFrame(draw);
    }
-   const resize=()=>{const w=innerWidth,h=innerHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();};resize();
-   let elapsed=0,last=performance.now();
-   const loop=now=>{elapsed+=Math.min(now-last,50);last=now;const p=Math.min(elapsed/1600,1);camera.position.z=9-22*(p*p*(3-2*p));camera.position.x=Math.sin(p*Math.PI)*.6;scene.children.forEach((mesh,i)=>{mesh.rotation.z=p*(i%2?.7:-.4);mesh.rotation.y=Math.sin(p*Math.PI)*.2;});renderer.render(scene,camera);raf=requestAnimationFrame(loop);};
-   const visibility=()=>{cancelAnimationFrame(raf);if(!document.hidden){last=performance.now();raf=requestAnimationFrame(loop);}};
-   addEventListener('resize',resize);document.addEventListener('visibilitychange',visibility);visibility();
-   return()=>{cancelAnimationFrame(raf);removeEventListener('resize',resize);document.removeEventListener('visibilitychange',visibility);renderer.domElement.removeEventListener('webglcontextlost',lost);resources.forEach(r=>r.dispose());renderer.dispose();renderer.forceContextLoss();renderer.domElement.remove();};
-  } catch {resources.forEach(r=>r.dispose());renderer?.dispose();renderer?.domElement.remove();fail();}
- },[onFailure]);
+  }
+  document.addEventListener('visibilitychange',visibility);
+  visibility();
+  return () => {
+   cancelAnimationFrame(frame);
+   document.removeEventListener('visibilitychange',visibility);
+   canvas.removeEventListener('webglcontextlost',lost);
+   canvas.remove();
+  };
+ },[prepared,onFailure]);
+
  return <div className="login-scene" ref={host} aria-hidden="true"/>;
 }

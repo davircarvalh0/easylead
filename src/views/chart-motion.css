@@ -1,0 +1,139 @@
+:where(.chart-surface) {
+  position: relative;
+  isolation: isolate;
+  --glow-color: #62addc;
+}
+.sparkline-frame, .radar-frame, .bento-revenue, .bento-seasonality { --glow-color: #42dba2; }
+.bento-categories, .funnel-layout, .analytics-comparison { --glow-color: #a684ff; }
+
+.chart-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(ellipse 200px 132px at var(--glow-x, 50%) var(--glow-y, 50%),
+    var(--chart-glow-fill, color-mix(in srgb, var(--glow-color) 18%, transparent)), transparent 100%);
+  opacity: 0;
+  transition: opacity 230ms ease;
+}
+.chart-surface:focus-visible::before { opacity: 1; }
+@media (hover: hover) {
+  .chart-surface:hover::before { opacity: 1; }
+  .bento-chart-frame:hover { border-color: color-mix(in srgb, var(--glow-color) 40%, var(--panel-line)); }
+}
+.bento-chart-frame { transition: border-color 230ms ease; }
+.bento-chart-frame[tabindex], .radar-frame[tabindex] { cursor: crosshair; }
+
+.chart-trace-halo {
+  fill: none;
+  stroke-width: 5;
+  opacity: .24;
+  filter: blur(2px);
+  transition: opacity 230ms ease;
+}
+.chart-trace-past { opacity: .47; }
+.chart-trace-past .chart-stroke { stroke-width: 1.55; }
+.chart-surface:hover .chart-trace-halo,
+.chart-surface:focus-visible .chart-trace-halo { opacity: .72; }
+.chart-terminal { stroke: #151517; stroke-width: 2; filter: drop-shadow(0 0 3px #42dba280); }
+.chart-crosshair { pointer-events: none; }
+.chart-surface .chart-crosshair line { stroke: #b0ced4; stroke-dasharray: 2 4; opacity: .68; }
+.chart-crosshair circle { stroke: #151517; stroke-width: 2; filter: drop-shadow(0 0 4px #e3fcff80); }
+.radar-frame .radar-shape { stroke: none; }
+.radar-frame .radar-hover-dot { fill:#fff; stroke:none; filter:none; }
+.radar-frame .chart-stroke { stroke-linejoin: round; }
+
+.chart-readout {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  z-index: 2;
+  box-sizing: border-box;
+  max-width: calc(100% - 16px);
+  padding: .55rem .7rem;
+  border: 1px solid color-mix(in srgb, var(--glow-color) 35%, #303035);
+  border-radius: .65rem;
+  background: #101217f5;
+  box-shadow: 0 7px 20px #0008;
+  font-size: .73rem;
+  color: var(--panel-text);
+  pointer-events: none;
+}
+.chart-readout[data-side='start'] { inset-inline: 8px auto; }
+.chart-readout > strong { text-transform: capitalize; }
+.chart-readout dl, .chart-readout dl > div { display: block; border: 0; margin: 0; }
+.chart-readout dl > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .75rem; margin-top: .22rem; }
+.chart-readout :is(dt,dd) { padding: 0; border: 0; font-size: inherit; }
+.chart-readout > dl:first-child > div:first-child { margin-top:0; }
+.chart-readout dt { display: flex; align-items: baseline; gap: .35rem; color: var(--panel-muted); }
+.chart-readout dt i { width: .4rem; height: .4rem; border-radius: 50%; flex: none; }
+.chart-readout dd { font-family: var(--numeric-font); font-variant-numeric: tabular-nums; }
+
+.radar-stat .radar-delta { margin-top: .35rem; color: #53e0ac; line-height: 1.4; font-variant-numeric: tabular-nums; }
+.radar-stat .radar-delta[data-direction='down'] { color: #f495ab; }
+.bento-tile { transition: filter 240ms ease, box-shadow 240ms ease; }
+.bento-tile.chart-surface::before { --glow-color: #fff; }
+.bento-tile:hover, .bento-tile:focus-visible { box-shadow: inset 0 0 0 1px #fffa; }
+.chart-track span { border-radius: inherit; box-shadow: 0 0 10px #b28bff60; }
+.comparison-pair > div:last-child .chart-track span { box-shadow: 0 0 10px #42dba260; }
+.dashboard-route .scale-track { border-radius: .4rem; overflow: hidden; }
+.dashboard-route .scale-area { border-radius: inherit; }
+.funnel-layout.chart-surface { border-radius: 1rem; }
+.funnel-layout .funnel-stage:focus-visible .funnel-percent,
+.funnel-layout .funnel-stage:hover .funnel-percent { box-shadow: 0 0 16px var(--funnel-hover-shadow, #69ad8955); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .is-chart-visible .chart-stroke {
+    stroke-dasharray: 1 1;
+    animation: chart-draw 920ms cubic-bezier(.22,.67,.25,1) both;
+  }
+  .is-chart-visible .chart-fill {
+    animation: chart-appear 660ms 120ms ease-out both;
+  }
+  .is-chart-visible .chart-terminal {
+    animation: chart-appear 350ms 590ms ease-out both;
+  }
+  .is-chart-visible .bento-tile {
+    animation: chart-tile-in 440ms var(--chart-delay, 0ms) cubic-bezier(.2,.7,.25,1) backwards;
+  }
+  .is-chart-visible :is(.chart-track span, .scale-area) {
+    animation: chart-bar-in 620ms cubic-bezier(.2,.7,.25,1) backwards;
+  }
+  .funnel-layout.is-chart-visible .funnel-stages { animation: chart-tile-in 540ms ease-out backwards; }
+}
+@keyframes chart-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes chart-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes chart-tile-in { from { opacity: .1; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes chart-bar-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+
+.studio-layout :where(.fr-module, .bento-module, .lead-funnel, .lead-secondary, .toolbar, .lead-support, .subarea-atom-detail, .card, .value-panel, .squad-context, .overview-owner-grid details) {
+  position: relative;
+  isolation: isolate;
+}
+.studio-layout :is(.fr-module, .bento-module, .lead-funnel, .lead-secondary, .toolbar, .lead-support, .subarea-atom-detail, .card, .value-panel, .squad-context, .overview-owner-grid details):not(.chart-surface)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 300px 180px at var(--glow-x, 50%) var(--glow-y, 50%), var(--module-glow-fill, #a78cff24), transparent);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+@media (hover: hover) {
+  .studio-layout :is(.fr-module, .bento-module, .lead-funnel, .lead-secondary, .toolbar, .lead-support, .subarea-atom-detail, .card, .value-panel, .squad-context, .overview-owner-grid details):hover::after { opacity: 1; }
+}
+.studio-layout :is(.fr-module, .bento-module, .lead-funnel, .lead-secondary, .toolbar, .lead-support, .subarea-atom-detail, .card, .value-panel, .squad-context, .overview-owner-grid details):focus-within::after { opacity: .65; }
+
+@media (prefers-reduced-motion:no-preference) {
+  .route-content.dashboard-route.dashboard-blur-entrance {
+    animation:dashboard-blur-in 420ms cubic-bezier(.4,0,.25,1);
+  }
+}
+@keyframes dashboard-blur-in {
+  from { filter:blur(7px); }
+  to { filter:blur(0); }
+}

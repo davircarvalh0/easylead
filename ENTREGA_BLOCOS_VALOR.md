@@ -35,7 +35,7 @@ Na revisão de alterações, use **Preview em `previa/index.html`**. É o React 
 5. Em Projetos, alterne comparação direta, squad/subárea e fase. Para incluir exemplos sem valor e sem contrato, adicione os exemplos de filtros e médias na Visão geral e volte a Projetos.
 6. Confira em 1280 e 360 px e com movimento reduzido. A explicação da escala diferencia a área colorida do tamanho externo do alvo.
 
-Capturas do conjunto: `evidencias/valores-leads-1280.png`, `valores-leads-360.png`, `valores-projetos-1280.png` e `valores-projetos-360.png`. As capturas de login/Visão geral e vídeo da entrega anterior estão incluídos e foram revalidados com o código integrado.
+Capturas da comparação de valores dos projetos: `evidencias/valores-projetos-1280.png` e `evidencias/valores-projetos-360.png`. As capturas de login/Visão geral e vídeo da entrega anterior estão incluídos e foram revalidados com o código integrado.
 
 ## Verificação
 

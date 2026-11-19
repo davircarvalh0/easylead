@@ -1,8 +1,9 @@
 ﻿export const stages = ['Novo', 'Em contato', 'Proposta', 'Ganho', 'Perdido'];
 export const statuses = ['Planejado', 'Em andamento', 'Concluído'];
+export const areaNames = ['Inovação', 'Negócios', 'Tech', 'Produto', 'Gente e Gestão'];
 export const seed = {
  version: 1,
- areas: ['Inovação', 'Comercial', 'Desenvolvimento', 'Design', 'Pessoas'].map((name,i)=>({id:`a${i}`,name})),
+ areas: areaNames.map((name,i)=>({id:`a${i}`,name})),
  members: ['Ana Lima','Bruno Melo','Clara Luz','Diego Alves','Eva Costa'].map((name,i)=>({id:`m${i}`,name,areaId:`a${i}`,role:['Estrategista','Consultor','Desenvolvedora','Designer','Gestora'][i]})),
  leads: stages.map((stage,i)=>({id:`l${i}`,name:['Portal Aurora','Loja Horizonte','App Raiz','Plataforma Maré','Site Sol'][i],company:`Empresa exemplo ${i+1}`,contact:`contato${i+1}@example.com`,stage,estimatedValue:[200000,10000,42000,54000,null][i],clientSegment:'Não classificado'})),
  squads: [],

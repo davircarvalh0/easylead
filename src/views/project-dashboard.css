@@ -1,0 +1,171 @@
+/* Project charts and controls use the same glass surfaces as the Leads dashboard. */
+.route-projetos,.area-dashboard { --project-inset:clamp(.75rem,1.4vw,1.15rem); }
+.studio-layout[data-theme="dark"] .route-projetos { color-scheme:dark; }
+.project-filter-panel { border:1px solid var(--panel-line); border-radius:var(--panel-radius); padding:var(--project-inset); }
+.dashboard-route .project-filter-panel .glass-filters {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.65rem;
+  margin:0; padding:0; border:0; background:none; box-shadow:none;
+}
+.project-filter-panel .glass-filters::after { display:none; }
+.project-filter-panel .glass-filters > label { min-width:0; font-size:.76rem; }
+.project-search {
+  grid-column:1/-1; display:grid; grid-template-columns:minmax(0,1fr);
+  align-items:center; --lead-search-height:var(--lead-action-height);
+}
+
+.route-projetos .projects-bento .bento-top {
+  grid-template-columns:minmax(0,1fr); grid-template-rows:auto 1fr; align-items:start;
+  padding:var(--project-inset); gap:.75rem;
+}
+.projects-bento :is(.bento-categories,.bento-seasonality) { padding:var(--project-inset); }
+.projects-bento .bento-figure {
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:.35rem .65rem;
+}
+.projects-bento .bento-figure h2 { grid-column:1/-1; font-weight:650; }
+.projects-bento .bento-figure .analytics-number {
+  margin:0; font-size:clamp(1rem,calc(140cqi / var(--value-length)),2.65rem);
+}
+.projects-bento .bento-revenue .bento-figure { grid-template-columns:minmax(0,1fr); }
+.projects-bento .bento-revenue .bento-figure p { text-align:start; }
+.projects-bento .bento-figure .bento-legend { grid-column:1/-1; margin:.22rem 0 0; }
+.studio-layout .route-projetos .projects-bento :is(.bento-chart-frame,.radar-frame) {
+  background:var(--easy-glass-inset); box-shadow:inset 0 1px 0 #ffffff14; border:1px solid var(--easy-glass-line); border-radius:1rem;
+}
+.studio-layout .route-projetos :is(.bento-chart-frame line,.radar-grid) { stroke:var(--easy-chart-grid); }
+.projects-bento .bento-chart-frame { width:100%; }
+.projects-bento .bento-chart-frame svg { aspect-ratio:auto; }
+.projects-bento .bento-section-header { gap:.55rem; margin-bottom:.65rem; }
+.route-projetos .projects-bento .analytics-tabs { background:var(--easy-switch-track); border:1px solid var(--easy-glass-line); }
+.route-projetos .projects-bento .analytics-tabs button[aria-pressed="true"] {
+  background:linear-gradient(165deg,#ffffff19,transparent 62%),var(--easy-switch-thumb);
+  border-color:var(--easy-switch-line); box-shadow:inset 0 1px 4px #ffffff45; color:var(--easy-leads-ink);
+}
+.projects-bento .bento-summary { margin:.7rem 0; }
+.projects-bento .bento-summary > div:not(:first-child) span::before { content:none; }
+.projects-bento .bento-legend { margin:.55rem 0; }
+.projects-bento .radar-frame .radar-hover-dot { fill:var(--easy-leads-ink); }
+.project-mosaic-module { --mosaic-columns:5; --mosaic-gap:.45rem; }
+.project-value-mosaic {
+  display:flex; flex-wrap:wrap; align-content:start; gap:var(--mosaic-gap);
+  padding:.2rem;
+}
+.project-value-mosaic .bento-chart-empty { position:static; width:100%; min-height:11rem; }
+.project-value-mosaic .bento-tile {
+  position:relative;
+  flex:var(--tile-weight) 1 calc((100% - (var(--mosaic-columns) - 1) * var(--mosaic-gap)) / var(--mosaic-columns));
+  min-height:clamp(9rem,22vw,20rem); padding:.8rem; gap:.65rem;
+  color:var(--panel-text);
+  border:1px solid color-mix(in srgb,var(--tile-color) 55%,var(--panel-line));
+  background:linear-gradient(155deg,color-mix(in srgb,var(--tile-color) 32%,var(--panel-raised)),var(--panel-inset));
+  box-shadow:inset 0 1px 5px #ffffff25;
+}
+.project-mosaic-toggle {
+  width:min(100%,19rem); min-height:54px; margin:1rem auto 0; padding-inline:1.25rem;
+  gap:.75rem; font-size:1rem;
+}
+.project-mosaic-chevron {
+  width:.54rem; height:.54rem; border-right:2px solid; border-bottom:2px solid;
+  transform:translateY(-.14rem) rotate(45deg); transition:transform .2s ease;
+}
+.project-mosaic-toggle[aria-expanded="true"] .project-mosaic-chevron { transform:translateY(.14rem) rotate(225deg); }
+@media(prefers-reduced-motion:reduce) { .project-mosaic-chevron { transition:none; } }
+@media(max-width:1200px) { .project-mosaic-module { --mosaic-columns:4; } }
+@media(max-width:980px) { .project-mosaic-module { --mosaic-columns:3; } }
+@media(max-width:730px) { .project-mosaic-module { --mosaic-columns:2; } }
+
+.project-value-mosaic .bento-tile-label {
+  font-size:.9rem; text-transform:none; letter-spacing:0;
+  white-space:normal; overflow-wrap:anywhere;
+}
+.project-value-mosaic .bento-tile-value {
+  min-width:0; font-size:clamp(1rem,calc(140cqi / var(--value-length)),2rem);
+  line-height:1.15; overflow-wrap:anywhere;
+}
+.projects-bento .bento-figure p { text-align:end; }
+
+.project-record-panel .fr-body,.project-portfolio .fr-body { padding:var(--project-inset); }
+.project-portfolio .contract-table {
+  background:var(--easy-glass-inset); border:1px solid var(--easy-glass-line); border-radius:.9rem;
+}
+.project-portfolio .contract-table thead { background:var(--panel-raised); }
+.project-portfolio .contract-table tbody tr:last-child > * { border-bottom:0; }
+.project-portfolio .contract-table th a { color:inherit; }
+.project-portfolio .contract-table th a:hover { text-decoration:underline; }
+.dashboard-route .project-portfolio .project-rows { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr)); }
+.dashboard-route .project-portfolio .project-rows .card {
+  padding:.65rem; min-width:0; overflow-wrap:anywhere; background:var(--easy-glass-inset);
+}
+.route-projetos .project-rows .card { background:var(--easy-glass-inset); }
+.project-record-panel .fr-header { padding:var(--project-inset); }
+.project-record-panel .fr-header h2 { margin:0; font-size:.96rem; }
+.project-record-panel :is(p,dd,li) { overflow-wrap:anywhere; }
+.project-record-panel label { max-width:18rem; }
+@media(max-width:640px) {
+  .dashboard-route .project-filter-panel .glass-filters { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .project-filter-panel .glass-filters > label { width:100%; }
+  .route-projetos .projects-bento .analytics-tabs button { min-height:36px; }
+  .dashboard-route .project-portfolio .project-rows { grid-template-columns:minmax(0,1fr); }
+}
+
+.route-projetos .projects-bento {
+  grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  grid-template-areas:"activity actions" "activity revenue" "distribution distribution" "seasonality seasonality";
+}
+.projects-bento .bento-activity { grid-area:activity; }
+.projects-bento .bento-revenue { grid-area:revenue; }
+.projects-bento .bento-categories { grid-area:distribution; }
+.projects-bento .bento-seasonality { grid-area:seasonality; }
+.projects-bento .project-dashboard-actions { grid-area:actions; }
+.projects-bento .project-distribution-switch {
+  --switcher-count:3;
+  --seasonality-controls-width:min(100%,18rem);
+}
+.projects-bento .project-seasonality-layout {
+  background:var(--easy-glass-inset);
+  box-shadow:inset 0 1px 0 #ffffff14;
+}
+.studio-layout .route-projetos .project-seasonality-layout .radar-frame {
+  width:min(100%,32rem);
+  margin:auto;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+.project-seasonality-layout .qualification-sidebar {
+  contain:none;
+  border:0;
+  background:transparent;
+}
+.project-seasonality-details { display:grid; align-content:start; gap:.75rem; min-width:0; }
+.project-seasonality-details .radar-tabs { margin:0; }
+.project-seasonality-summary,.project-seasonality-history {
+  min-width:0; padding:.75rem;
+  background:var(--easy-glass-inset); border:1px solid var(--easy-glass-line); border-radius:.9rem;
+  box-shadow:inset 0 1px 0 #ffffff14;
+}
+.project-seasonality-details .radar-stat { gap:.8rem; container-type:inline-size; border:0; padding:0; }
+.project-seasonality-details .radar-stat > div { container-type:normal; }
+.project-seasonality-details .radar-stat > div > span:first-child { min-block-size:2.4em; line-height:1.2; }
+.project-seasonality-details .radar-stat .dashboard-value { font-size:clamp(.85rem,5.1cqi,1.25rem); overflow-wrap:anywhere; }
+.project-seasonality-details .radar-delta { margin-top:.2rem; }
+.radar-contract-count { display:block; color:var(--panel-muted); }
+.project-month-list {
+  block-size:11rem; overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable;
+}
+.project-month-list .history-list li {
+  min-block-size:3.5rem; padding:.65rem .45rem .65rem 0;
+  grid-template-columns:minmax(0,1fr) auto;
+}
+.project-month-list time { min-width:0; text-transform:capitalize; overflow-wrap:anywhere; }
+.project-month-toggle {
+  display:block; min-height:44px; padding:.3rem 0; border:0; background:transparent;
+  color:var(--panel-muted); font:inherit; font-size:.85rem; text-align:start; cursor:pointer;
+}
+.project-month-toggle:hover { color:var(--panel-text); text-decoration:underline; }
+.project-seasonality-layout .qualification-sidebar > .sector-selection-empty { min-height:7rem; }
+@media(max-width:950px) {
+  .route-projetos .projects-bento {
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"actions" "activity" "revenue" "distribution" "seasonality";
+  }
+}

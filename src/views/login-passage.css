@@ -1,0 +1,64 @@
+.easylead-login {
+  position:relative; z-index:1; display:grid; place-items:center;
+  min-height:100svh; max-width:none; margin:0; padding:clamp(1rem,4vw,3rem);
+  background:#000; color:#fff; color-scheme:dark;
+}
+.login-shell {
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  width:min(100%,65rem); min-height:min(39rem,calc(100svh - 4rem));
+  overflow:hidden; border:1px solid #8f9094; border-radius:1.3rem;
+  box-shadow:0 1.8rem 5rem #0006;
+}
+.login-art {
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(ellipse at 12% 75%,transparent 41%,#596168 47%,#121416 52%,transparent 65%),
+    radial-gradient(ellipse at 95% 6%,#657078 8%,#2c3033 39%,#0b0c0e 49%,#353b3f 54%,#090a0b 71%);
+}
+.login-art canvas { display:none; position:absolute; inset:0; width:100%; height:100%; }
+.login-art[data-renderer=webgl] canvas { display:block; }
+.login-panel { display:grid; place-items:center; min-width:0; padding:clamp(1.35rem,4vw,3rem); --login-field-bg:#181a1f; background:#23262c; }
+.login-content { width:min(100%,21rem); }
+.login-panel .easylead-logo { width:10rem; margin:0 auto 1.65rem; }
+.login-panel h1 {
+  margin:0 0 1.25rem; color:inherit; text-align:center;
+  font-size:clamp(1.55rem,3vw,2.1rem); letter-spacing:-.045em; font-weight:620;
+}
+.login-panel form { display:grid; gap:.85rem; max-width:none; padding:0; margin:0; }
+.login-panel label { display:grid; gap:.35rem; color:inherit; font-size:.84rem; font-weight:650; margin:0; }
+.login-panel input {
+  width:100%; min-height:44px; padding:.6rem .75rem; margin:0; border:1px solid #777d89;
+  border-radius:.45rem; background:var(--login-field-bg); color:inherit; font:inherit; font-weight:450;
+}
+.login-panel input::placeholder { color:#cbd0d8; }
+.login-panel input:is(:autofill,:-webkit-autofill) {
+  box-shadow:0 0 0 1000px var(--login-field-bg) inset;
+  -webkit-text-fill-color:#fff;
+}
+.login-panel :is(input,button):focus-visible { outline:2px solid #d8dbe2; outline-offset:2px; }
+.login-panel button { min-height:44px; border-radius:.45rem; cursor:pointer; font:inherit; font-size:.86rem; font-weight:650; }
+.login-submit { width:100%; margin-top:.2rem; border:1px solid #797f8b; background:#3d414b; color:#fff; }
+.login-submit:hover { background:#494e59; }
+.login-demo { border:1px solid #777d89; background:#242730; color:#fff; }
+.login-demo:hover { background:#31353e; }
+.login-note,.login-error { margin:.85rem 0 0; font-size:.8rem; line-height:1.5; }
+.login-note { color:inherit; text-align:center; }
+.login-error { color:inherit; margin:0; padding-inline-start:.6rem; border-inline-start:2px solid #f2a1a1; }
+.login-transition {
+  position:fixed; inset:0; z-index:110; display:grid; place-items:center;
+  background:#18191b; color:#eeeef0; outline:none;
+  animation:login-transition-out var(--login-transition-duration) ease-out both;
+}
+.login-transition .easylead-logo {
+  width:clamp(3.1rem,7vw,4.6rem); aspect-ratio:212 / 185;
+  mask-size:483.02% auto; mask-position:89.9% 49.1%;
+}
+@keyframes login-transition-out {
+  0%,30% { opacity:1; }
+  to { opacity:0; }
+}
+@media (max-width:640px) {
+  .login-shell { grid-template-columns:minmax(0,1fr); min-height:0; }
+  .login-art { min-height:clamp(7rem,28vw,10rem); }
+  .login-panel .easylead-logo { margin-bottom:1.15rem; }
+}

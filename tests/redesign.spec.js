@@ -1,4 +1,4 @@
-﻿import {activeSession, test, expect} from './session-fixture.js';
+import {activeSession, test, expect} from './session-fixture.js';
 import {seed, actionableLeads, metrics} from '../src/domain.js';
 import {convert} from '../src/services/leadProjectService.js';
 
@@ -9,31 +9,27 @@ test('prioridades preservam indicador e excluem perdas e conversões', () => {
   expect(metrics(state).open).toBe(3);
 });
 
-test('cursor move apenas pintura; clique na borda, saída e movimento reduzido', async({page}) => {
-  await page.goto('/');
-  const button=page.getByRole('link',{name:'Cadastrar oportunidade'});
-  await expect(page.getByRole('heading',{name:'Cada etapa, uma conexão.'})).toBeVisible();
+test('atalho de cadastro mantém posição e funciona com movimento reduzido', async({page}) => {
+  await page.goto('/#/leads');
+  const button=page.getByRole('link',{name:/Novo lead/});
+  await expect(page.locator('.journey-scene')).toHaveCount(0);
   await button.scrollIntoViewIfNeeded();
-  await page.evaluate(async()=>{await document.fonts.ready; await Promise.all(document.getAnimations().map(a=>a.finished));});
   const box=await button.boundingBox();
-  await page.mouse.move(box.x+box.width-2,box.y+5);
-  await expect.poll(()=>button.evaluate(el=>parseFloat(el.style.getPropertyValue('--tx')))).toBe(4);
+  await button.hover();
   expect(await button.boundingBox()).toEqual(box);
-  await page.mouse.move(1,1);
-  await expect.poll(()=>button.evaluate(el=>el.style.getPropertyValue('--tx'))).toBe('0px');
-  await page.mouse.move(box.x+box.width-2,box.y+5);
   await page.emulateMedia({reducedMotion:'reduce'});
-  await expect(button.locator('.btn-inner')).toHaveCSS('transform','none');
   await button.scrollIntoViewIfNeeded();
   const reducedBox=await button.boundingBox();
   await page.mouse.click(reducedBox.x+reducedBox.width-1,reducedBox.y+reducedBox.height/2);
-  await expect(page.getByRole('heading',{name:'Novo lead'})).toBeVisible();
+  await expect(page.getByRole('region',{name:'Novo lead'})).toBeVisible();
   await expect(page.getByRole('heading',{level:1})).toBeFocused();
   await page.keyboard.press('Tab');
-  await expect(page.getByLabel('Nome da oportunidade')).toBeFocused();
+  await expect(page.getByRole('link',{name:/Consultar leads/})).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByLabel('Nome da empresa')).toBeFocused();
 });
 
-for(const mobile of [false,true]) test(`percurso e capturas ${mobile?'mobile':'desktop'}`,async({browser})=>{
+for(const mobile of [false,true]) test(`percurso e capturas ${mobile?'mobile':'desktop'}`,async({browser},testInfo)=>{
   const context=await browser.newContext({viewport:{width:mobile?360:1280,height:900},isMobile:mobile,hasTouch:mobile});
   await activeSession(context);
   const page=await context.newPage();
@@ -42,18 +38,18 @@ for(const mobile of [false,true]) test(`percurso e capturas ${mobile?'mobile':'d
   const data=structuredClone(converted);
   // A second won lead demonstrates the queue alongside an active project.
   data.leads.push({id:'capture-won',name:'Nova parceria',company:'Empresa de demonstração',contact:'parceria@example.com',stage:'Ganho'});
-  await page.goto('/');
+  await page.goto('/#/leads');
   await page.evaluate(s=>localStorage.setItem('central-citi-v1',JSON.stringify(s)),data);
   await page.reload();
-  const prefix=`evidencias/${mobile?'mobile':'desktop'}`;
   async function capture(name){
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
     await page.evaluate(async()=>{document.activeElement?.blur();await document.fonts.ready;});
-    await page.screenshot({path:`${prefix}-${name}.png`,fullPage:true,animations:'disabled'});
+    await page.screenshot({path:testInfo.outputPath(name+'.png'),fullPage:true,animations:'disabled'});
   }
   await capture('inicio');
-  await page.getByRole('link',{name:/Ganho.*Nova parceria/}).click();
-  await expect(page.getByRole('heading',{name:'Converter em projeto'})).toBeVisible();
+  await page.getByRole('link',{name:/Todos os leads/}).click();
+  await page.getByRole('link',{name:'Abrir Nova parceria',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Projeto',exact:true})).toBeVisible();
   await capture('lead');
   if(mobile){
     const button=page.getByRole('button',{name:'Salvar lead'});
@@ -62,8 +58,8 @@ for(const mobile of [false,true]) test(`percurso e capturas ${mobile?'mobile':'d
   }
   await page.goto('/#/projetos/'+data.projects[0].id);
   await capture('projeto');
-  await page.getByRole('link',{name:'Desenvolvimento →'}).click();
-  await expect(page.getByText('Clara Luz · Desenvolvedora')).toBeVisible();
+  await page.getByRole('link',{name:'Tech →'}).click();
+  await expect(page.getByRole('region',{name:'Projetos vinculados'})).toBeVisible();
   await capture('area');
   await page.getByRole('link',{name:/Em andamento Plataforma Maré/}).click();
   await expect(page.getByLabel('Status do projeto')).toHaveValue('Em andamento');

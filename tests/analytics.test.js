@@ -1,4 +1,4 @@
-﻿import {test} from 'node:test';
+import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {seed} from '../src/domain.js';
 import {analytics,saveGoal} from '../src/services/analyticsService.js';
@@ -12,7 +12,7 @@ test('total e meta reconciliam registros elegíveis e persistem pelo repository'
 });
 test('histórico usa apenas contratos elegíveis datados, sem preencher lacunas',()=>{
  const state={...structuredClone(seed),projects:[{contractStatus:'Contratado',contractValue:10,convertedAt:'2026-01-05'},{contractStatus:'Contratado',contractValue:20,convertedAt:'2026-03-05'},{contractStatus:'Contratado',contractValue:50},{contractStatus:'Sem contrato',contractValue:99,convertedAt:'2026-02-01'}]};
- assert.deepEqual(analytics(state).history,[{label:'2026-01',value:10},{label:'2026-03',value:20}]);
+ assert.deepEqual(analytics(state).history,[{label:'2026-01',value:10,contracts:1},{label:'2026-03',value:20,contracts:1}]);
 });
 test('lead analytics honors segment, project dimensions, search and stage selections',()=>{
  const state={...structuredClone(seed),leads:[

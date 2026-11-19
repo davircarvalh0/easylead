@@ -1,7 +1,13 @@
+import {isCloud,cloudApi} from './cloudClient.js';
 import {createSessionRepository} from '../repositories/sessionRepository.js';
 
 // Local demonstration only: this is not an authentication or authorization boundary.
 export function createSessionService(repository = createSessionRepository()) {
+  if(isCloud)return {
+    load:async()=>(await cloudApi('session')).session,
+    login:async(email,password)=>(await cloudApi('session',{method:'POST',body:{email,password}})).session,
+    logout:()=>cloudApi('session',{method:'DELETE'}),
+  };
   return {
     load: () => repository.load(),
     login(email, password) {

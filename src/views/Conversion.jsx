@@ -1,16 +1,52 @@
-import React from 'react';
-import {Magnetic} from '../Magnetic.jsx';
-import {useConversionController} from '../controllers/useLeadController.js';
+import React, {useState} from 'react';
+import {phases} from '../domain.js';
+import {DashboardModule} from './DashboardModule.jsx';
 
-export function Conversion({lead,state,convert}){
- const {data,error,setField,toggleMember,submit}=useConversionController(lead,convert);
- return <form className="conversion" noValidate onSubmit={submit}><h2>Converter em projeto</h2>{error&&<p role="alert" className="error">{error}</p>}
- <label>Nome do projeto *<input required value={data.name} onChange={e=>setField('name',e.target.value)}/></label>
- <label>Área responsável *<select required value={data.areaId} onChange={e=>setField('areaId',e.target.value)}><option value="">Selecione uma área</option>{state.areas.map(a=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
- <label>Responsável *<select required value={data.ownerId} onChange={e=>setField('ownerId',e.target.value)}><option value="">Selecione um integrante</option>{state.members.filter(m=>m.areaId===data.areaId).map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
- <label>Fase inicial<select value={data.phase} onChange={e=>setField('phase',e.target.value)}><option>Discovery</option><option>Delivery</option></select></label>
- <label>Nome do squad<input value={data.squadName} onChange={e=>setField('squadName',e.target.value)} placeholder="Gerado a partir do projeto se vazio"/></label>
- <label>Contrato<select value={data.contractStatus} onChange={e=>setField('contractStatus',e.target.value)}><option>Contratado</option><option>Sem contrato</option></select></label>
- <label>Valor contratado (R$)<input type="number" min="0.01" step="0.01" value={data.contractValue} onChange={e=>setField('contractValue',e.target.value)}/></label>
- <label>Data de convers?o (opcional)<input type="date" value={data.convertedAt || ''} onChange={e=>setField('convertedAt',e.target.value)}/></label><label>In?cio de vig?ncia (opcional)<input type="date" value={data.contractStart || ''} onChange={e=>setField('contractStart',e.target.value)}/></label><label>Fim de vig?ncia (opcional)<input type="date" value={data.contractEnd || ''} onChange={e=>setField('contractEnd',e.target.value)}/></label><fieldset><legend>Outros integrantes (opcional)</legend>{state.members.filter(m=>m.id!==data.ownerId).map(m=><label className="check" key={m.id}><input type="checkbox" checked={data.memberIds.includes(m.id)} onChange={e=>toggleMember(m.id,e.target.checked)}/>{m.name} · {state.areas.find(a=>a.id===m.areaId)?.name}</label>)}</fieldset><Magnetic>Criar projeto</Magnetic></form>
- }
+export function ProjectScopeEditor({lead, project, areas, saveProjectScope, recordHref}) {
+  const [draft, setDraft] = useState(() => ({
+    contractValue: project ? (project.contractValue ?? '') : (lead.proposal?.price ?? ''),
+    areaId: project?.areaId || '',
+    phase: project?.phase || 'Discovery',
+  }));
+  const [error, setError] = useState('');
+
+  function change(event) {
+    const {name, value} = event.target;
+    setDraft(previous=>({...previous,[name]:value}));
+  }
+
+  async function submit(event) {
+    event.preventDefault();
+    try {
+      const saved = await saveProjectScope(lead.id,draft);
+      location.hash = project ? recordHref : '#/projetos/' + encodeURIComponent(saved.id);
+    } catch (failure) {
+      setError(failure.message);
+    }
+  }
+
+  return <DashboardModule hideTitle title="Definir valor e escopo" className="lead-proposal-editor">
+    <form className="dashboard-form form-columns" onSubmit={submit}>
+      {error && <p role="alert" className="error form-wide">{error}</p>}
+      <label>Valor contratado (R$)
+        <input name="contractValue" type="number" inputMode="decimal" min="0.01" step="0.01"
+          required={project?.contractValue>0} value={draft.contractValue} onChange={change}/>
+      </label>
+      <label>Área responsável
+        <select name="areaId" required value={draft.areaId} onChange={change}>
+          <option value="">Selecione uma área</option>
+          {areas.map(({id,name})=><option key={id} value={id}>{name}</option>)}
+        </select>
+      </label>
+      <label>Fase do projeto
+        <select name="phase" value={draft.phase} onChange={change}>
+          {phases.map(phase=><option key={phase}>{phase}</option>)}
+        </select>
+      </label>
+      <div className="form-actions form-wide">
+        <button type="submit" className="lead-glass-action lead-glass-action-primary">{project ? 'Salvar valor e escopo' : 'Criar projeto'}</button>
+        <a className="lead-glass-action" href={recordHref}>Cancelar</a>
+      </div>
+    </form>
+  </DashboardModule>;
+}
