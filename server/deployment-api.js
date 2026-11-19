@@ -52,7 +52,7 @@ export function createDeploymentApi({env=process.env,repository:providedReposito
    throw new ApiError(404,'Rota não encontrada.');
   }catch(error){
    const status=error.status||503;
-   json(res,status,{error:error.status?error.message:'Não foi possível acessar os serviços do servidor. Verifique o banco de dados e tente novamente.'});
+   json(res,status,{error:error.status===503?'Serviço temporariamente indisponível. Tente novamente em instantes.':error.status?error.message:'Não foi possível acessar os serviços do servidor. Verifique o banco de dados e tente novamente.'});
   }
  };
 }

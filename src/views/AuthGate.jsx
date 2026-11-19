@@ -6,7 +6,7 @@ import {LiquidChrome} from './LiquidChrome.jsx';
 import './login-passage.css';
 
 export function AuthGate({children}) {
-  const {session, entering, error, loading,submitting,login, logout} = useSessionController();
+  const {session, entering, error, loading,submitting,login,loginDemo, logout} = useSessionController();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const emailInput = useRef(null);
@@ -33,6 +33,7 @@ export function AuthGate({children}) {
               placeholder="Digite seu código" value={password} onChange={event=>setPassword(event.target.value)}/></label>
             {error && <p role="alert" className="login-error">{error}</p>}
             <button className="login-submit" type="submit" disabled={submitting}>{submitting?'Entrando…':'Entrar no EasyLead'}</button>
+            {isCloud&&<button className="login-demo" type="button" disabled={submitting} onClick={loginDemo}>Entrar como usuário de demonstração</button>}
             {!isCloud&&<button className="login-demo" type="button" onClick={()=>{
               setEmail('lideranca@citi.org.br');
               setPassword('citi-2026');

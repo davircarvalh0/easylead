@@ -38,3 +38,24 @@ test('falha do banco não apresenta carteira local como se estivesse conectada',
  await page.route('**/api/easylead/workspace',route=>route.fulfill({status:503,json:{error:'Banco indisponível.'}}));
  await page.goto('/#/leads');await expect(page.getByRole('alert')).toHaveText('Banco indisponível.');await expect(page.locator('.lead-priority-metrics')).toHaveCount(0);
 });
+
+
+test('avaliador entra pela demo sem preencher campos e sem aviso de configuração',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});let authenticated=false;
+ await page.route('**/api/easylead/session',async route=>{
+  if(route.request().method()==='POST'){expect(route.request().postDataJSON()).toEqual({demo:true});authenticated=true;return route.fulfill({json:{session:{authenticated:true,email:'demo@easylead.example',loggedAt:1}}});}
+  return route.fulfill(authenticated?{json:{session:{authenticated:true,email:'demo@easylead.example',loggedAt:1}}}:{status:503,json:{error:'Configure no servidor: SESSION_SECRET, APP_ACCESS_CODE.'}});
+ });
+ await page.route('**/api/easylead/workspace',route=>route.fulfill({json:{state:seed,revision:0}}));
+ await page.goto('/');await expect(page.getByRole('button',{name:'Entrar como usuário de demonstração'})).toBeVisible();
+ await expect(page.getByRole('alert')).toHaveCount(0);await expect(page.getByLabel('E-mail',{exact:true})).toBeEmpty();await expect(page.getByLabel('Código de acesso')).toBeEmpty();
+ await page.getByRole('button',{name:'Entrar como usuário de demonstração'}).click();
+ await expect(page.getByRole('region',{name:'Assistente EasyLead'})).toBeVisible();
+ await page.reload();await expect(page.getByRole('region',{name:'Assistente EasyLead'})).toBeVisible();
+});
+
+test('erro ao entrar pela demo apresenta mensagem simples',async({page})=>{
+ await page.route('**/api/easylead/session',route=>route.fulfill(route.request().method()==='POST'?{status:503,json:{error:'Configure no servidor: APP_ACCESS_CODE.'}}:{json:{session:null}}));
+ await page.goto('/');await page.getByRole('button',{name:'Entrar como usuário de demonstração'}).click();
+ await expect(page.getByRole('alert')).toHaveText('Não foi possível entrar agora. Tente novamente em instantes.');
+});

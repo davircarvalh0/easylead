@@ -19,10 +19,11 @@ Cadastre estas variáveis em **Vercel → Project → Settings → Environment V
 | `DATABASE_URL` | Sim | Connection string PostgreSQL do pooler |
 | `DEEPSEEK_API_KEY` | Para a IA | Sua chave DeepSeek |
 | `DEEPSEEK_MODEL` | Não | Padrão: `deepseek-flash` |
-| `APP_ACCESS_CODE` | Sim | Código de acesso escolhido por você, com pelo menos 12 caracteres |
-| `SESSION_SECRET` | Sim | Segredo aleatório com pelo menos 32 caracteres |
-| `APP_ALLOWED_EMAILS` | Sim | E-mails autorizados, separados por vírgula |
+| `APP_ACCESS_CODE` | Apenas sem demo | Código de acesso escolhido por você, com pelo menos 12 caracteres |
+| `SESSION_SECRET` | Apenas sem demo | Segredo aleatório com pelo menos 32 caracteres |
+| `APP_ALLOWED_EMAILS` | Apenas sem demo | E-mails autorizados, separados por vírgula |
 | `APP_ORIGIN` | Sim | URL HTTPS final do site, por exemplo `https://meu-easylead.vercel.app` |
+| `APP_DEMO_ACCESS` | Não | Acesso público do avaliador habilitado por padrão; use `false` para exigir login manual |
 | `APP_WORKSPACE_ID` | Não | Identificador da carteira compartilhada; padrão: `main` |
 
 **Não use o prefixo `VITE_` em credenciais.** Esse prefixo publica o valor no navegador. A única variável pública do projeto é `VITE_APP_MODE=server`, configurada automaticamente pelo script de build da Vercel.
@@ -33,7 +34,9 @@ Para gerar um `SESSION_SECRET`, execute localmente e copie o resultado apenas pa
 node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"
 ```
 
-O login continua com e-mail e código de acesso, mas em produção ambos são verificados no servidor. Todos os e-mails autorizados acessam a mesma carteira. O código é compartilhado por essas pessoas; não há cadastro público de usuários. As sessões usam cookies HttpOnly/Secure/SameSite e podem ser encerradas pelo botão Sair. Ao trocar o código ou o segredo, os cookies anteriores deixam de ser aceitos.
+O botão **Entrar como usuário de demonstração** permite avaliar o protótipo sem preencher e-mail ou código. O servidor cria uma sessão para `demo@easylead.example`, com acesso à carteira compartilhada e às funcionalidades de edição. Esse acesso fica habilitado por padrão. Para desativá-lo, configure `APP_DEMO_ACCESS=false`; nesse caso, `APP_ACCESS_CODE`, `APP_ALLOWED_EMAILS` e `SESSION_SECRET` são obrigatórios e o login manual é validado no servidor.
+
+As sessões usam cookies HttpOnly/Secure/SameSite e podem ser encerradas pelo botão Sair. No protótipo, se `SESSION_SECRET` estiver ausente, o servidor deriva uma chave estável da credencial de conexão PostgreSQL, sem enviá-la ao navegador; alterar a conexão invalida essas sessões. Um segredo explícito continua sendo aceito. A tela de login não exibe nomes de variáveis nem erros internos.
 
 Use outro banco/carteira, código e segredo no ambiente Preview se ele não deve acessar os dados da produção.
 
@@ -55,6 +58,20 @@ Os documentos de propostas que estavam apenas no IndexedDB do navegador precisam
 
 O banco usa `easylead_workspaces` para o estado versionado da carteira em JSONB, `easylead_documents` para documentos, `easylead_sessions` para sessões e `easylead_rate_limits` para limites de tentativas. O script ativa RLS sem políticas públicas, para não expor as tabelas pela API REST do Supabase. Use a conexão do proprietário das tabelas no backend; nunca uma chave anônima. As alterações passam pelas regras de negócio existentes, dentro de transações. Uma versão antiga recebe erro de conflito, sem substituir alterações de outra pessoa; recarregue a carteira para continuar.
 
+### Importar os dados mockados pelo painel do Supabase
+
+Se preferir inicializar pelo SQL Editor, execute localmente:
+
+```sh
+npm run db:prepare:supabase
+```
+
+O comando usa a carteira local `.env.demo-leads.json`, substitui os nomes genéricos das empresas simuladas por nomes fictícios e gera `.env.supabase-seed.sql` com tabelas, RLS e dados. IDs, contatos, valores, datas e vínculos são preservados. Os nomes personalizados de empresas já existentes são mantidos; esta operação não anonimiza toda a carteira.
+
+No projeto Supabase, abra **SQL Editor → New query**, cole o conteúdo do SQL gerado e execute. A consulta final mostra as quantidades importadas. Se a carteira `main` já existir, ela será preservada: o script não substitui os dados existentes. Este caminho substitui os comandos `db:init` e `db:seed` para a primeira carga.
+
+O SQL e a carteira ficam ignorados pelo Git, pois contêm dados e contatos da base local. Não os mova para `public/` nem os publique no repositório. A geração do arquivo não executa nada no Supabase; é necessário rodá-lo no painel ou configurar `DATABASE_URL` para usar os scripts de conexão.
+
 ## 4. Importe na Vercel
 
 1. Suba o projeto para seu repositório Git, sem `.env`, exports de dados ou credenciais.
@@ -66,7 +83,7 @@ As rotas da interface usam `#`, portanto não precisam de rewrite para o SPA. A 
 
 ## 5. Confira depois do deploy
 
-- Entre com um e-mail de `APP_ALLOWED_EMAILS` e o `APP_ACCESS_CODE` escolhido.
+- Clique em **Entrar como usuário de demonstração**. Se desativou a demo, use um e-mail de `APP_ALLOWED_EMAILS` e o `APP_ACCESS_CODE` escolhido.
 - Confira a quantidade de leads/projetos e salve uma alteração pequena. Recarregue para confirmar a persistência.
 - Envie uma pergunta à IA. A chave é lida por `process.env.DEEPSEEK_API_KEY`, somente no servidor.
 - Analise um CSV e confirme que não cadastra leads sem um comando explícito.

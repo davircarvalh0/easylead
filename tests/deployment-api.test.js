@@ -69,3 +69,23 @@ test('repositório PostgreSQL bloqueia versão antiga e só publica depois do co
  const update=queries.find(item=>item.sql.startsWith('UPDATE'));assert.equal(update.args[2],'workspace-test');assert.equal(JSON.parse(update.args[0]).areas.at(-1).name,'Pesquisa');assert.equal(queries.at(-1).sql,'COMMIT');
  assert.equal(original.areas.length,5);
 });
+
+
+test('demo entra sem código ou allowlist, mantém cookie verificável e respeita desativação',async()=>{
+ const sessions=new Map();let attempts=0;
+ const repository={rateLimit:async()=>attempts++,createSession:async(id,email)=>sessions.set(id,{email}),session:async id=>sessions.get(id),deleteSession:async id=>sessions.delete(id),read:async()=>({state:seed,revision:0})};
+ const minimal={DATABASE_URL:env.DATABASE_URL,APP_ORIGIN:env.APP_ORIGIN};let currentEnv=minimal;
+ const server=createServer((req,res)=>createDeploymentApi({env:currentEnv,repository})(req,res));server.listen(0,'127.0.0.1');await once(server,'listening');
+ const url='http://127.0.0.1:'+server.address().port+'/api/easylead/';
+ const enter=body=>fetch(url+'session',{method:'POST',headers:{Origin:env.APP_ORIGIN,'Content-Type':'application/json'},body:JSON.stringify(body)});
+ try{
+  const response=await enter({demo:true,email:'forged@example.com'});assert.equal(response.status,200);
+  const data=await response.json();assert.equal(data.session.email,'demo@easylead.example');assert.equal(data.session.authenticated,true);assert.equal(attempts,1);
+  const cookie=response.headers.get('set-cookie').split(';')[0];assert.match(response.headers.get('set-cookie'),/HttpOnly/);
+  const check=await fetch(url+'workspace',{headers:{Cookie:cookie}});assert.equal(check.status,200);
+  assert.deepEqual(deploymentConfig(minimal).sessionSecret,deploymentConfig(minimal).sessionSecret);
+  currentEnv={...env,APP_DEMO_ACCESS:'false'};assert.equal((await enter({demo:true})).status,403);
+  assert.throws(()=>deploymentConfig({...minimal,APP_DEMO_ACCESS:'false'}),/APP_ACCESS_CODE/);
+  currentEnv={};const failure=await enter({demo:true});assert.equal(failure.status,503);assert.doesNotMatch(await failure.text(),/APP_ACCESS_CODE|SESSION_SECRET|DATABASE_URL|Configure no servidor/);
+ }finally{server.close();server.closeAllConnections();}
+});

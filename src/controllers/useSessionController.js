@@ -11,7 +11,7 @@ export function useSessionController() {
   const [error, setError] = useState('');
   const [loading,setLoading]=useState(isCloud);
   const [submitting,setSubmitting]=useState(false);
-  useEffect(()=>{if(!isCloud)return;let active=true;service.load().then(next=>{if(active)setSession(next);}).catch(error=>{if(active)setError(error.message);}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[service]);
+  useEffect(()=>{if(!isCloud)return;let active=true;service.load().then(next=>{if(active)setSession(next);}).catch(()=>{/* The login screen stays available if the initial session check fails. */}).finally(()=>{if(active)setLoading(false);});return()=>{active=false;};},[service]);
   useEffect(() => {
     if (!entering) return;
     const media = matchMedia('(prefers-reduced-motion: reduce)');
@@ -28,19 +28,19 @@ export function useSessionController() {
     media.addEventListener('change', change);
     return () => { clearTimeout(timer); document.removeEventListener('visibilitychange', visibility); media.removeEventListener('change', change); };
   }, [entering]);
-  async function login(email, password) {
+  async function login(email, password, demo=false) {
     if(submitting)return;setSubmitting(true);
     try {
-      const next = await service.login(email, password);
+      const next = await (demo?service.demo():service.login(email, password));
       location.hash = '/easylead';
       setError('');
       setEntering(!matchMedia('(prefers-reduced-motion: reduce)').matches);
       setSession(next);
-    } catch (failure) { setError(failure.message); }finally{setSubmitting(false);}
+    } catch (failure) { setError(isCloud&&(!failure.status||failure.status>=500)?'Não foi possível entrar agora. Tente novamente em instantes.':failure.message); }finally{setSubmitting(false);}
   }
   async function logout() {
     try { await service.logout(); setSession(null); setEntering(false); setError(''); }
     catch (failure) { setError(failure.message); }
   }
-  return {session, entering, error, loading,submitting,login, logout, finish: () => setEntering(false)};
+  return {session, entering, error, loading,submitting,login,loginDemo:()=>login('','',true), logout, finish: () => setEntering(false)};
 }

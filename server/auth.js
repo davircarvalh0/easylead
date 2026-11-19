@@ -25,10 +25,12 @@ export async function requireSession(req,config,repository){
 export async function loginSession(req,body,config,repository){
  const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
  await repository.rateLimit('login:'+createHmac('sha256',config.sessionSecret).update(ip).digest('hex'),8,900);
- const email=typeof body.email==='string'?body.email.trim().toLowerCase():'';
+ const demo=body.demo===true;
+ if(demo&&!config.demoAccess)throw new ApiError(403,'O acesso de demonstração não está disponível.');
+ const email=demo?config.demoEmail:typeof body.email==='string'?body.email.trim().toLowerCase():'';
  const password=typeof body.password==='string'?body.password:'';
  const validCode=timingSafeEqual(hash(password),hash(config.accessCode));
- if(!validCode||!config.emails.includes(email))throw new ApiError(401,'E-mail ou código de acesso inválido.');
+ if(!demo&&(!validCode||!config.emails.includes(email)))throw new ApiError(401,'E-mail ou código de acesso inválido.');
  const payload={id:randomUUID(),email,exp:Math.floor(Date.now()/1000)+43200};
  await repository.createSession(payload.id,email,payload.exp);return {payload,token:signSession(payload,config)};
 }

@@ -17,7 +17,8 @@
     "db:init": "node --env-file=.env scripts/db-init.mjs",
     "db:seed": "node --env-file=.env scripts/db-seed.mjs",
     "test:cloud": "playwright test --config playwright.cloud.config.js",
-    "check:deployment": "node scripts/check-deployment.mjs"
+    "check:deployment": "node scripts/check-deployment.mjs",
+    "db:prepare:supabase": "node scripts/prepare-supabase-seed.mjs"
   },
   "dependencies": {
     "@vercel/functions": "^3.11.3",

@@ -6,6 +6,7 @@ export function createSessionService(repository = createSessionRepository()) {
   if(isCloud)return {
     load:async()=>(await cloudApi('session')).session,
     login:async(email,password)=>(await cloudApi('session',{method:'POST',body:{email,password}})).session,
+    demo:async()=>(await cloudApi('session',{method:'POST',body:{demo:true}})).session,
     logout:()=>cloudApi('session',{method:'DELETE'}),
   };
   return {

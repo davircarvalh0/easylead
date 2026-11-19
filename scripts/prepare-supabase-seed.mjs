@@ -1,0 +1,16 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {renameDemoCompanies} from '../src/services/demoCompanyNames.js';
+import {hydrateState} from '../src/repositories/stateRepository.js';
+const file=process.argv[2]||'.env.demo-leads.json';
+const output='.env.supabase-seed.sql';
+const incoming=JSON.parse(await readFile(file,'utf8'));
+if(incoming.version!==1||!['areas','members','leads','projects'].every(key=>Array.isArray(incoming[key])))throw Error('JSON de carteira inválido.');
+const {state,renamed}=renameDemoCompanies(incoming);
+const schema=await readFile(new URL('../server/schema.sql',import.meta.url),'utf8');
+const literal=value=>"'"+value.replaceAll("'","''")+"'";
+const workspace=process.env.APP_WORKSPACE_ID?.trim()||'main';
+const sql='BEGIN;\nSET LOCAL standard_conforming_strings = on;\n'+schema+'\nINSERT INTO easylead_workspaces(id,state) VALUES('+literal(workspace)+','+literal(JSON.stringify(hydrateState(state)))+'::jsonb) ON CONFLICT(id) DO NOTHING;\nCOMMIT;\nSELECT id, jsonb_array_length(state->\'leads\') AS leads, jsonb_array_length(state->\'projects\') AS projects FROM easylead_workspaces WHERE id='+literal(workspace)+';\n';
+await writeFile(output,sql);
+await writeFile(file,JSON.stringify(state));
+console.log(JSON.stringify({renamed,leads:state.leads.length,projects:state.projects.length,sql:resolve(output)},null,2));
