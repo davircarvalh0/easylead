@@ -66,11 +66,43 @@ Se preferir inicializar pelo SQL Editor, execute localmente:
 npm run db:prepare:supabase
 ```
 
-O comando usa a carteira local `.env.demo-leads.json`, substitui os nomes genéricos das empresas simuladas por nomes fictícios e gera `.env.supabase-seed.sql` com tabelas, RLS e dados. IDs, contatos, valores, datas e vínculos são preservados. Os nomes personalizados de empresas já existentes são mantidos; esta operação não anonimiza toda a carteira.
+O comando usa a carteira local `.env.demo-leads.json`, substitui os nomes genéricos das empresas simuladas por nomes fictícios, inclui os responsáveis de Negócios e completa os valores contratados ausentes. Ele gera `.env.supabase-seed.sql` com tabelas, RLS e dados. IDs, contatos, datas, vínculos e valores positivos já existentes são preservados. Os nomes personalizados de empresas já existentes são mantidos; esta operação não anonimiza toda a carteira.
 
 No projeto Supabase, abra **SQL Editor → New query**, cole o conteúdo do SQL gerado e execute. A consulta final mostra as quantidades importadas. Se a carteira `main` já existir, ela será preservada: o script não substitui os dados existentes. Este caminho substitui os comandos `db:init` e `db:seed` para a primeira carga.
 
 O SQL e a carteira ficam ignorados pelo Git, pois contêm dados e contatos da base local. Não os mova para `public/` nem os publique no repositório. A geração do arquivo não executa nada no Supabase; é necessário rodá-lo no painel ou configurar `DATABASE_URL` para usar os scripts de conexão.
+
+### Adicionar responsáveis de Negócios a uma carteira existente
+
+Para uma carteira já importada, abra o **SQL Editor** do Supabase e execute [202611190001_business_lead_owners.sql](supabase/migrations/202611190001_business_lead_owners.sql). O arquivo usa a carteira `main` por padrão e não contém contatos ou dados privados.
+
+A atualização adiciona **Tiago Mattos**, **João Pedro** e **Beatriz Luna** a Negócios e distribui somente os leads sem responsável em uma proporção aproximada de **50% / 30% / 20%**, respeitando a ordem atual dos registros. Na base mockada de 1.255 leads, os 1.111 registros livres ficam com **556, 333 e 222** leads, respectivamente; os **144** de Bruno Melo continuam com ele. Se o banco já tiver sido editado, as quantidades seguem os leads sem responsável existentes naquele momento.
+
+A operação preserva projetos, valores, datas, campos dos leads e atribuições anteriores. Ela bloqueia a carteira durante a transação e incrementa sua revisão quando há mudança. Pode ser repetida sem duplicar integrantes ou redistribuir leads que já tenham responsável. Recarregue o EasyLead após executar para buscar a revisão atualizada.
+
+Para atualizar a demo local e gerar uma cópia do SQL com o `APP_WORKSPACE_ID` definido no ambiente:
+
+```sh
+npm run db:prepare:owners
+```
+
+O comando atualiza `.env.demo-leads.json` e gera `.env.supabase-business-owners.sql`, ambos ignorados pelo Git. Para uma primeira carga, `db:prepare:supabase` e `db:seed` já incluem os novos responsáveis. Para uma carteira existente, use a atualização SQL específica; a carga inicial não sobrescreve carteiras existentes.
+
+### Atualização completa: responsáveis e valores contratados
+
+Para aplicar as duas mudanças de uma vez na carteira já existente, execute [supabase/update-demo.sql](supabase/update-demo.sql) no **SQL Editor** do Supabase. Ele usa `main` por padrão e reúne as atualizações em uma única transação: se houver erro, nenhuma das duas alterações é confirmada. Não é necessário executar os arquivos individuais depois.
+
+Além dos responsáveis descritos acima, todos os projetos passam a ter `contractStatus=Contratado` e valor positivo. Os valores positivos existentes são preservados. Para valores ausentes, é usado primeiro o preço da proposta, depois 90% do valor estimado do lead, arredondado para reais inteiros. Na falta de ambas as referências, a demo recebe um valor fictício estável de R$ 25 mil a R$ 124.999. Datas, status de execução, escopo e vínculos dos projetos não são alterados.
+
+Na base atual, foram preenchidos **16 valores**, totalizando **89 projetos com valor contratado**. A distribuição de responsáveis permanece **556 / 333 / 222**; os 144 leads de Bruno Melo são preservados. Execute o SQL e recarregue o site para carregar a nova revisão.
+
+Para gerar a atualização no computador e atualizar o JSON local:
+
+```sh
+npm run db:prepare:demo
+```
+
+O comando gera `.env.supabase-demo-update.sql` com o `APP_WORKSPACE_ID` do ambiente, além de atualizar `.env.demo-leads.json`. Os dois arquivos são ignorados pelo Git. O SQL público contém apenas a lógica da atualização, sem contatos ou exportação dos registros. A execução pode ser repetida: integrantes não são duplicados, responsáveis existentes não são substituídos e valores positivos não são recalculados.
 
 ## 4. Importe na Vercel
 

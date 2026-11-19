@@ -1,3 +1,5 @@
+import {fillDemoProjectContracts} from '../src/services/demoProjectContracts.js';
+import {assignDemoBusinessOwners} from '../src/services/demoBusinessOwners.js';
 import {readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {renameDemoCompanies} from '../src/services/demoCompanyNames.js';
@@ -6,7 +8,9 @@ const file=process.argv[2]||'.env.demo-leads.json';
 const output='.env.supabase-seed.sql';
 const incoming=JSON.parse(await readFile(file,'utf8'));
 if(incoming.version!==1||!['areas','members','leads','projects'].every(key=>Array.isArray(incoming[key])))throw Error('JSON de carteira inválido.');
-const {state,renamed}=renameDemoCompanies(incoming);
+const renamedResult=renameDemoCompanies(incoming);
+const {renamed}=renamedResult;
+const {state}=fillDemoProjectContracts(assignDemoBusinessOwners(renamedResult.state).state);
 const schema=await readFile(new URL('../server/schema.sql',import.meta.url),'utf8');
 const literal=value=>"'"+value.replaceAll("'","''")+"'";
 const workspace=process.env.APP_WORKSPACE_ID?.trim()||'main';

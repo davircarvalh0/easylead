@@ -1,0 +1,12 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {assignDemoBusinessOwners} from '../src/services/demoBusinessOwners.js';
+import {fillDemoProjectContracts} from '../src/services/demoProjectContracts.js';
+import {createDemoUpdateSql} from './demo-update-sql.mjs';
+const file=process.argv[2]||'.env.demo-leads.json',output='.env.supabase-demo-update.sql';
+const incoming=JSON.parse(await readFile(file,'utf8'));
+if(incoming.version!==1||!['areas','members','leads','projects'].every(key=>Array.isArray(incoming[key])))throw Error('JSON de carteira inválido.');
+const owners=assignDemoBusinessOwners(incoming),contracts=fillDemoProjectContracts(owners.state);
+await writeFile(output,await createDemoUpdateSql(process.env.APP_WORKSPACE_ID?.trim()||'main'));
+await writeFile(file,JSON.stringify(contracts.state));
+console.log(JSON.stringify({assigned:owners.assigned,owners:owners.owners,valued:contracts.valued,projects:contracts.projects,sql:resolve(output)},null,2));

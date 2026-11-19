@@ -102,6 +102,8 @@ Outros comandos disponíveis:
 | `npm run preview` | Recompilar e servir a prévia local |
 | `npm run check:preview` | Conferir se a prévia corresponde ao código atual |
 | `npm run test:cloud` | Testar a interface no modo servidor com integrações simuladas |
+| `npm run db:prepare:demo` | Atualizar responsáveis e valores contratados da demo e gerar SQL para o Supabase |
+| `npm run db:prepare:owners` | Atualizar os responsáveis da demo e gerar SQL para a carteira existente no Supabase |
 | `npm run build:vercel` | Gerar o build com o modo servidor habilitado |
 | `npm run check:deployment` | Gerar o build e verificar se credenciais de teste aparecem nos arquivos públicos |
 

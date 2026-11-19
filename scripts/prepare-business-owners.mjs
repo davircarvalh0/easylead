@@ -1,0 +1,14 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {assignDemoBusinessOwners} from '../src/services/demoBusinessOwners.js';
+const file=process.argv[2]||'.env.demo-leads.json';
+const incoming=JSON.parse(await readFile(file,'utf8'));
+if(incoming.version!==1||!['areas','members','leads','projects'].every(key=>Array.isArray(incoming[key])))throw Error('JSON de carteira inválido.');
+const result=assignDemoBusinessOwners(incoming);
+const workspace=process.env.APP_WORKSPACE_ID?.trim()||'main';
+const literal=value=>"'"+value.replaceAll("'","''")+"'";
+const template=await readFile(new URL('../supabase/migrations/202611190001_business_lead_owners.sql',import.meta.url),'utf8');
+const sql=template.replace('BEGIN;','BEGIN;\nSET LOCAL easylead.workspace_id TO '+literal(workspace)+';');
+const output='.env.supabase-business-owners.sql';
+await writeFile(output,sql);await writeFile(file,JSON.stringify(result.state));
+console.log(JSON.stringify({assigned:result.assigned,owners:result.owners,sql:resolve(output)},null,2));

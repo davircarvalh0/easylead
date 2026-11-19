@@ -18,7 +18,9 @@
     "db:seed": "node --env-file=.env scripts/db-seed.mjs",
     "test:cloud": "playwright test --config playwright.cloud.config.js",
     "check:deployment": "node scripts/check-deployment.mjs",
-    "db:prepare:supabase": "node scripts/prepare-supabase-seed.mjs"
+    "db:prepare:supabase": "node scripts/prepare-supabase-seed.mjs",
+    "db:prepare:owners": "node scripts/prepare-business-owners.mjs",
+    "db:prepare:demo": "node scripts/prepare-demo-update.mjs"
   },
   "dependencies": {
     "@vercel/functions": "^3.11.3",
@@ -31,6 +33,7 @@
     "three": "^0.187.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.17",
     "@playwright/test": "^1.56.0",
     "vite": "^7.2.0"
   },

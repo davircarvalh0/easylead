@@ -1,3 +1,5 @@
+import {fillDemoProjectContracts} from '../src/services/demoProjectContracts.js';
+import {assignDemoBusinessOwners} from '../src/services/demoBusinessOwners.js';
 import {renameDemoCompanies} from '../src/services/demoCompanyNames.js';
 import {readFile, writeFile} from 'node:fs/promises';
 import {basename} from 'node:path';
@@ -186,7 +188,7 @@ for (const sectors of sectorSeasonality.values()) {
 state.leads = [...state.leads,...cohortLeads];
 if (generated || cohortLeads.length) state.demoRevision = Math.max(state.demoRevision,(initial.demoRevision ?? 0)+1);
 
-state=renameDemoCompanies(state).state;
+state=fillDemoProjectContracts(assignDemoBusinessOwners(renameDemoCompanies(state).state).state).state;
 await writeFile(target,JSON.stringify(state));
 console.log(JSON.stringify({
   added:result.added,generated,cohortLeads:cohortLeads.length,leads:state.leads.length,projects:state.projects.length,
