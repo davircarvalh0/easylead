@@ -113,6 +113,7 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
  },[route]);
  const [path,query='']=route.split('?');
  const isEasyLeadPage = path === '/easylead';
+ const isNewLead = path === '/leads/novo';
  const compactLeadHeader = path === '/leads' || path === prospectPath || path === '/leads/novo';
  const isProjectDashboard = path === '/projetos';
  const isMainDashboard = path === '/leads' || isProjectDashboard;
@@ -133,7 +134,7 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
  const headerAmount=wonLead ? closedContractAmount(linkedProject) : proposedAmount;
  const isProposalEditor=Boolean(routeLead && path.endsWith('/proposta/editar') && parts.length===5);
  const isProjectScopeEditor=Boolean(routeLead && parts.length===4 && parts[3]==='escopo');
- const isRecordPage=Boolean(isLeadRecord || currentProject || isProposalEditor || isProjectScopeEditor);
+ const isRecordPage=Boolean(isLeadRecord || currentProject || isProposalEditor || isProjectScopeEditor || isNewLead);
  const isQualificationDetails=path==='/leads/qualificacao/setor'||path==='/leads/qualificacao/subarea';
  const isCleanDashboard=isMainDashboard || isDirectory || isRecordPage || isOrganization || isQualificationDetails || isSettings;
  useLayoutEffect(()=>{document.querySelector('h1')?.focus()},[path]);
@@ -293,7 +294,7 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
      {wonLead && <span className="lead-proposal-reference">Valor proposto <b>{proposedAmount == null ? 'A definir' : formatMoney(proposedAmount)}</b></span>}
     </div>}
    </div>
-  </header> : !isEasyLeadPage && !isOrganization && !isMainDashboard && <h1 className="lead-route-heading" tabIndex="-1">{title}</h1>}{sessionError&&<p role="alert" className="error">{sessionError}</p>}{storageError&&<p role="alert" className="error">{storageError}</p>}<p role="status" className="feedback">{message}</p><div className={`route-content dashboard-route route-${parts[1] || "leads"}${(path === "/leads" || isProjectDashboard || isOrganization || isSettings) ? " dashboard-blur-entrance" : ""}${(path === "/leads" || path === prospectPath || isLeadRecord || parts[1] === "projetos") ? " lead-dashboard-glow" : ""}`} key={parts[1]==='organizacao'?'organizacao':path}>{isMainDashboard && <header className="dashboard-page-header">
+  </header> : !isEasyLeadPage && !isOrganization && !isMainDashboard && <h1 className="lead-route-heading" tabIndex="-1">{title}</h1>}{sessionError&&<p role="alert" className="error">{sessionError}</p>}{storageError&&<p role="alert" className="error">{storageError}</p>}<p role="status" className="feedback">{message}</p><div className={`route-content dashboard-route route-${parts[1] || "leads"}${(path === "/leads" || isProjectDashboard || isOrganization || isSettings || isNewLead) ? " dashboard-blur-entrance" : ""}${(path === "/leads" || path === prospectPath || isLeadRecord || parts[1] === "projetos") ? " lead-dashboard-glow" : ""}`} key={parts[1]==='organizacao'?'organizacao':path}>{isMainDashboard && <header className="dashboard-page-header">
     <h1 className="lead-route-heading" tabIndex="-1">{title}</h1>
     {isProjectDashboard ? <a className="lead-glass-action" href={'#/projetos/todos'+(scopeParams.size?'?'+scopeParams:'')}>Todos os projetos →</a> : <div className="lead-opening-actions" role="group" aria-label="Ações de leads">
      <a className="lead-glass-action" href={prospectHref()}>Todos os leads →</a>

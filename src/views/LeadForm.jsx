@@ -1,3 +1,4 @@
+import './lead-create.css';
 import React, { useId, useRef, useState } from 'react';
 import {formatMoney} from './DashboardValue.jsx';
 import { DashboardModule } from './DashboardModule.jsx';
@@ -67,7 +68,7 @@ export function LeadForm({ lead, saveLead, backHref = '#/leads', returnQuery = '
         {icpBudget.minimum != null && <p>Orçamento mínimo <strong>{formatMoney(icpBudget.minimum)}</strong></p>}
         {icpBudget.maximum != null && <p>Orçamento máximo <strong>{formatMoney(icpBudget.maximum)}</strong></p>}
       </details>}
-      <div className="lead-sector-picker form-wide" onKeyDown={event=>{
+      <div className={'lead-sector-picker'+(lead?' form-wide':'')} onKeyDown={event=>{
         if (event.key === 'Escape' && sectorOpen) {event.preventDefault(); closeSector();}
       }}>
         <span id={sectorPanel + '-label'} className="lead-choice-label">Setor da contratante</span>
@@ -86,7 +87,7 @@ export function LeadForm({ lead, saveLead, backHref = '#/leads', returnQuery = '
           </ul> : <p role="status" className="section-note">Nenhum setor encontrado.</p>}
         </div>}
       </div>
-      <LeadChoice className="form-wide" label="Segmento da contratante" value={contractorArea?.id || ''}
+      <LeadChoice className={lead?'form-wide':''} label="Segmento da contratante" value={contractorArea?.id || ''}
         options={[{value:'',label:'Sem área atribuída'}, ...areas.map(area=>({value:area.id,label:area.name}))]}
         onChange={value=>setField('contractorSegment',value)}/>
       {lead && <label className="form-wide">Responsável pelo Lead
