@@ -25,7 +25,7 @@ import {Organization} from './views/OrganizationAtoms.jsx';
 import {updateModuleGlow} from './views/ChartSurface.jsx';
 import {WaveMesh} from './views/WaveMesh.jsx';
 import {AuthGate} from './views/AuthGate.jsx';
-import {TopNavigation} from './views/TopNavigation.jsx';
+import {TopNavigation,EasyLeadLogo} from './views/TopNavigation.jsx';
 import {ProjectFilters,ProjectList,ProjectTable} from './views/Pipeline.jsx';
 import './views/easy-lead-theme.css';
 import './views/dashboard-clean.css';
@@ -75,11 +75,13 @@ function Workspace(props) {
    .catch(error=>{if(!controller.signal.aborted)setError(error.message);});
   return()=>controller.abort();
  },[attempt]);
- if(!ready)return <main className="lead-record-header">
-  <h1 className="lead-record-heading">Carteira principal</h1>
-  <p role={error?'alert':'status'}>{error||'Carregando leads e projetos…'}</p>
-  {error&&<button type="button" className="lead-glass-action" onClick={()=>setAttempt(value=>value+1)}>Tentar novamente</button>}
- </main>;
+ if(!ready)return error?<main className="workspace-loading">
+  <div className="workspace-load-error">
+   <h1>Não foi possível abrir o EasyLead</h1>
+   <p role="alert">{error}</p>
+   <button type="button" className="lead-glass-action" onClick={()=>setAttempt(value=>value+1)}>Tentar novamente</button>
+  </div>
+ </main>:<div className="workspace-loading" role="status" aria-label="Carregando EasyLead" aria-busy="true"><EasyLeadLogo/></div>;
  return <App {...props} initialWorkspace={initialWorkspace}/>;
 }
 

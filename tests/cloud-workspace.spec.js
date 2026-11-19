@@ -70,3 +70,16 @@ for(const width of [390,747,1024,1440])test('layout do login mantém campos e de
  await expect(button).toBeInViewport({ratio:1});await expect(page.getByLabel('E-mail',{exact:true})).toBeInViewport({ratio:1});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
 });
+
+
+test('carregamento lento mantém só a marca e abre a IA sem página intermediária',async({page})=>{
+ await page.emulateMedia({reducedMotion:'reduce'});
+ await page.route('**/api/easylead/session',route=>route.fulfill({json:{session:{authenticated:true,email:'demo@easylead.example',loggedAt:1}}}));
+ let release;const wait=new Promise(resolve=>release=resolve);
+ await page.route('**/api/easylead/workspace',async route=>{await wait;await route.fulfill({json:{state:seed,revision:0}});});
+ await page.goto('/#/easylead');
+ const loading=page.getByRole('status',{name:'Carregando EasyLead'});await expect(loading).toBeVisible();
+ await expect(page.getByText('Carteira principal',{exact:true})).toHaveCount(0);await expect(page.getByText('Carregando leads e projetos…',{exact:true})).toHaveCount(0);
+ await expect(page.locator('.wave-mesh')).toHaveCSS('visibility','hidden');
+ release();await expect(page.getByRole('region',{name:'Assistente EasyLead'})).toBeVisible();await expect(loading).toHaveCount(0);
+});
