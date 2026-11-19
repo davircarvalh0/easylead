@@ -1,3 +1,4 @@
+import {AccountSettings} from './views/AccountSettings.jsx';
 import {AnalyticsBento} from './views/AnalyticsBento.jsx';
 import {LeadSearch} from '../components/ui/LeadSearch.jsx';
 import {EasyLeadAssistant} from './views/EasyLeadAssistant.jsx';
@@ -120,6 +121,7 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
  const isProjectList = path === '/projetos/todos';
  const params=new URLSearchParams(query);const parts=path.split('/');
  const isOrganization = parts[1]==='organizacao';
+ const isSettings = path==='/configuracoes';
  const routeLead=parts[1]==='leads' && !compactLeadHeader && state.leads.find(lead=>lead.id===parts[2]);
  const isLeadRecord=Boolean(routeLead && parts.length===3);
  const currentProject=parts[1]==='projetos' && !isProjectList && state.projects.find(project=>project.id===parts[2]);
@@ -133,7 +135,7 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
  const isProjectScopeEditor=Boolean(routeLead && parts.length===4 && parts[3]==='escopo');
  const isRecordPage=Boolean(isLeadRecord || currentProject || isProposalEditor || isProjectScopeEditor);
  const isQualificationDetails=path==='/leads/qualificacao/setor'||path==='/leads/qualificacao/subarea';
- const isCleanDashboard=isMainDashboard || isDirectory || isRecordPage || isOrganization || isQualificationDetails;
+ const isCleanDashboard=isMainDashboard || isDirectory || isRecordPage || isOrganization || isQualificationDetails || isSettings;
  useLayoutEffect(()=>{document.querySelector('h1')?.focus()},[path]);
  const area=id=>state.areas.find(a=>a.id===id)?.name;
  const member=id=>state.members.find(m=>m.id===id)?.name;
@@ -154,14 +156,7 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
  if(isEasyLeadPage)content=<EasyLeadAssistant state={state} theme={theme} importLeads={importLeads} conversation={assistantConversation} setConversation={setAssistantConversation}/>;
  else if(path==='/configuracoes'){
   title='Configurações';
-  content=<DashboardModule className="easylead-settings" title="Conta">
-   <dl><dt>E-mail da sessão</dt><dd>{accountEmail}</dd></dl>
-   <button className="quiet-button" type="button" onClick={()=>{
-    const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));
-    const link=document.createElement('a');link.href=url;link.download='easylead-carteira.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-   }}>Exportar carteira</button>
-   <button className="quiet-button" type="button" onClick={logout}>Sair da conta</button>
-  </DashboardModule>;
+  content=<AccountSettings state={state} email={accountEmail} logout={logout}/>;
  }
  else if(parts[1]==='leads'){
  const lead=routeLead;
@@ -281,7 +276,7 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
  else if(parts[1]==='squads') {const squad=state.squads?.find(s=>s.id===parts[2]);content=squad?<section className="detail fr-module"><span className="eyebrow">EQUIPE ALOCADA</span><h2>{squad.name}</h2><p>{squad.specialty}</p>{squad.areaId ? <a href={'#/organizacao/'+squad.areaId}>Subárea: {area(squad.areaId)} →</a> : <p>Sem área atribuída</p>}<h3>Responsável</h3><p>{member(squad.ownerId)}</p><h3>Integrantes</h3>{squad.memberIds.map(id=><p key={id}>{member(id)}</p>)}<h3>Projetos vinculados</h3>{projectList(state.projects.filter(p=>p.squadId===squad.id))}</section>:<p>Squad não encontrado.</p>;title='Squad';}
  else if(isOrganization)content=<Organization state={state} areas={organizationAtoms} selectedId={parts[2]} saveArea={saveArea} removeArea={removeArea} saveMember={saveMember} setAreaLeadOwnership={setAreaLeadOwnership} projectList={projectList}/>;
  else content=<p>Página não encontrada. <a href="#/leads">Ir para Leads</a></p>;
- return <div className="layout studio-layout" data-theme={theme} data-clean-dashboard={isCleanDashboard} data-clean-page={isCleanDashboard || isOrganization || isEasyLeadPage} data-record-page={isRecordPage} onPointerMove={updateModuleGlow}><a className="skip" href="#conteudo" onClick={e=>{e.preventDefault();document.querySelector('h1').focus()}}>Pular para conteúdo</a><TopNavigation items={nav} path={path} logout={logout} theme={theme} onToggleTheme={()=>setTheme(current=>current==='light'?'dark':'light')}/><main id="conteudo">{!compactLeadHeader&&!isProjectDashboard&&!isProjectList&&!currentProject&&!isEasyLeadPage&&!isLeadRecord&&!isProposalEditor&&!isProjectScopeEditor&&!isOrganization&&!isQualificationDetails&&<p className="eyebrow breadcrumb">EasyLead / {title}</p>}{isLeadRecord || currentProject ? <header className="lead-record-header">
+ return <div className="layout studio-layout" data-theme={theme} data-clean-dashboard={isCleanDashboard} data-clean-page={isCleanDashboard || isOrganization || isEasyLeadPage} data-record-page={isRecordPage} onPointerMove={updateModuleGlow}><a className="skip" href="#conteudo" onClick={e=>{e.preventDefault();document.querySelector('h1').focus()}}>Pular para conteúdo</a><TopNavigation items={nav} path={path} logout={logout} theme={theme} onToggleTheme={()=>setTheme(current=>current==='light'?'dark':'light')}/><main id="conteudo">{!compactLeadHeader&&!isProjectDashboard&&!isProjectList&&!currentProject&&!isEasyLeadPage&&!isLeadRecord&&!isProposalEditor&&!isProjectScopeEditor&&!isOrganization&&!isQualificationDetails&&!isSettings&&<p className="eyebrow breadcrumb">EasyLead / {title}</p>}{isLeadRecord || currentProject ? <header className="lead-record-header">
    <nav className="prospect-breadcrumb lead-record-breadcrumb" aria-label="Caminho da página">
     {currentProject ? <a href="#/projetos">Projetos</a> : <>
      <a href="#/leads">Leads</a><span aria-hidden="true">→</span>
@@ -298,13 +293,13 @@ function App({logout,sessionError,accountEmail,initialWorkspace}){
      {wonLead && <span className="lead-proposal-reference">Valor proposto <b>{proposedAmount == null ? 'A definir' : formatMoney(proposedAmount)}</b></span>}
     </div>}
    </div>
-  </header> : !isEasyLeadPage && !isOrganization && !isMainDashboard && <h1 className="lead-route-heading" tabIndex="-1">{title}</h1>}{sessionError&&<p role="alert" className="error">{sessionError}</p>}{storageError&&<p role="alert" className="error">{storageError}</p>}<p role="status" className="feedback">{message}</p><div className={`route-content dashboard-route route-${parts[1] || "leads"}${(path === "/leads" || isProjectDashboard || isOrganization) ? " dashboard-blur-entrance" : ""}${(path === "/leads" || path === prospectPath || isLeadRecord || parts[1] === "projetos") ? " lead-dashboard-glow" : ""}`} key={parts[1]==='organizacao'?'organizacao':path}>{isMainDashboard && <header className="dashboard-page-header">
+  </header> : !isEasyLeadPage && !isOrganization && !isMainDashboard && <h1 className="lead-route-heading" tabIndex="-1">{title}</h1>}{sessionError&&<p role="alert" className="error">{sessionError}</p>}{storageError&&<p role="alert" className="error">{storageError}</p>}<p role="status" className="feedback">{message}</p><div className={`route-content dashboard-route route-${parts[1] || "leads"}${(path === "/leads" || isProjectDashboard || isOrganization || isSettings) ? " dashboard-blur-entrance" : ""}${(path === "/leads" || path === prospectPath || isLeadRecord || parts[1] === "projetos") ? " lead-dashboard-glow" : ""}`} key={parts[1]==='organizacao'?'organizacao':path}>{isMainDashboard && <header className="dashboard-page-header">
     <h1 className="lead-route-heading" tabIndex="-1">{title}</h1>
     {isProjectDashboard ? <a className="lead-glass-action" href={'#/projetos/todos'+(scopeParams.size?'?'+scopeParams:'')}>Todos os projetos →</a> : <div className="lead-opening-actions" role="group" aria-label="Ações de leads">
      <a className="lead-glass-action" href={prospectHref()}>Todos os leads →</a>
      <a className="lead-glass-action lead-glass-action-primary" href="#/leads/novo">Novo lead →</a>
     </div>}
-  </header>}{content}</div><hr className="page-end" aria-hidden="true"/>{(isMainDashboard || isDirectory || isRecordPage || isOrganization || isQualificationDetails) && <footer className="dashboard-footer"><span>EasyLead</span></footer>}</main></div>
+  </header>}{content}</div><hr className="page-end" aria-hidden="true"/>{(isMainDashboard || isDirectory || isRecordPage || isOrganization || isQualificationDetails || isSettings) && <footer className="dashboard-footer"><span>EasyLead</span></footer>}</main></div>
 }
 createRoot(document.getElementById('root')).render(<><WaveMesh/><AuthGate>{props=><Workspace {...props}/>}</AuthGate></>);
 
