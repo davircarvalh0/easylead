@@ -21,10 +21,9 @@ export function AuthGate({children}) {
   if(loading)return <main className="easylead-login"><p role="status">Verificando acesso…</p></main>;
   if (!session) return <main className="easylead-login">
     <div className="login-shell">
-      <LiquidChrome/>
       <section className="login-panel" aria-labelledby="login-title">
+        <div className="login-brand"><EasyLeadLogo/></div>
         <div className="login-content">
-          <EasyLeadLogo/>
           <h1 id="login-title">Entrar no EasyLead</h1>
           <form noValidate onSubmit={event=>{event.preventDefault();login(email,password);}}>
             <label>E-mail<input ref={emailInput} type="email" autoComplete="username" required
@@ -42,6 +41,7 @@ export function AuthGate({children}) {
           </form>
         </div>
       </section>
+      <LiquidChrome/>
     </div>
   </main>;
 

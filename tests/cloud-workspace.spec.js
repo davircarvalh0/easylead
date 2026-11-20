@@ -68,6 +68,9 @@ for(const width of [390,747,1024,1440])test('layout do login mantém campos e de
  const button=page.getByRole('button',{name:'Entrar como usuário de demonstração'});await expect(button).toBeVisible();
  await page.screenshot({path:testInfo.outputPath('login.png')});
  await expect(button).toBeInViewport({ratio:1});await expect(page.getByLabel('E-mail',{exact:true})).toBeInViewport({ratio:1});
+ const art=page.locator('.login-art');
+ if(width>900){await expect(art).toBeVisible();const panelBox=await page.locator('.login-panel').boundingBox(),artBox=await art.boundingBox();expect(artBox.x).toBeGreaterThanOrEqual(panelBox.x+panelBox.width);await expect(art).toHaveText('');}
+ else await expect(art).toBeHidden();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
 });
 

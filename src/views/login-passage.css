@@ -1,49 +1,46 @@
 .easylead-login {
-  position:relative; z-index:1; display:grid; place-items:center;
-  grid-template-columns:minmax(0,1fr); width:100%; min-height:100svh; max-width:none; margin:0; padding:clamp(1rem,4vw,3rem);
-  background:#000; color:#fff; color-scheme:dark;
+ position:relative; z-index:1; display:grid; grid-template-columns:minmax(0,1fr); align-items:stretch;
+ width:100%; min-height:100dvh; max-width:none; margin:0; padding:.65rem;
+ background:#141516; color:#f1f2f3; color-scheme:dark;
 }
 .login-shell {
-  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
-  width:100%; max-width:65rem; min-width:0; min-height:min(39rem,calc(100svh - 4rem));
-  overflow:hidden; border:1px solid #8f9094; border-radius:1.3rem;
-  box-shadow:0 1.8rem 5rem #0006;
+ display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); gap:.65rem;
+ width:100%; min-width:0; min-height:calc(100dvh - 1.3rem);
 }
+.login-panel {
+ position:relative; display:flex; align-items:center; justify-content:center; min-width:0;
+ padding:6rem clamp(1.5rem,5vw,5rem) 4rem; --login-field-bg:#171819;
+}
+.login-brand { position:absolute; top:1.25rem; left:1.5rem; }
+.login-brand .easylead-logo { display:block; width:7.75rem; margin:0; }
+.login-content { width:100%; max-width:22rem; min-width:0; }
+.login-panel h1 { margin:0 0 1.8rem; color:inherit; text-align:center; font-size:1.45rem; letter-spacing:-.035em; font-weight:550; }
+.login-panel form { display:grid; gap:1rem; max-width:none; padding:0; margin:0; }
+.login-panel label { display:grid; gap:.45rem; color:#bec2c7; font-size:.8rem; font-weight:450; margin:0; }
+.login-panel input { width:100%; min-height:44px; padding:.65rem .8rem; margin:0; border:1px solid #ffffff1c; border-radius:7px; background:var(--login-field-bg); color:#f1f2f3; font:inherit; font-size:.88rem; font-weight:400; }
+.login-panel input::placeholder { color:#858b93; }
+.login-panel input:is(:autofill,:-webkit-autofill) { box-shadow:0 0 0 1000px var(--login-field-bg) inset; -webkit-text-fill-color:#f1f2f3; }
+.login-panel :is(input,button):focus-visible { outline:2px solid #a6adb6; outline-offset:3px; }
+.login-panel button { width:100%; min-height:44px; padding:.65rem .85rem; border-radius:7px; cursor:pointer; font:inherit; font-size:.83rem; font-weight:500; transition:background .2s,border-color .2s; }
+.login-panel button:disabled { opacity:.6; cursor:wait; }
+.login-submit { margin-top:.25rem; border:1px solid #ffffff20; background:#2a2c2f; color:#f1f2f3; }
+.login-submit:not(:disabled):hover { background:#34373b; border-color:#ffffff35; }
+.login-demo { border:1px solid #ffffff1c; background:transparent; color:#c8cdd3; }
+.login-demo:not(:disabled):hover { background:#ffffff06; border-color:#ffffff35; }
+.login-error { margin:0; padding-inline-start:.65rem; border-inline-start:2px solid #e6a0a0; color:#f1c6c6; font-size:.8rem; line-height:1.5; }
 .login-art {
-  position:relative; min-width:0; min-height:0; overflow:hidden;
-  background:
-    radial-gradient(ellipse at 12% 75%,transparent 41%,#596168 47%,#121416 52%,transparent 65%),
-    radial-gradient(ellipse at 95% 6%,#657078 8%,#2c3033 39%,#0b0c0e 49%,#353b3f 54%,#090a0b 71%);
+ position:relative; min-width:0; min-height:0; overflow:hidden; border-radius:1.2rem; background:
+ radial-gradient(ellipse at 12% 75%,transparent 41%,#596168 47%,#121416 52%,transparent 65%),
+ radial-gradient(ellipse at 95% 6%,#657078 8%,#2c3033 39%,#0b0c0e 49%,#353b3f 54%,#090a0b 71%);
 }
 .login-art canvas { display:none; position:absolute; inset:0; width:100%; height:100%; }
 .login-art[data-renderer=webgl] canvas { display:block; }
-.login-panel { position:relative; z-index:1; display:grid; place-items:center; min-width:0; padding:clamp(1.35rem,4vw,3rem); --login-field-bg:#181a1f; background:#23262c; }
-.login-content { width:100%; max-width:21rem; min-width:0; }
-.login-panel .easylead-logo { width:10rem; margin:0 auto 1.65rem; }
-.login-panel h1 {
-  margin:0 0 1.25rem; color:inherit; text-align:center;
-  font-size:clamp(1.55rem,3vw,2.1rem); letter-spacing:-.045em; font-weight:620;
+@media(max-width:900px) {
+ .login-shell { grid-template-columns:minmax(0,1fr); }
+ .login-art { display:none; }
+ .login-panel { padding-inline:clamp(1.25rem,6vw,3rem); padding-bottom:3rem; }
+ .login-brand { top:1rem; left:1.25rem; }
 }
-.login-panel form { display:grid; gap:.85rem; max-width:none; padding:0; margin:0; }
-.login-panel label { display:grid; gap:.35rem; color:inherit; font-size:.84rem; font-weight:650; margin:0; }
-.login-panel input {
-  width:100%; min-height:44px; padding:.6rem .75rem; margin:0; border:1px solid #777d89;
-  border-radius:.45rem; background:var(--login-field-bg); color:inherit; font:inherit; font-weight:450;
-}
-.login-panel input::placeholder { color:#cbd0d8; }
-.login-panel input:is(:autofill,:-webkit-autofill) {
-  box-shadow:0 0 0 1000px var(--login-field-bg) inset;
-  -webkit-text-fill-color:#fff;
-}
-.login-panel :is(input,button):focus-visible { outline:2px solid #d8dbe2; outline-offset:2px; }
-.login-panel button { min-height:44px; border-radius:.45rem; cursor:pointer; font:inherit; font-size:.86rem; font-weight:650; }
-.login-submit { width:100%; margin-top:.2rem; border:1px solid #797f8b; background:#3d414b; color:#fff; }
-.login-submit:hover { background:#494e59; }
-.login-demo { border:1px solid #777d89; background:#242730; color:#fff; }
-.login-demo:hover { background:#31353e; }
-.login-note,.login-error { margin:.85rem 0 0; font-size:.8rem; line-height:1.5; }
-.login-note { color:inherit; text-align:center; }
-.login-error { color:inherit; margin:0; padding-inline-start:.6rem; border-inline-start:2px solid #f2a1a1; }
 .login-transition {
   position:fixed; inset:0; z-index:110; display:grid; place-items:center;
   background:#18191b; color:#eeeef0; outline:none;
@@ -56,11 +53,6 @@
 @keyframes login-transition-out {
   0%,30% { opacity:1; }
   to { opacity:0; }
-}
-@media (max-width:900px) {
-  .login-shell { grid-template-columns:minmax(0,1fr); min-height:0; }
-  .login-art { height:clamp(6rem,18vw,9rem); min-height:0; }
-  .login-panel .easylead-logo { margin-bottom:1.15rem; }
 }
 
 /* Keep only the entry mark visible while the authenticated workspace loads. */
