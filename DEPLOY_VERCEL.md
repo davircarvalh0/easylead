@@ -36,6 +36,8 @@ node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"
 
 O botão **Entrar como usuário de demonstração** permite avaliar o protótipo sem preencher e-mail ou código. O servidor cria uma sessão para `demo@easylead.example`, com acesso à carteira compartilhada e às funcionalidades de edição. Esse acesso fica habilitado por padrão. Para desativá-lo, configure `APP_DEMO_ACCESS=false`; nesse caso, `APP_ACCESS_CODE`, `APP_ALLOWED_EMAILS` e `SESSION_SECRET` são obrigatórios e o login manual é validado no servidor.
 
+Os limites de entrada são independentes por IP: **60 acessos de demonstração por minuto** e **20 tentativas de login manual a cada 15 minutos**. Um bloqueio do login manual não impede avaliar pela demo. Os contadores antigos não são usados pelo novo login, sem necessidade de limpar tabelas no Supabase.
+
 As sessões usam cookies HttpOnly/Secure/SameSite e podem ser encerradas pelo botão Sair. No protótipo, se `SESSION_SECRET` estiver ausente, o servidor deriva uma chave estável da credencial de conexão PostgreSQL, sem enviá-la ao navegador; alterar a conexão invalida essas sessões. Um segredo explícito continua sendo aceito. A tela de login não exibe nomes de variáveis nem erros internos.
 
 Use outro banco/carteira, código e segredo no ambiente Preview se ele não deve acessar os dados da produção.

@@ -5,7 +5,7 @@ import {once} from 'node:events';
 import {seed} from '../src/domain.js';
 import {createDeploymentApi} from '../server/deployment-api.js';
 import {deploymentConfig} from '../server/deployment-config.js';
-import {signSession,parseSession,assertSameOrigin} from '../server/auth.js';
+import {signSession,parseSession,assertSameOrigin,loginSession} from '../server/auth.js';
 import {applyWorkspaceCommand,createPostgresRepository} from '../server/postgres.js';
 
 const env={DATABASE_URL:'postgresql://example:example@localhost/example',APP_ACCESS_CODE:'test-access-code-123',SESSION_SECRET:'test-secret-with-at-least-thirty-two-characters',APP_ALLOWED_EMAILS:'user@example.com',APP_ORIGIN:'http://localhost',DEEPSEEK_API_KEY:'server-only-test-key',DEEPSEEK_MODEL:'test-configured-model'};
@@ -101,4 +101,22 @@ test('origem aceita aliases explícitos da Vercel e rejeita Host e Origin arbitr
   assert.throws(()=>assertSameOrigin({...req,headers:{...req.headers,origin:'null'}},config),error=>error.status===403);
  }
  assert.throws(()=>assertSameOrigin({method:'POST',headers:{host:'outside.example',origin:'https://outside.example','x-forwarded-host':'outside.example','sec-fetch-site':'same-origin'}},config),error=>error.status===403);
+});
+
+
+test('demo aceita 60 entradas por minuto sem consumir nem herdar o bloqueio do login manual',async()=>{
+ const config=deploymentConfig(env),counts=new Map();let now=0,sessions=0;
+ const repository={rateLimit:async(key,limit,seconds)=>{
+  assert.ok(!key.startsWith('login:'),'O contador compartilhado antigo não pode bloquear a demo.');
+  const window=Math.floor(now/seconds),previous=counts.get(key),count=previous?.window===window?previous.count+1:1;
+  counts.set(key,{window,count});if(count>limit){const error=Error('Muitas tentativas');error.status=429;throw error;}
+ },createSession:async()=>sessions++};
+ const req={headers:{'x-forwarded-for':'192.0.2.10'}};
+ for(let index=0;index<20;index++)await assert.rejects(loginSession(req,{email:'user@example.com',password:'wrong'},config,repository),error=>error.status===401);
+ await assert.rejects(loginSession(req,{email:'user@example.com',password:env.APP_ACCESS_CODE},config,repository),error=>error.status===429);
+ for(let index=0;index<60;index++){const result=await loginSession(req,{demo:true},config,repository);assert.equal(result.payload.email,'demo@easylead.example');}
+ assert.equal(sessions,60);await assert.rejects(loginSession(req,{demo:true},config,repository),error=>error.status===429);
+ now=61;await loginSession(req,{demo:true},config,repository);assert.equal(sessions,61);
+ await assert.rejects(loginSession(req,{email:'user@example.com',password:env.APP_ACCESS_CODE},config,repository),error=>error.status===429);
+ now=901;await loginSession(req,{email:'user@example.com',password:env.APP_ACCESS_CODE},config,repository);assert.equal(sessions,62);
 });

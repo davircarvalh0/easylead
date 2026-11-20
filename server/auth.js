@@ -23,10 +23,13 @@ export async function requireSession(req,config,repository){
  const stored=await repository.session(payload.id);if(!stored||stored.email!==payload.email)throw new ApiError(401,'Sessão expirada. Entre novamente.');return payload;
 }
 export async function loginSession(req,body,config,repository){
- const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
- await repository.rateLimit('login:'+createHmac('sha256',config.sessionSecret).update(ip).digest('hex'),8,900);
  const demo=body.demo===true;
  if(demo&&!config.demoAccess)throw new ApiError(403,'O acesso de demonstração não está disponível.');
+ const ip=String(req.headers['x-forwarded-for']||req.socket?.remoteAddress||'unknown').split(',')[0].trim();
+ const identity=createHmac('sha256',config.sessionSecret).update(ip).digest('hex');
+ // Independent counters prevent evaluator access from consuming manual-login attempts.
+ // New namespaces also leave old prototype lockouts behind after deployment.
+ await repository.rateLimit((demo?'login-demo:v2:':'login-manual:v2:')+identity,demo?60:20,demo?60:900);
  const email=demo?config.demoEmail:typeof body.email==='string'?body.email.trim().toLowerCase():'';
  const password=typeof body.password==='string'?body.password:'';
  const validCode=timingSafeEqual(hash(password),hash(config.accessCode));
